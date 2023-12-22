@@ -2,7 +2,6 @@ package com.example.muenzapp;
 
 import com.example.muenzapp.GermanCoins.GermanOverviewActivity;
 import com.example.muenzapp.InternCoins.InternCoinTableActivity;
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,7 +9,6 @@ import android.os.Bundle;
 
 public class StartingPageActivity extends AppCompatActivity {
     int[] imageButtonIDs = {R.id.YearONE, R.id.YearTWO, R.id.YearTHREE, R.id.YearFOUR, R.id.YearFIVE, R.id.YearSIX, R.id.YearSEVEN, R.id.YearEIGHT, R.id.YearNINE, R.id.YearTEN, R.id.YearELEVEN, R.id.YearTWELVE};
-    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

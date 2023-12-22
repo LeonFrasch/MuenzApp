@@ -10,17 +10,13 @@ import com.example.muenzapp.R;
 import com.example.muenzapp.StartingPageActivity;
 import com.example.muenzapp.Database.*;
 import com.example.muenzapp.TableItem;
-
 import java.util.*;
 import java.util.concurrent.Executors;
 
 import static com.example.muenzapp.R.drawable.table_border;
 import static com.example.muenzapp.StaticHelper.*;
 import static com.example.muenzapp.TableItem.*;
-
-
 public class InternCoinTableActivity extends AppCompatActivity {
-
     private TableItem[][] table; // default Aussehen der Tabelle
     private String[] tableYears;
     private final int[][] buttonIDs = {{R.id.Item00, R.id.Item01, R.id.Item02, R.id.Item03, R.id.Item04, R.id.Item05, R.id.Item06, R.id.Item07, R.id.Item08},
@@ -49,7 +45,7 @@ public class InternCoinTableActivity extends AppCompatActivity {
             {R.id.Item230, R.id.Item231, R.id.Item232, R.id.Item233, R.id.Item234, R.id.Item235, R.id.Item236, R.id.Item237, R.id.Item238},
             {R.id.Item240, R.id.Item241, R.id.Item242, R.id.Item243, R.id.Item244, R.id.Item245, R.id.Item246, R.id.Item247, R.id.Item248},
             {R.id.Item250, R.id.Item251, R.id.Item252, R.id.Item253, R.id.Item254, R.id.Item255, R.id.Item256, R.id.Item257, R.id.Item258}}; //Alle Items der Tabelle: alle mit 0 sind TextViews, sonst Buttons
-    //TODO hier erweitern
+    // TODO hier erweitern
     private CoinDatabase coinDatabase;
     private CollectionDao collectionDao;
     private TableItem coinCountry;
@@ -265,9 +261,9 @@ public class InternCoinTableActivity extends AppCompatActivity {
                 }
             }
             if (found) break;
-        }
+        } // row und column zuweisen
         boolean isActive = (COLLECTED == table[row][column]);
-        if (isActive) {
+        if (isActive) { // not in Database
             table[row][column] = MISSING;
             Executors.newSingleThreadExecutor().execute(() -> {
                 InternCoinEntity coinEntity = new InternCoinEntity();

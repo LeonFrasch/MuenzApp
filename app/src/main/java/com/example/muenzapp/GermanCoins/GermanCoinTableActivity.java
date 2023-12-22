@@ -8,7 +8,6 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
-import com.example.muenzapp.GermanCoins.GermanOverviewActivity;
 import com.example.muenzapp.R;
 import com.example.muenzapp.TableItem;
 
