@@ -1,0 +1,196 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="1067dp"
+    android:height="480dp"
+    android:viewportWidth="1067"
+    android:viewportHeight="480">
+    <path
+        android:fillColor="@color/white"
+        android:pathData="M0,0h1067v480H0z" />
+
+    <!-- Obere schwarze Linie -->
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M0,25h1100v1H0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M0,50h1100v1H0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M0,75h1100v1H0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M0,100h1100v1H0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M0,125h1100v1H0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M0,150h1100v1H0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M0,175h1100v1H0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M0,200h1100v1H0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M0,225h1100v1H0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M0,250h1100v1H0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M0,275h1100v1H0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M0,300h1100v1H0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M0,325h1100v1H0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M0,350h1100v1H0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M0,375h1100v1H0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M0,400h1100v1H0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M0,425h1100v1H0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M0,450h1100v1H0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M0,475h1100v1H0z" />
+
+    <!-- Linke schwarze Linie -->
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M25,0v500h1V0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M50,0v500h1V0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M75,0v500h1V0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M100,0v500h1V0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M125,0v500h1V0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M150,0v500h1V0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M175,0v500h1V0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M200,0v500h1V0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M225,0v500h1V0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M250,0v500h1V0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M275,0v500h1V0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M300,0v500h1V0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M325,0v500h1V0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M350,0v500h1V0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M375,0v500h1V0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M400,0v500h1V0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M425,0v500h1V0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M450,0v500h1V0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M475,0v500h1V0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M500,0v500h1V0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M525,0v500h1V0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M550,0v500h1V0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M575,0v500h1V0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M600,0v500h1V0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M625,0v500h1V0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M650,0v500h1V0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M675,0v500h1V0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M700,0v500h1V0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M725,0v500h1V0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M750,0v500h1V0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M775,0v500h1V0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M800,0v500h1V0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M825,0v500h1V0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M850,0v500h1V0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M875,0v500h1V0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M900,0v500h1V0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M925,0v500h1V0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M950,0v500h1V0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M975,0v500h1V0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M1000,0v500h1V0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M1025,0v500h1V0z" />
+    <path
+        android:fillColor="@color/button_color"
+        android:pathData="M1050,0v500h1V0z" />
+</vector>

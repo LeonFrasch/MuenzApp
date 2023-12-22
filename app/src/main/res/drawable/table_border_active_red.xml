@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Rahmen -->
+    <item>
+        <shape android:shape="rectangle">
+            <stroke
+                    android:width="2dp"
+                    android:color="#FF0000"/>
+            <corners android:radius="0dp"/>
+        </shape>
+    </item>
+
+    <!-- Diagonale Linie von oben links nach unten rechts -->
+    <item>
+        <rotate
+                android:fromDegrees="45"
+                android:pivotX="50%"
+                android:pivotY="50%">
+            <shape android:shape="line">
+                <stroke
+                        android:width="2dp"
+                        android:color="#FF0000"/>
+            </shape>
+        </rotate>
+    </item>
+
+    <!-- Diagonale Linie von oben rechts nach unten links -->
+    <item>
+        <rotate
+                android:fromDegrees="-45"
+                android:pivotX="50%"
+                android:pivotY="50%">
+            <shape android:shape="line">
+                <stroke
+                        android:width="2dp"
+                        android:color="#FF0000"/>
+            </shape>
+        </rotate>
+    </item>
+</layer-list>

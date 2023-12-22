@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".GermanCoins.GermanAddingActivity"
-    android:background="@drawable/block_background">
+    android:background="@drawable/block_background_landscape">
 
     <Button
         android:text="Hinzufügen"
