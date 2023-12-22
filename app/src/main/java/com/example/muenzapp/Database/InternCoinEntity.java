@@ -4,18 +4,18 @@ import androidx.room.*;
 
 import com.example.muenzapp.TableItem;
 
-@Entity(tableName = "CoinEntity")
-public class CoinEntity {
+@Entity(tableName = "InternCoinEntity")
+public class InternCoinEntity {
     @PrimaryKey(autoGenerate = true)
     private int id;
     @ColumnInfo(name = "CoinYear")
     private int coinYear;
     @ColumnInfo(name = "CoinValue")
     private TableItem coinValue;
-    @ColumnInfo(name = "CoinLetter")
-    private TableItem coinLetter;
+    @ColumnInfo(name = "CoinCountry")
+    private TableItem coinCountry;
 
-        // GETTER UND SETTER
+    // GETTER UND SETTER
 
     public int getId() {
         return id;
@@ -41,11 +41,11 @@ public class CoinEntity {
         this.coinValue = coinValue;
     }
 
-    public TableItem getCoinLetter() {
-        return coinLetter;
+    public TableItem getCoinCountry() {
+        return coinCountry;
     }
 
-    public void setCoinLetter(TableItem coinLetter) {
-        this.coinLetter = coinLetter;
+    public void setCoinCountry(TableItem coinCountry) {
+        this.coinCountry = coinCountry;
     }
 }
