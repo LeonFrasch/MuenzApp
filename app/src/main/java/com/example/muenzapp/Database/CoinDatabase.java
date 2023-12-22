@@ -1,7 +1,7 @@
 package com.example.muenzapp.Database;
 
 import androidx.room.*;
-@Database(entities = {CoinEntity.class, InternCoinEntity.class}, version = 1)
+@Database(entities = {CoinEntity.class, InternCoinEntity.class}, version = 1, exportSchema = false)
 public abstract class CoinDatabase extends RoomDatabase {
     public abstract CollectionDao collectionDao();
 }

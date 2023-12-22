@@ -1,16 +1,84 @@
 package com.example.muenzapp.GermanCoins;
 
+import com.example.muenzapp.Database.*;
+import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.view.View;
+import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
-
 import com.example.muenzapp.R;
+import com.example.muenzapp.StartingPageActivity;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Executors;
 
 public class GermanOverviewActivity extends AppCompatActivity {
+    int[] imageButtonIDs = {R.id.YearOne, R.id.YearTwo, R.id.YearThree, R.id.YearFour, R.id.YearFive, R.id.YearSix, R.id.YearEight, R.id.YearSeven};
+    int[] years = {0, 0, 0, 0, 0, 0, 0, 0};
+    int[] textIDs = {R.id.yearONEText, R.id.yearTWOText, R.id.yearTHREEText, R.id.yearFOURText, R.id.yearFIVEText, R.id.yearSIXText, R.id.yearEIGHTText, R.id.yearSEVENText};
+    CoinDatabase coinDatabase;
+    CollectionDao collectionDao;
+    List<Integer> allYears = new ArrayList<>();
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.german_overview_layout);
+
+        coinDatabase = DatabaseClient.getInstance(this);
+        collectionDao = coinDatabase.collectionDao();
+
+        findViewById(R.id.closeCoinYearAdding2).setOnClickListener(v -> {
+            Intent intent = new Intent(this, StartingPageActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        });
+        for (int id : imageButtonIDs) {
+            findViewById(id).setOnClickListener(this::openTableOfYear);
+        }
+        Executors.newSingleThreadExecutor().execute(new Runnable() {
+            @Override
+            public void run() {
+                allYears = collectionDao.getDifferentYears();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (int i = 0; i < allYears.size(); i++) {
+                            if (i == 8) {
+                                break;
+                            }
+                            findViewById(imageButtonIDs[i]).setVisibility(View.VISIBLE);
+                            years[i] = allYears.get(i);
+                            findViewById(textIDs[i]).setVisibility(View.VISIBLE);
+
+                            String year = allYears.get(i) < 10 ? "0" + allYears.get(i) : allYears.get(i) + "";
+                            ((TextView)findViewById(textIDs[i])).setText(year);
+                        }
+                    }
+                });
+            }
+        });
+        findViewById(R.id.addCoinYear).setOnClickListener(this::createNewCoinTable);
+
+    }
+    public void openTableOfYear(View view) {
+        int year = -100;
+        int id = view.getId();
+        for (int i = 0; i < 8; i++) {
+            if (id == imageButtonIDs[i]) {
+                year = years[i];
+            }
+        }
+        Intent intent = new Intent(this, GermanCoinTableActivity.class);
+        intent.putExtra("Year", year);
+        startActivity(intent);
+    }
+    public void createNewCoinTable(View view) {
+        Intent intent = new Intent(this, GermanAddingActivity.class);
+        startActivity(intent);
     }
 }
