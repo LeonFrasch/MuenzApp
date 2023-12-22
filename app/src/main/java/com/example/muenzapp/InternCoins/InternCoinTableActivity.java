@@ -19,6 +19,8 @@ import static com.example.muenzapp.TableItem.*;
 public class InternCoinTableActivity extends AppCompatActivity {
     private TableItem[][] table; // default Aussehen der Tabelle
     private String[] tableYears;
+    private List<CoinEntity> collect;
+    private List<CoinEntity> missing;
     private final int[][] buttonIDs = {{R.id.Item00, R.id.Item01, R.id.Item02, R.id.Item03, R.id.Item04, R.id.Item05, R.id.Item06, R.id.Item07, R.id.Item08},
             {R.id.Item10, R.id.Item11, R.id.Item12, R.id.Item13, R.id.Item14, R.id.Item15, R.id.Item16, R.id.Item17, R.id.Item18},
             {R.id.Item20, R.id.Item21, R.id.Item22, R.id.Item23, R.id.Item24, R.id.Item25, R.id.Item26, R.id.Item27, R.id.Item28},
@@ -265,12 +267,13 @@ public class InternCoinTableActivity extends AppCompatActivity {
         boolean isActive = (COLLECTED == table[row][column]);
         if (isActive) { // not in Database
             table[row][column] = MISSING;
+            InternCoinEntity coinEntity = new InternCoinEntity();
+            //         System.out.println("value: " + table[0][column]);
+            coinEntity.setCoinValue(table[0][column]);
+            //          System.out.println("Year: "+ tableYears[row - 1]);
+            coinEntity.setCoinYear(Integer.parseInt(tableYears[row - 1]));
             Executors.newSingleThreadExecutor().execute(() -> {
-                InternCoinEntity coinEntity = new InternCoinEntity();
-                //         System.out.println("value: " + table[0][column]);
-                coinEntity.setCoinValue(table[0][column]);
-                //          System.out.println("Year: "+ tableYears[row - 1]);
-                coinEntity.setCoinYear(Integer.parseInt(tableYears[row - 1]));
+
                 collectionDao.insertInternationalCoin(coinEntity);
             });
             view.setBackground(getDrawable(table_border)); // wieder normal
