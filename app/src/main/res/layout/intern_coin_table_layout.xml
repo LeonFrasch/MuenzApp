@@ -7,15 +7,18 @@
     android:layout_height="match_parent"
     tools:context=".InternCoins.InternCoinTableActivity"
     android:background="@drawable/block_background_portrait">
+
     <Button
+        android:id="@+id/openAddingInternYear"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Jahr Hinzufügen"
+        android:layout_marginStart="100dp"
+        android:layout_marginBottom="50dp"
         android:background="@color/button_color"
+        android:text="Jahr Hinzufügen"
         android:textColor="@color/black"
-        app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="936dp"
-        app:layout_constraintStart_toStartOf="parent" android:id="@+id/openAddingInternYear"
-        android:layout_marginStart="288dp"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" app:srcCompat="@android:drawable/btn_dialog"

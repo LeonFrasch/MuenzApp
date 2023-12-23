@@ -1,7 +1,6 @@
 package com.example.muenzapp.GermanCoins;
 
 import com.example.muenzapp.Database.*;
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
@@ -60,7 +59,7 @@ public class GermanAddingActivity extends AppCompatActivity {
                 // falsches Format // TODO
             }
             Executors.newSingleThreadExecutor().execute(() -> {
-                if (selectedLetters.size() > 0 && selectedValues.size() > 0 && selectedCoinYear != 0) {
+                if (selectedLetters.size() > 0 && selectedValues.size() > 0 && selectedCoinYear >= 0) {
                     List<CoinEntity> coinsOfYear = collectionDao.getMissingCoinsOfYear(selectedCoinYear);
                     for (TableItem selectedLetter : selectedLetters) {
                         for (TableItem selectedValue : selectedValues) {

@@ -66,7 +66,7 @@ public class InternAddingActivity extends AppCompatActivity {
                 // falsches Format // TODO
             }
             Executors.newSingleThreadExecutor().execute(() -> {
-                if (selectedValues.size() > 0 && selectedCoinYear != 0) {
+                if (selectedValues.size() > 0 && selectedCoinYear >= 0) {
                     List<InternCoinEntity> coinsOfYear = collectionDao.getMissingInternationalCoinsOfYearAndCountry(selectedCoinCountry, selectedCoinYear);
                     for (TableItem selectedValue : selectedValues) {
                         InternCoinEntity entity = new InternCoinEntity();
