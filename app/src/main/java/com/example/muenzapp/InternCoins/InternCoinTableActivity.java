@@ -14,13 +14,16 @@ import java.util.*;
 import java.util.concurrent.Executors;
 
 import static com.example.muenzapp.R.drawable.table_border;
+import static com.example.muenzapp.R.drawable.table_border_active;
+import static com.example.muenzapp.R.drawable.table_border_active_red;
+import static com.example.muenzapp.R.drawable.table_border_red;
 import static com.example.muenzapp.StaticHelper.*;
 import static com.example.muenzapp.TableItem.*;
 public class InternCoinTableActivity extends AppCompatActivity {
     private TableItem[][] table; // default Aussehen der Tabelle
     private String[] tableYears;
-    private List<CoinEntity> collect;
-    private List<CoinEntity> missing;
+    private List<InternCoinEntity> collect;
+    private List<InternCoinEntity> missing;
     private final int[][] buttonIDs = {{R.id.Item00, R.id.Item01, R.id.Item02, R.id.Item03, R.id.Item04, R.id.Item05, R.id.Item06, R.id.Item07, R.id.Item08},
             {R.id.Item10, R.id.Item11, R.id.Item12, R.id.Item13, R.id.Item14, R.id.Item15, R.id.Item16, R.id.Item17, R.id.Item18},
             {R.id.Item20, R.id.Item21, R.id.Item22, R.id.Item23, R.id.Item24, R.id.Item25, R.id.Item26, R.id.Item27, R.id.Item28},
@@ -58,8 +61,21 @@ public class InternCoinTableActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.intern_coin_table_layout);
 
+        missing = new ArrayList<>();
+        collect = new ArrayList<>();
+
         //Logik Button zum Zurückgehen
         findViewById(R.id.closeCoinTable).setOnClickListener((v) -> {
+
+            Executors.newSingleThreadExecutor().execute(() -> {
+                for (InternCoinEntity internCoinEntity : missing) {
+                    collectionDao.insertInternationalCoin(internCoinEntity);
+                }
+                for (InternCoinEntity internCoinEntity : collect) {
+                    collectionDao.foundInternationalCoin(internCoinEntity.getCoinCountry(), internCoinEntity.getCoinYear(), internCoinEntity.getCoinValue());
+                }
+            });
+
             Intent intent = new Intent(this, StartingPageActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
@@ -266,25 +282,29 @@ public class InternCoinTableActivity extends AppCompatActivity {
         } // row und column zuweisen
         boolean isActive = (COLLECTED == table[row][column]);
         if (isActive) { // not in Database
-            table[row][column] = MISSING;
-            InternCoinEntity coinEntity = new InternCoinEntity();
-            //         System.out.println("value: " + table[0][column]);
-            coinEntity.setCoinCountry(coinCountry);
-            coinEntity.setCoinValue(table[0][column]);
-            //          System.out.println("Year: "+ tableYears[row - 1]);
-            coinEntity.setCoinYear(Integer.parseInt(tableYears[row - 1]));
-            Executors.newSingleThreadExecutor().execute(() -> {
-
-                collectionDao.insertInternationalCoin(coinEntity);
-            });
-            view.setBackground(getDrawable(table_border)); // wieder normal
-        } else {
-            table[row][column] = COLLECTED;
-            view.setBackground(getDrawable(R.drawable.table_border_active));
-            Executors.newSingleThreadExecutor().execute(() -> {
-                collectionDao.foundInternationalCoin(coinCountry, Integer.parseInt(tableYears[row - 1]), table[0][column]);
-                //             System.out.println("Es wird entfernt: "+ tableYears[row - 1]+ " und "+ table[0][column]);
-            });
+            InternCoinEntity internCoinEntity = new InternCoinEntity();
+            internCoinEntity.setCoinCountry(coinCountry);
+            internCoinEntity.setCoinValue(table[0][column]);
+            internCoinEntity.setCoinYear(Integer.parseInt(tableYears[row - 1]));
+            if (!missing.contains(internCoinEntity)) {
+                missing.add(internCoinEntity);
+                view.setBackground(getDrawable(table_border_red));
+            } else {
+                missing.remove(internCoinEntity);
+                view.setBackground(getDrawable(table_border_active));
+            }
+        } else { // not active
+            InternCoinEntity internCoinEntity = new InternCoinEntity();
+            internCoinEntity.setCoinCountry(coinCountry);
+            internCoinEntity.setCoinYear(Integer.parseInt(tableYears[row - 1]));
+            internCoinEntity.setCoinValue(table[0][column]);
+            if (!collect.contains(internCoinEntity)) {
+                collect.add(internCoinEntity);
+                view.setBackground(getDrawable(table_border_active_red));
+            } else {
+                collect.remove(internCoinEntity);
+                view.setBackground(getDrawable(table_border));
+            }
         }
 
     }
