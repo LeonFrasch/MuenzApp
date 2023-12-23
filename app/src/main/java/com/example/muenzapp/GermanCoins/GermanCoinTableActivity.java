@@ -15,6 +15,9 @@ import java.util.*;
 import java.util.concurrent.Executors;
 
 import static com.example.muenzapp.R.drawable.table_border;
+import static com.example.muenzapp.R.drawable.table_border_active;
+import static com.example.muenzapp.R.drawable.table_border_active_red;
+import static com.example.muenzapp.R.drawable.table_border_red;
 import static com.example.muenzapp.TableItem.*;
 
 public class GermanCoinTableActivity extends AppCompatActivity {
@@ -25,16 +28,25 @@ public class GermanCoinTableActivity extends AppCompatActivity {
     private CoinDatabase coinDatabase;
     private CollectionDao collectionDao;
     private int coinYear;
+    private List<CoinEntity> missing;
+    private List<CoinEntity> collect;
 
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        // TODO: Problem ist, dass beim Spaltenlöschen diese Verschoben werden, also sollte es anders gespeichert werden
         super.onCreate(savedInstanceState);
         setContentView(R.layout.german_coin_table_layout);
-
+        missing = new ArrayList<>();
+        collect = new ArrayList<>();
         findViewById(R.id.closeCoinTable).setOnClickListener((v) -> {
+            Executors.newSingleThreadExecutor().execute(() -> {
+                for (CoinEntity coinEntity : missing) {
+                    collectionDao.insertCoin(coinEntity);
+                }
+                for (CoinEntity coinEntity : collect) {
+                    collectionDao.foundCoin(coinEntity.getCoinYear(),coinEntity.getCoinValue(), coinEntity.getCoinLetter());
+                }
+            });
             Intent intent = new Intent(this, GermanOverviewActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
@@ -58,10 +70,6 @@ public class GermanCoinTableActivity extends AppCompatActivity {
     */
         Executors.newSingleThreadExecutor().execute(() -> {
             List<CoinEntity> tableOfYear = collectionDao.getMissingCoinsOfYear(coinYear);
-        //    System.out.println("Vor Delete: "+tableOfYear.size());
-            for (CoinEntity coinEntity : tableOfYear) {
-            System.out.println("Missing Coin: "+ coinEntity.getCoinLetter() + " " + coinEntity.getCoinValue() + " " + coinEntity.getCoinYear());
-            }
             for (CoinEntity coinEntity : tableOfYear) {
                 TableItem coinLetter = coinEntity.getCoinLetter();
                 TableItem coinValue = coinEntity.getCoinValue();
@@ -123,13 +131,9 @@ public class GermanCoinTableActivity extends AppCompatActivity {
                         break;
                     }
                 }
-             //   System.out.println("Aus Datenbank hinzugefügt: table["+letterPlace+"]["+valuePlace+"]");
                 table[letterPlace][valuePlace] = MISSING;
                 findViewById(buttonIDs[letterPlace][valuePlace]).setBackground(getDrawable(table_border)); // eventuell unnötig da erst später gemacht
             }
-             //       for (TableItem[] tableItems : table) {
-             //           System.out.println(Arrays.toString(tableItems));
-             //       }
             // Unwichtige Zeilen und Spalten entfernen
             Set<Integer> rowWithMissing = new HashSet<>();
             Set<Integer> columnWithMissing = new HashSet<>();
@@ -143,9 +147,6 @@ public class GermanCoinTableActivity extends AppCompatActivity {
             }
             rowWithMissing = new HashSet<>(rowWithMissing);
             columnWithMissing = new HashSet<>(columnWithMissing);
-
-             //       System.out.println("Reihe mit Missing: "+ Arrays.toString(rowWithMissing.toArray()));
-             //       System.out.println("Zeile mit Missing: "+ Arrays.toString(columnWithMissing.toArray()));
             int pointerRow = 1;
             int pointerColumn = 1;
             for (int row : rowWithMissing) {
@@ -172,12 +173,6 @@ public class GermanCoinTableActivity extends AppCompatActivity {
                 pointerRow++;
                 pointerColumn = 1;
             }
-
-
-            //    for (TableItem[] tableItems : table) { // for debugging
-            //        System.out.println(Arrays.toString(tableItems));
-            //        }
-
             // andere Buttons ausblenden
             int lastRow = table.length - 1;
             int lastColumn = table[1].length - 1;
@@ -233,9 +228,9 @@ public class GermanCoinTableActivity extends AppCompatActivity {
     private int column = -100;
     public void click(View view) {
 
-            for (TableItem[] tableItems : table) {
-                System.out.println(Arrays.toString(tableItems));
-            }
+          //  for (TableItem[] tableItems : table) {
+          //      System.out.println(Arrays.toString(tableItems));
+          //  }
 
         //Hintergrund ändern
         int id = view.getId();
@@ -253,46 +248,32 @@ public class GermanCoinTableActivity extends AppCompatActivity {
             if (found) break;
         }
         boolean isActive = (COLLECTED == table[row][column]);
-    //    System.out.println(table[row][column]);
-    //    System.out.println(isActive);
         if (isActive) {
-            table[row][column] = MISSING;
-
-            Executors.newSingleThreadExecutor().execute(() -> {
-                CoinEntity coinEntity = new CoinEntity();
-                coinEntity.setCoinValue(table[0][column]);
-                coinEntity.setCoinLetter(table[row][0]);
-                coinEntity.setCoinYear(coinYear);
-                collectionDao.insertCoin(coinEntity);
-                System.out.println("To insert: " + table[0][column] + " " + table[row][0] + " " + coinYear);
-                System.out.println("After klick: ");
-                List<CoinEntity> tableOfYear = collectionDao.getMissingCoinsOfYear(coinYear);
-                for (CoinEntity coinEntity1 : tableOfYear) {
-                    System.out.println("Missing Coin: "+ coinEntity1.getCoinLetter() + " " + coinEntity1.getCoinValue() + " " + coinEntity1.getCoinYear());
-                }
-
-            });
-            view.setBackground(getDrawable(table_border)); // wieder normal
-        } else {
-            table[row][column] = COLLECTED;
-            view.setBackground(getDrawable(R.drawable.table_border_active));
-            Executors.newSingleThreadExecutor().execute(() -> {
-                collectionDao.foundCoin(coinYear, table[0][column], table[row][0]);
-                System.out.println("Delete: " + coinYear + " " + table[0][column]+ " " + table[row][0]);
-                System.out.println("After klick: ");
-                List<CoinEntity> tableOfYear = collectionDao.getMissingCoinsOfYear(coinYear);
-                for (CoinEntity coinEntity : tableOfYear) {
-                    System.out.println("Missing Coin: "+ coinEntity.getCoinLetter() + " " + coinEntity.getCoinValue() + " " + coinEntity.getCoinYear());
-                }
-                //TODO Problem in table ist noch alte wert
-                //            System.out.println("CoinValue: "+table[0][column]);
-                //            System.out.println("CoinLetter: "+table[row][0]);
-                //    collectionDao.foundCoinByID(buttonIDs[row][column]);
-                //    List<CoinEntity> coins = collectionDao.getMissingCoinsOfYear(coinYear);
-                //            System.out.println("Nach Delete: "+coins.size());
-            });
+            CoinEntity coinEntity = new CoinEntity();
+            coinEntity.setCoinValue(table[0][column]);
+            coinEntity.setCoinLetter(table[row][0]);
+            coinEntity.setCoinYear(coinYear);
+            if (!missing.contains(coinEntity)) {
+                missing.add(coinEntity);
+                view.setBackground(getDrawable(table_border_red));
+                // Background rote Umrandung mit Kreuz
+            } else { //missing.contains(coinEntity)
+                missing.remove(coinEntity);
+                view.setBackground(getDrawable(table_border_active));
+            }
+        } else { // not active
+            CoinEntity coinEntity = new CoinEntity();
+            coinEntity.setCoinYear(coinYear);
+            coinEntity.setCoinValue(table[0][column]);
+            coinEntity.setCoinLetter(table[row][0]);
+            if (!collect.contains(coinEntity)) {
+                collect.add(coinEntity);
+                view.setBackground(getDrawable(table_border_active_red));
+            } else {
+                collect.remove(coinEntity);
+                view.setBackground(getDrawable(table_border));
+            }
         }
-
     }
 
 

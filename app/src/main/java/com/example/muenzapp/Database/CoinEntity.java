@@ -1,8 +1,11 @@
 package com.example.muenzapp.Database;
 
+import androidx.annotation.Nullable;
 import androidx.room.*;
 
 import com.example.muenzapp.TableItem;
+
+import java.util.Objects;
 
 @Entity(tableName = "CoinEntity")
 public class CoinEntity {
@@ -14,8 +17,23 @@ public class CoinEntity {
     private TableItem coinValue;
     @ColumnInfo(name = "CoinLetter")
     private TableItem coinLetter;
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
 
-        // GETTER UND SETTER
+        CoinEntity otherCoin = (CoinEntity) obj;
+
+        return coinYear == otherCoin.coinYear &&
+                coinValue == otherCoin.coinValue &&
+                coinLetter == otherCoin.coinLetter;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(coinYear, coinValue, coinLetter);
+    }
+    // GETTER UND SETTER
 
     public int getId() {
         return id;
@@ -48,4 +66,5 @@ public class CoinEntity {
     public void setCoinLetter(TableItem coinLetter) {
         this.coinLetter = coinLetter;
     }
+
 }
