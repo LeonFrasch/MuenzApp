@@ -269,6 +269,7 @@ public class InternCoinTableActivity extends AppCompatActivity {
             table[row][column] = MISSING;
             InternCoinEntity coinEntity = new InternCoinEntity();
             //         System.out.println("value: " + table[0][column]);
+            coinEntity.setCoinCountry(coinCountry);
             coinEntity.setCoinValue(table[0][column]);
             //          System.out.println("Year: "+ tableYears[row - 1]);
             coinEntity.setCoinYear(Integer.parseInt(tableYears[row - 1]));
