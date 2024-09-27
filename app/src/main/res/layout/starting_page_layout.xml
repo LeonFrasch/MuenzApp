@@ -5,94 +5,141 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".StartingPageActivity"
-    android:background="@drawable/block_background_landscape">
+    tools:context=".StartingPageActivity">
+
     <Button
-        android:layout_width="96dp"
-        android:layout_height="96dp" android:background="@drawable/block_small_icon"
-        android:scaleType="centerCrop"
-        android:id="@+id/YearONE"
-        app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="48dp"
-        android:visibility="visible" android:layout_marginStart="72dp"/>
-    <Button
-        android:layout_width="96dp"
-        android:layout_height="96dp" android:background="@drawable/block_small_icon"
-        android:id="@+id/YearTWO"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="166dp" android:layout_marginStart="239dp"
-        android:visibility="visible" app:layout_constraintStart_toStartOf="parent"/>
-    <Button
-        android:layout_width="96dp"
-        android:layout_height="96dp" android:background="@drawable/block_small_icon"
-        android:id="@+id/YearTHREE"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="358dp" android:layout_marginTop="47dp"
-        android:visibility="visible" app:layout_constraintStart_toStartOf="parent"/>
-    <Button
-        android:layout_width="96dp"
-        android:layout_height="96dp" android:background="@drawable/block_small_icon"
         android:id="@+id/YearFOUR"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_marginStart="356dp"
+        android:layout_marginTop="772dp"
+        android:background="@drawable/block_small_icon"
         android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="860dp" app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="118dp"/>
+        app:layout_constraintTop_toTopOf="parent" />
+
     <Button
-        android:layout_width="96dp"
-        android:layout_height="96dp" android:background="@drawable/block_small_icon"
-        android:id="@+id/YearFIVE"
-        android:visibility="visible"
-        app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="24dp"
-        app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="237dp"/>
-    <Button
-        android:layout_width="96dp"
-        android:layout_height="96dp" android:background="@drawable/block_small_icon"
         android:id="@+id/YearSIX"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="309dp"
-        android:visibility="visible" android:layout_marginStart="215dp"/>
-    <Button
         android:layout_width="96dp"
-        android:layout_height="96dp" android:background="@drawable/block_small_icon"
-        android:id="@+id/YearSEVEN"
-        android:visibility="visible" app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="71dp" app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="549dp"/>
-    <Button
-        android:layout_width="96dp"
-        android:layout_height="96dp" android:background="@drawable/block_small_icon"
-        android:id="@+id/YearEIGHT"
+        android:layout_height="96dp"
+        android:layout_marginStart="112dp"
+        android:layout_marginTop="492dp"
+        android:background="@drawable/block_small_icon"
         android:visibility="visible"
-        app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="645dp"
-        app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="262dp"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <Button
+        android:id="@+id/YearONE"
         android:layout_width="96dp"
-        android:layout_height="96dp" android:background="@drawable/block_small_icon"
-        android:id="@+id/YearNINE"
-        android:visibility="visible" app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="332dp" app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="844dp"/>
+        android:layout_height="96dp"
+        android:layout_marginStart="304dp"
+        android:layout_marginTop="536dp"
+        android:background="@drawable/block_small_icon"
+        android:scaleType="centerCrop"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <Button
+        android:id="@+id/YearTHREE"
         android:layout_width="96dp"
-        android:layout_height="96dp" android:background="@drawable/block_small_icon"
+        android:layout_height="96dp"
+        android:layout_marginStart="184dp"
+        android:layout_marginTop="292dp"
+        android:background="@drawable/block_small_icon"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
         android:id="@+id/YearTEN"
-        android:visibility="visible" app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="332dp" app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="468dp"/>
-    <Button
         android:layout_width="96dp"
-        android:layout_height="96dp" android:background="@drawable/block_small_icon"
+        android:layout_height="96dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="376dp"
+        android:background="@drawable/block_small_icon"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/YearFIVE"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_marginStart="252dp"
+        android:layout_marginTop="412dp"
+        android:background="@drawable/block_small_icon"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/YearTWO"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_marginStart="168dp"
+        android:layout_marginTop="620dp"
+        android:background="@drawable/block_small_icon"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/YearSEVEN"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_marginStart="132dp"
+        android:layout_marginTop="772dp"
+        android:background="@drawable/block_small_icon"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/YearEIGHT"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_marginStart="236dp"
+        android:layout_marginTop="928dp"
+        android:background="@drawable/block_small_icon"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/YearNINE"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="164dp"
+        android:background="@drawable/block_small_icon"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
         android:id="@+id/YearELEVEN"
-        android:visibility="visible" app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="44dp" app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="712dp"/>
-    <Button
         android:layout_width="96dp"
-        android:layout_height="96dp" android:background="@drawable/block_small_icon"
+        android:layout_height="96dp"
+        android:layout_marginStart="332dp"
+        android:layout_marginTop="56dp"
+        android:background="@drawable/block_small_icon"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
         android:id="@+id/YearTWELVE"
-        android:visibility="visible" app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="192dp" app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="420dp"/>
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="732dp"
+        android:background="@drawable/block_small_icon"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:text="A"
         android:layout_width="24dp"

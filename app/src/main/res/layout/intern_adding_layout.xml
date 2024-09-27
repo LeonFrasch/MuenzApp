@@ -5,8 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".InternCoins.InternAddingActivity"
-    android:background="@drawable/block_background_landscape">
+    tools:context=".InternCoins.InternAddingActivity">
     <TextView
         android:text="TextView"
         android:layout_width="wrap_content"
@@ -15,15 +14,19 @@
         android:textSize="40sp"
         app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="44dp" android:layout_marginStart="36dp"/>
+
     <Button
-        android:text="Hinzufügen"
+        android:id="@+id/addToDatabase"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" android:id="@+id/addToDatabase"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="180dp"
         android:backgroundTint="@color/button_color"
+        android:text="Hinzufügen"
         android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="36dp" app:layout_constraintTop_toBottomOf="@+id/moneyText"
-        android:layout_marginTop="56dp"/>
+        app:layout_constraintTop_toBottomOf="@+id/moneyText" />
+
     <TextView
         android:text="Jahr"
         android:layout_width="wrap_content"
@@ -33,13 +36,18 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="56dp"
         app:layout_constraintBottom_toTopOf="@+id/moneyText" android:layout_marginBottom="48dp"/>
+
     <TextView
-        android:text="Cent Euro"
+        android:id="@+id/moneyText"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" android:id="@+id/moneyText" android:textColor="@color/black"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="180dp"
+        android:text="Cent / Euro"
+        android:textColor="@color/black"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="16dp" android:textSize="20sp" app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="180dp"/>
+        app:layout_constraintTop_toTopOf="parent" />
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -49,72 +57,95 @@
         android:textColor="@color/black" android:backgroundTint="@color/black"
         app:layout_constraintStart_toEndOf="@+id/yearText" android:layout_marginStart="28dp"
         app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="104dp"/>
+
     <ImageButton
-        android:layout_width="@dimen/text_width"
-        android:layout_height="@dimen/text_height" app:srcCompat="@mipmap/coin_one_foreground"
-        android:background="#00000000"
-        android:id="@+id/addButtonONE"
-        app:layout_constraintStart_toEndOf="@+id/moneyText"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="172dp"
-        android:layout_marginStart="24dp"
-        />
-    <ImageButton
-        android:layout_width="@dimen/text_width"
-        android:layout_height="@dimen/text_height" app:srcCompat="@mipmap/coin_two_foreground"
-        android:background="#00000000"
         android:id="@+id/addButtonTWO"
+        android:layout_width="@dimen/text_width"
+        android:layout_height="@dimen/text_height"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="220dp"
+        android:background="#00000000"
         app:layout_constraintStart_toEndOf="@+id/addButtonONE"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="172dp"
-        android:layout_marginStart="24dp"/>
+        app:srcCompat="@mipmap/coin_two_foreground" />
+
     <ImageButton
-        android:layout_width="@dimen/text_width"
-        android:layout_height="@dimen/text_height" app:srcCompat="@mipmap/coin_five_foreground"
-        android:background="#00000000"
-        android:id="@+id/addButtonFIVE"
-        app:layout_constraintStart_toEndOf="@+id/addButtonTWO"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="172dp"
-        android:layout_marginStart="24dp"/>
-    <ImageButton
-        android:layout_width="@dimen/text_width"
-        android:layout_height="@dimen/text_height" app:srcCompat="@mipmap/coin_ten_foreground"
-        android:background="#00000000"
-        android:id="@+id/addButtonTEN"
-        app:layout_constraintStart_toEndOf="@+id/addButtonFIVE" app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="172dp"
-        android:layout_marginStart="24dp"/>
-    <ImageButton
-        android:layout_width="@dimen/text_width"
-        android:layout_height="@dimen/text_height" app:srcCompat="@mipmap/coin_twenty_foreground"
-        android:background="#00000000"
         android:id="@+id/addButtonTWENTY"
+        android:layout_width="@dimen/text_width"
+        android:layout_height="@dimen/text_height"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="220dp"
+        android:background="#00000000"
         app:layout_constraintStart_toEndOf="@+id/addButtonTEN"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="172dp"
-        android:layout_marginStart="24dp"/>
+        app:srcCompat="@mipmap/coin_twenty_foreground" />
+
     <ImageButton
+        android:id="@+id/addButtonONE"
         android:layout_width="@dimen/text_width"
-        android:layout_height="@dimen/text_height" app:srcCompat="@mipmap/coin_fifty_foreground"
+        android:layout_height="@dimen/text_height"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="220dp"
         android:background="#00000000"
-        android:id="@+id/addButtonFIFTY"
-        app:layout_constraintStart_toEndOf="@+id/addButtonTWENTY" android:layout_marginStart="24dp"
-        app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="172dp"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@mipmap/coin_one_foreground" />
+
     <ImageButton
+        android:id="@+id/addButtonTEN"
         android:layout_width="@dimen/text_width"
-        android:layout_height="@dimen/text_height" app:srcCompat="@mipmap/coin_i_foreground"
+        android:layout_height="@dimen/text_height"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="220dp"
         android:background="#00000000"
-        android:id="@+id/addButtonI"
-        app:layout_constraintStart_toEndOf="@+id/addButtonFIFTY" android:layout_marginStart="24dp"
-        app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="172dp"/>
+        app:layout_constraintStart_toEndOf="@+id/addButtonFIVE"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@mipmap/coin_ten_foreground" />
+
     <ImageButton
-        android:layout_width="@dimen/text_width"
-        android:layout_height="@dimen/text_height" app:srcCompat="@mipmap/coin_ii_foreground"
-        android:background="#00000000"
         android:id="@+id/addButtonII"
-        app:layout_constraintStart_toEndOf="@+id/addButtonI" android:layout_marginStart="24dp"
-        app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="172dp"/>
+        android:layout_width="@dimen/text_width"
+        android:layout_height="@dimen/text_height"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:background="#00000000"
+        app:layout_constraintStart_toEndOf="@+id/addButtonI"
+        app:layout_constraintTop_toBottomOf="@+id/addButtonTWO"
+        app:srcCompat="@mipmap/coin_ii_foreground" />
+
+    <ImageButton
+        android:id="@+id/addButtonFIFTY"
+        android:layout_width="@dimen/text_width"
+        android:layout_height="@dimen/text_height"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="220dp"
+        android:background="#00000000"
+        app:layout_constraintStart_toEndOf="@+id/addButtonTWENTY"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@mipmap/coin_fifty_foreground" />
+
+    <ImageButton
+        android:id="@+id/addButtonI"
+        android:layout_width="@dimen/text_width"
+        android:layout_height="@dimen/text_height"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:background="#00000000"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/addButtonONE"
+        app:srcCompat="@mipmap/coin_i_foreground" />
+
+    <ImageButton
+        android:id="@+id/addButtonFIVE"
+        android:layout_width="@dimen/text_width"
+        android:layout_height="@dimen/text_height"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="220dp"
+        android:background="#00000000"
+        app:layout_constraintStart_toEndOf="@+id/addButtonTWO"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@mipmap/coin_five_foreground" />
+
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" app:srcCompat="@android:drawable/btn_dialog"
