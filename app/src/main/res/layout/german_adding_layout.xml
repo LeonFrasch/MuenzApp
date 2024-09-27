@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".GermanCoins.GermanAddingActivity"
     tools:layout_editor_absoluteX="0dp"
-    tools:layout_editor_absoluteY="68dp">
+    tools:layout_editor_absoluteY="68dp"
+    android:background="@color/white">
 
     <Button
         android:id="@+id/addToDatabase"
