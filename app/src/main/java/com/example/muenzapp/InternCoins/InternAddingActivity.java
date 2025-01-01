@@ -1,35 +1,48 @@
 package com.example.muenzapp.InternCoins;
 
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.example.muenzapp.R;
 import com.example.muenzapp.Database.*;
 import com.example.muenzapp.TableItem;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.Executors;
 
+import static android.content.ContentValues.TAG;
 import static android.graphics.Color.TRANSPARENT;
 import static com.example.muenzapp.R.*;
 import static com.example.muenzapp.StaticHelper.*;
 
 public class InternAddingActivity extends AppCompatActivity {
-
     final int[] buttonIDs = {id.addButtonONE, id.addButtonTWO, id.addButtonFIVE, id.addButtonTEN, id.addButtonTWENTY, id.addButtonFIFTY, id.addButtonI, id.addButtonII};
     int selectedCoinYear;
     EditText coinYear;
     Button addToDatabase;
     List<TableItem> selectedValues;
-    CoinDatabase coinDatabase;
-    CollectionDao collectionDao;
+//    CoinDatabase coinDatabase;
+//    CollectionDao collectionDao;
     TableItem selectedCoinCountry;
+    FirebaseFirestore db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,8 +59,9 @@ public class InternAddingActivity extends AppCompatActivity {
             finish();
         });
 
-        coinDatabase = DatabaseClient.getInstance(this);
-        collectionDao = coinDatabase.collectionDao();
+    //    coinDatabase = DatabaseClient.getInstance(this);
+    //    collectionDao = coinDatabase.collectionDao();
+        db = FirebaseFirestore.getInstance();
 
         selectedValues = new ArrayList<>();
         selectedCoinYear = Integer.MIN_VALUE;
@@ -67,8 +81,31 @@ public class InternAddingActivity extends AppCompatActivity {
             }
             Executors.newSingleThreadExecutor().execute(() -> {
                 if (selectedValues.size() > 0 && selectedCoinYear >= 0) {
-                    List<InternCoinEntity> coinsOfYear = collectionDao.getMissingInternationalCoinsOfYearAndCountry(selectedCoinCountry, selectedCoinYear);
-                    for (TableItem selectedValue : selectedValues) {
+                    db.collection("internCoin").document(selectedCoinCountry.toString()).get().addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            for (TableItem selectedValue : selectedValues) {
+                                if (document != null && document.getData().containsKey("coinYear") && document.getData().containsValue(selectedCoinYear) && document.getData().containsKey("coinValue") && document.getData().containsValue(selectedValue)) {
+                                    continue;
+                                }
+                            //    InternCoinEntity entity = new InternCoinEntity();
+                            //    entity.setCoinYear(selectedCoinYear);
+                            //    entity.setCoinValue(selectedValue);
+                            //    entity.setCoinCountry(selectedCoinCountry);
+                            //    Map<String, Object> coin = new HashMap<>();
+                            //    coin.put(selectedCoinCountry.toString(), entity);
+
+                                Map<String, Object> coin = new HashMap<>();
+                                coin.put("coinYear", selectedCoinYear);
+                                coin.put("coinValue", selectedValue);
+                                db.collection("internCoin").document(selectedCoinCountry.toString())
+                                        .set(coin, SetOptions.merge())
+                                        .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully written!"))
+                                        .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e));
+                            }
+                        }
+                    });
+                /*    for (TableItem selectedValue : selectedValues) {
                         InternCoinEntity entity = new InternCoinEntity();
                         entity.setCoinYear(selectedCoinYear);
                         entity.setCoinValue(selectedValue);
@@ -76,7 +113,7 @@ public class InternAddingActivity extends AppCompatActivity {
                         if (!coinsOfYear.contains(entity)) { // gar nicht notwendig, da beim Löschen immer alle mit Value und Letter gelöscht werden. Aber Vorteil: weniger gespeichert = nicht doppelt gespeichert
                             collectionDao.insertInternationalCoin(entity);
                         }
-                    }
+                    } */
                     runOnUiThread(() -> {
                         for (int id : buttonIDs) {
                             // nach hinzufügen gedrückt müssen alle Knöpfe wieder resettet werden, also nicht nur umrahmung weg, sondern auch, dass sie geklickt wurden:

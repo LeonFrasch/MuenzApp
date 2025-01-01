@@ -11,9 +11,15 @@ import android.os.Bundle;
 
 import com.example.muenzapp.R;
 import com.example.muenzapp.TableItem;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.Executors;
 
 import static android.graphics.Color.TRANSPARENT;
@@ -25,8 +31,9 @@ public class GermanAddingActivity extends AppCompatActivity {
     Button addToDatabase;
     List<TableItem> selectedLetters;
     List<TableItem> selectedValues;
-    CoinDatabase coinDatabase;
-    CollectionDao collectionDao;
+//    CoinDatabase coinDatabase;
+//    CollectionDao collectionDao;
+    FirebaseFirestore db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,8 +45,9 @@ public class GermanAddingActivity extends AppCompatActivity {
             finish();
         });
 
-        coinDatabase = DatabaseClient.getInstance(this);
-        collectionDao = coinDatabase.collectionDao();
+    //    coinDatabase = DatabaseClient.getInstance(this);
+    //    collectionDao = coinDatabase.collectionDao();
+        db = FirebaseFirestore.getInstance();
 
         selectedLetters = new ArrayList<>();
         selectedValues = new ArrayList<>();
@@ -60,7 +68,25 @@ public class GermanAddingActivity extends AppCompatActivity {
             }
             Executors.newSingleThreadExecutor().execute(() -> {
                 if (selectedLetters.size() > 0 && selectedValues.size() > 0 && selectedCoinYear >= 0) {
-                    List<CoinEntity> coinsOfYear = collectionDao.getMissingCoinsOfYear(selectedCoinYear);
+                    db.collection("germanCoin").document("D").get().addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            for (TableItem selectedLetter : selectedLetters) {
+                                for (TableItem selectedValue : selectedValues) {
+                                    if (Objects.requireNonNull(document.getData()).containsKey("coinYear") && document.getData().containsValue(selectedCoinYear) && document.getData().containsKey("coinValue") && document.getData().containsValue(selectedValue) && document.getData().containsKey("coinLetter") && document.getData().containsValue(selectedLetter)) {
+                                        continue;
+                                    }
+                                    Map<String, Object> coin = new HashMap<>();
+                                    coin.put("coinYear", selectedCoinYear);
+                                    coin.put("coinLetter", selectedLetter);
+                                    coin.put("coinValue", selectedValue);
+                                    db.collection("germanCoin").document("D").set(coin, SetOptions.merge());
+                                }
+                            }
+                        }
+                    });
+
+            /*        List<CoinEntity> coinsOfYear = collectionDao.getMissingCoinsOfYear(selectedCoinYear);
                     for (TableItem selectedLetter : selectedLetters) {
                         for (TableItem selectedValue : selectedValues) {
                             CoinEntity entity = new CoinEntity();
@@ -71,7 +97,7 @@ public class GermanAddingActivity extends AppCompatActivity {
                                 collectionDao.insertCoin(entity);
                             }
                         }
-                    }
+                    } */
                     runOnUiThread(() -> {
                         for (int id : buttonIDs) {
                             // nach hinzufügen gedrückt müssen alle Knöpfe wieder resettet werden, also nicht nur umrahmung weg, sondern auch, dass sie geklickt wurden:

@@ -10,6 +10,10 @@ import com.example.muenzapp.R;
 import com.example.muenzapp.StartingPageActivity;
 import com.example.muenzapp.Database.*;
 import com.example.muenzapp.TableItem;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
+
 import java.util.*;
 import java.util.concurrent.Executors;
 
@@ -54,6 +58,7 @@ public class InternCoinTableActivity extends AppCompatActivity {
     private CoinDatabase coinDatabase;
     private CollectionDao collectionDao;
     private TableItem coinCountry;
+    private FirebaseFirestore db;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -130,6 +135,17 @@ public class InternCoinTableActivity extends AppCompatActivity {
         });
      */
         Executors.newSingleThreadExecutor().execute(() -> {
+        /*    db.collection("internCoin").document(coinCountry.toString()).get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    Map<String, Object> coins = document.getData();
+
+
+                }
+            });*/
+
+
+
             List<Integer> coinYears = collectionDao.getDifferentYearsInternational(coinCountry);
             Collections.sort(coinYears);
             tableYears = new String[coinYears.size()];
