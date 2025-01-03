@@ -1,5 +1,7 @@
 package com.example.muenzapp.GermanCoins;
 
+import static com.example.muenzapp.StaticHelper.stringToTableItem;
+
 import com.example.muenzapp.Database.*;
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -9,18 +11,23 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import com.example.muenzapp.R;
 import com.example.muenzapp.StartingPageActivity;
+import com.example.muenzapp.TableItem;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 
 public class GermanOverviewActivity extends AppCompatActivity {
     int[] imageButtonIDs = {R.id.YearOne, R.id.YearTwo, R.id.YearThree, R.id.YearFour, R.id.YearFive, R.id.YearSix, R.id.YearEight, R.id.YearSeven};
     int[] years = {0, 0, 0, 0, 0, 0, 0, 0};
     int[] textIDs = {R.id.yearONEText, R.id.yearTWOText, R.id.yearTHREEText, R.id.yearFOURText, R.id.yearFIVEText, R.id.yearSIXText, R.id.yearEIGHTText, R.id.yearSEVENText};
-    CoinDatabase coinDatabase;
-    CollectionDao collectionDao;
+    //CoinDatabase coinDatabase;
+    //CollectionDao collectionDao;
     List<Integer> allYears = new ArrayList<>();
+    FirebaseFirestore db;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -28,8 +35,9 @@ public class GermanOverviewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.german_overview_layout);
 
-        coinDatabase = DatabaseClient.getInstance(this);
-        collectionDao = coinDatabase.collectionDao();
+   //     coinDatabase = DatabaseClient.getInstance(this);
+   //     collectionDao = coinDatabase.collectionDao();
+        db = FirebaseFirestore.getInstance();
 
         findViewById(R.id.closeCoinYearAdding2).setOnClickListener(v -> {
             Intent intent = new Intent(this, StartingPageActivity.class);
@@ -43,21 +51,31 @@ public class GermanOverviewActivity extends AppCompatActivity {
         Executors.newSingleThreadExecutor().execute(new Runnable() {
             @Override
             public void run() {
-                allYears = collectionDao.getDifferentYears();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        for (int i = 0; i < allYears.size(); i++) {
-                            if (i == 8) {
-                                break;
+                db.collection("D").get().addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
+                            Map<String, Object> data = document.getData();
+                            Long coinYearLong = (Long) data.get("coinYear");
+                            int coinYear = (int) coinYearLong.longValue();
+                            if (!allYears.contains(coinYear)) {
+                                allYears.add(coinYear);
                             }
-                            findViewById(imageButtonIDs[i]).setVisibility(View.VISIBLE);
-                            years[i] = allYears.get(i);
-                            findViewById(textIDs[i]).setVisibility(View.VISIBLE);
-
-                            String year = allYears.get(i) < 10 ? "0" + allYears.get(i) : allYears.get(i) + "";
-                            ((TextView)findViewById(textIDs[i])).setText(year);
                         }
+                        // allYears = collectionDao.getDifferentYears();
+
+                        runOnUiThread(() -> {
+                            for (int i = 0; i < allYears.size(); i++) {
+                                if (i == 8) {
+                                    break;
+                                }
+                                findViewById(imageButtonIDs[i]).setVisibility(View.VISIBLE);
+                                years[i] = allYears.get(i);
+                                findViewById(textIDs[i]).setVisibility(View.VISIBLE);
+
+                                String year = allYears.get(i) < 10 ? "0" + allYears.get(i) : allYears.get(i) + "";
+                                ((TextView)findViewById(textIDs[i])).setText(year);
+                            }
+                        });
                     }
                 });
             }

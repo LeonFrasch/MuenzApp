@@ -58,6 +58,12 @@ public class StaticHelper {
             case "FIFTY": return FIFTY;
             case "I": return I;
             case "II": return II;
+
+            case "A": return A;
+            case "D": return D;
+            case "F": return F;
+            case "G": return G;
+            case "J": return J;
         }
         return null;
     }
