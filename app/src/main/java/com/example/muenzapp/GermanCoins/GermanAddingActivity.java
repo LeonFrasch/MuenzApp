@@ -2,6 +2,7 @@ package com.example.muenzapp.GermanCoins;
 
 import com.example.muenzapp.Database.*;
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,6 +23,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.Executors;
 
+import static android.content.ContentValues.TAG;
 import static android.graphics.Color.TRANSPARENT;
 
 public class GermanAddingActivity extends AppCompatActivity {
@@ -68,36 +70,27 @@ public class GermanAddingActivity extends AppCompatActivity {
             }
             Executors.newSingleThreadExecutor().execute(() -> {
                 if (selectedLetters.size() > 0 && selectedValues.size() > 0 && selectedCoinYear >= 0) {
-                    db.collection("germanCoin").document("D").get().addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            for (TableItem selectedLetter : selectedLetters) {
-                                for (TableItem selectedValue : selectedValues) {
-                                    if (Objects.requireNonNull(document.getData()).containsKey("coinYear") && document.getData().containsValue(selectedCoinYear) && document.getData().containsKey("coinValue") && document.getData().containsValue(selectedValue) && document.getData().containsKey("coinLetter") && document.getData().containsValue(selectedLetter)) {
-                                        continue;
-                                    }
-                                    Map<String, Object> coin = new HashMap<>();
-                                    coin.put("coinYear", selectedCoinYear);
-                                    coin.put("coinLetter", selectedLetter);
-                                    coin.put("coinValue", selectedValue);
-                                    db.collection("germanCoin").document("D").set(coin, SetOptions.merge());
-                                }
-                            }
-                        }
-                    });
-
-            /*        List<CoinEntity> coinsOfYear = collectionDao.getMissingCoinsOfYear(selectedCoinYear);
+                 //   List<CoinEntity> coinsOfYear = collectionDao.getMissingCoinsOfYear(selectedCoinYear);
                     for (TableItem selectedLetter : selectedLetters) {
                         for (TableItem selectedValue : selectedValues) {
-                            CoinEntity entity = new CoinEntity();
-                            entity.setCoinYear(selectedCoinYear);
-                            entity.setCoinLetter(selectedLetter);
-                            entity.setCoinValue(selectedValue);
-                            if (!coinsOfYear.contains(entity)) { // gar nicht notwendig, da beim Löschen immer alle mit Value und Letter gelöscht werden. Aber Vorteil: weniger gespeichert = nicht doppelt gespeichert
-                                collectionDao.insertCoin(entity);
-                            }
+                            Map<String, Object> coin = new HashMap<>();
+                            coin.put("coinYear", selectedCoinYear);
+                            coin.put("coinValue", selectedValue);
+                            coin.put("coinLetter", selectedLetter);
+                            String filename = selectedCoinYear + ":" + selectedValue + ":" + selectedLetter;
+                            db.collection("D").document(filename)
+                                    .set(coin, SetOptions.merge())
+                                    .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully written!"))
+                                    .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e));
+                        //    CoinEntity entity = new CoinEntity();
+                        //    entity.setCoinYear(selectedCoinYear);
+                        //    entity.setCoinLetter(selectedLetter);
+                        //    entity.setCoinValue(selectedValue);
+                        //    if (!coinsOfYear.contains(entity)) { // gar nicht notwendig, da beim Löschen immer alle mit Value und Letter gelöscht werden. Aber Vorteil: weniger gespeichert = nicht doppelt gespeichert
+                        //        collectionDao.insertCoin(entity);
+                        //    }
                         }
-                    } */
+                    }
                     runOnUiThread(() -> {
                         for (int id : buttonIDs) {
                             // nach hinzufügen gedrückt müssen alle Knöpfe wieder resettet werden, also nicht nur umrahmung weg, sondern auch, dass sie geklickt wurden:

@@ -48,4 +48,17 @@ public class StaticHelper {
         }
         return null;
     }
+    public static TableItem stringToTableItem(String stringOfTableItem) {
+        switch (stringOfTableItem) {
+            case "ONE": return ONE;
+            case "TWO": return TWO;
+            case "FIVE": return FIVE;
+            case "TEN": return TEN;
+            case "TWENTY": return TWENTY;
+            case "FIFTY": return FIFTY;
+            case "I": return I;
+            case "II": return II;
+        }
+        return null;
+    }
 }

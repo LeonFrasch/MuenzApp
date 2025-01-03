@@ -10,13 +10,16 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.Toast;
 
+import com.example.muenzapp.LoginActivity;
 import com.example.muenzapp.R;
 import com.example.muenzapp.Database.*;
 import com.example.muenzapp.TableItem;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
@@ -81,30 +84,16 @@ public class InternAddingActivity extends AppCompatActivity {
             }
             Executors.newSingleThreadExecutor().execute(() -> {
                 if (selectedValues.size() > 0 && selectedCoinYear >= 0) {
-                    db.collection("internCoin").document(selectedCoinCountry.toString()).get().addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            for (TableItem selectedValue : selectedValues) {
-                                if (document != null && document.getData().containsKey("coinYear") && document.getData().containsValue(selectedCoinYear) && document.getData().containsKey("coinValue") && document.getData().containsValue(selectedValue)) {
-                                    continue;
-                                }
-                            //    InternCoinEntity entity = new InternCoinEntity();
-                            //    entity.setCoinYear(selectedCoinYear);
-                            //    entity.setCoinValue(selectedValue);
-                            //    entity.setCoinCountry(selectedCoinCountry);
-                            //    Map<String, Object> coin = new HashMap<>();
-                            //    coin.put(selectedCoinCountry.toString(), entity);
-
-                                Map<String, Object> coin = new HashMap<>();
-                                coin.put("coinYear", selectedCoinYear);
-                                coin.put("coinValue", selectedValue);
-                                db.collection("internCoin").document(selectedCoinCountry.toString())
-                                        .set(coin, SetOptions.merge())
-                                        .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully written!"))
-                                        .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e));
-                            }
-                        }
-                    });
+                    for (TableItem selectedValue : selectedValues) {
+                        Map<String, Object> coin = new HashMap<>();
+                        coin.put("coinYear", selectedCoinYear);
+                        coin.put("coinValue", selectedValue);
+                        String filename = selectedCoinYear + ":" + selectedValue;
+                        db.collection(selectedCoinCountry.toString()).document(filename)
+                                .set(coin, SetOptions.merge())
+                                .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully written!"))
+                                .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e));
+                    }
                 /*    for (TableItem selectedValue : selectedValues) {
                         InternCoinEntity entity = new InternCoinEntity();
                         entity.setCoinYear(selectedCoinYear);
@@ -124,6 +113,7 @@ public class InternAddingActivity extends AppCompatActivity {
                     });
                     selectedValues = new ArrayList<>();
                     selectedCoinYear = Integer.MIN_VALUE;
+                   // Toast.makeText(this, "Erfolgreich hinzugefügt!", Toast.LENGTH_SHORT).show();
                 } else {
                     // wenn nicht genug ausgewählt
                 }

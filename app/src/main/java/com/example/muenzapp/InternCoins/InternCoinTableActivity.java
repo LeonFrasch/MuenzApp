@@ -1,17 +1,25 @@
 package com.example.muenzapp.InternCoins;
 
+import static android.content.ContentValues.TAG;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import com.example.muenzapp.R;
 import com.example.muenzapp.StartingPageActivity;
 import com.example.muenzapp.Database.*;
 import com.example.muenzapp.TableItem;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 
 import java.util.*;
@@ -55,8 +63,8 @@ public class InternCoinTableActivity extends AppCompatActivity {
             {R.id.Item240, R.id.Item241, R.id.Item242, R.id.Item243, R.id.Item244, R.id.Item245, R.id.Item246, R.id.Item247, R.id.Item248},
             {R.id.Item250, R.id.Item251, R.id.Item252, R.id.Item253, R.id.Item254, R.id.Item255, R.id.Item256, R.id.Item257, R.id.Item258}}; //Alle Items der Tabelle: alle mit 0 sind TextViews, sonst Buttons
     // TODO hier erweitern
-    private CoinDatabase coinDatabase;
-    private CollectionDao collectionDao;
+    //private CoinDatabase coinDatabase;
+    //private CollectionDao collectionDao;
     private TableItem coinCountry;
     private FirebaseFirestore db;
 
@@ -74,10 +82,23 @@ public class InternCoinTableActivity extends AppCompatActivity {
 
             Executors.newSingleThreadExecutor().execute(() -> {
                 for (InternCoinEntity internCoinEntity : missing) {
-                    collectionDao.insertInternationalCoin(internCoinEntity);
+                //    collectionDao.insertInternationalCoin(internCoinEntity);
+                    Map<String, Object> coin = new HashMap<>();
+                    coin.put("coinYear", internCoinEntity.getCoinYear());
+                    coin.put("coinValue", internCoinEntity.getCoinValue());
+                    String filename = internCoinEntity.getCoinYear() + ":" + internCoinEntity.getCoinValue();
+                    db.collection(internCoinEntity.getCoinCountry().toString()).document(filename)
+                            .set(coin, SetOptions.merge())
+                            .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully written!"))
+                            .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e));
                 }
                 for (InternCoinEntity internCoinEntity : collect) {
-                    collectionDao.foundInternationalCoin(internCoinEntity.getCoinCountry(), internCoinEntity.getCoinYear(), internCoinEntity.getCoinValue());
+                //    collectionDao.foundInternationalCoin(internCoinEntity.getCoinCountry(), internCoinEntity.getCoinYear(), internCoinEntity.getCoinValue());
+                    String filename = internCoinEntity.getCoinYear() + ":" + internCoinEntity.getCoinValue();
+                    db.collection(internCoinEntity.getCoinCountry().toString()).document(filename)
+                            .delete()
+                            .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully written!"))
+                            .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e));
                 }
             });
 
@@ -125,8 +146,9 @@ public class InternCoinTableActivity extends AppCompatActivity {
         //TODO hier erweitern
 
         // Daten aus Datenbank verwenden:
-        coinDatabase = DatabaseClient.getInstance(this);
-        collectionDao = coinDatabase.collectionDao();
+        //coinDatabase = DatabaseClient.getInstance(this);
+        //collectionDao = coinDatabase.collectionDao();
+        db = FirebaseFirestore.getInstance();
     /*    Executors.newSingleThreadExecutor().execute(new Runnable() {
             @Override
             public void run() {
@@ -143,136 +165,160 @@ public class InternCoinTableActivity extends AppCompatActivity {
 
                 }
             });*/
+            List<Integer> coinYears = new ArrayList<>(); // list of all years with missing coins in db
 
-
-
-            List<Integer> coinYears = collectionDao.getDifferentYearsInternational(coinCountry);
-            Collections.sort(coinYears);
-            tableYears = new String[coinYears.size()];
-            int pointer = 0;
-            for (int year : coinYears) { // eventuell bereits hier in der Tabelle das Jahr setzen
-                List<InternCoinEntity> tableOfYear = collectionDao.getMissingInternationalCoinsOfYearAndCountry(coinCountry, year);
-                for (InternCoinEntity coinEntity : tableOfYear) {
-                    TableItem coinValue = coinEntity.getCoinValue();
-                    int valuePlace = -100;
-                    switch (coinValue) {
-                        case ONE: {
-                            valuePlace = 1;
-                            break;
+            Map<Integer, List<InternCoinEntity>> coinMap = new HashMap<>(); // map with missing year and corresponding missing values
+            db.collection(coinCountry.toString()).get().addOnSuccessListener(queryDocumentSnapshots -> {
+                if (!queryDocumentSnapshots.isEmpty()) {
+                    for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
+                        Map<String, Object> data = document.getData();
+                        TableItem coinValue = stringToTableItem(data.get("coinValue").toString());
+                        Long coinYearLong = (Long) data.get("coinYear");
+                        int coinYear = (int) coinYearLong.longValue();
+                        if (!coinYears.contains(coinYear)) {
+                            coinYears.add(coinYear);
                         }
-                        case TWO: {
-                            valuePlace = 2;
-                            break;
+                        InternCoinEntity entity = new InternCoinEntity();
+                        entity.setCoinCountry(coinCountry);
+                        entity.setCoinValue(coinValue);
+                        entity.setCoinYear(coinYear);
+                        List<InternCoinEntity> store = new ArrayList<>();
+                        if (coinMap.containsKey(coinYear)) {
+                            store = coinMap.remove(coinYear); // and f. line for correctly editing the list
                         }
-                        case FIVE: {
-                            valuePlace = 3;
-                            break;
-                        }
-                        case TEN: {
-                            valuePlace = 4;
-                            break;
-                        }
-                        case TWENTY: {
-                            valuePlace = 5;
-                            break;
-                        }
-                        case FIFTY: {
-                            valuePlace = 6;
-                            break;
-                        }
-                        case I: {
-                            valuePlace = 7;
-                            break;
-                        }
-                        case II: {
-                            valuePlace = 8;
-                            break;
-                        }
-                    } // setzt valuePlace
-                    if (pointer + 1 == 26) break; //TODO hier erweitern
-                    table[pointer + 1][valuePlace] = MISSING;
-                    findViewById(buttonIDs[pointer][valuePlace]).setBackground(getDrawable(table_border));
-                }
-                tableYears[pointer++] = year < 10 ? "0"+ year : year + "";
-            }
-            //        for (TableItem[] tableItems : table) {
-            //            System.out.println(Arrays.toString(tableItems));
-            //        }
-            // Unwichtige Zeilen und Spalten entfernen
-            Set<Integer> rowWithMissing = new HashSet<>();
-            Set<Integer> columnWithMissing = new HashSet<>();
-            for (int m = 1; m < table.length; m++) {
-                for (int n = 1; n < table[1].length; n++) {
-                    if (table[m][n] == MISSING) {
-                        rowWithMissing.add(m);
-                        columnWithMissing.add(n);
+                        store.add(entity);
+                        coinMap.put(coinYear, store);
                     }
                 }
-            }
-            rowWithMissing = new HashSet<>(rowWithMissing);
-            columnWithMissing = new HashSet<>(columnWithMissing);
-
-            //        System.out.println("Reihe mit Missing: "+ Arrays.toString(rowWithMissing.toArray()));
-            //        System.out.println("Zeile mit Missing: "+ Arrays.toString(columnWithMissing.toArray()));
-            int pointerRow = 1;
-            int pointerColumn = 1;
-            for (int row : rowWithMissing) {
-                ((TextView)findViewById(buttonIDs[pointerRow][0])).setText(tableYears[row - 1] + "");
-                //            System.out.println("Buchstabe zu Platzieren: " + table[row][0]+" at Place in Array ["+pointerRow+"][0]");
-                //        table[pointerRow][0] = table[row][0]; // TODO muss noch angepasst werden, da die Jahreszahl nicht als Item vorhanden ist Nein, da später nicht verewendet, nur mit tableYears[]
-                for (int column : columnWithMissing) {
-                    if (pointerRow == 1) {
-                        ((TextView)findViewById(buttonIDs[0][pointerColumn])).setText(findValueString(table[0][column]));
-                        //                    System.out.println("Zahl zu Platzieren: "+table[0][column]+" at Place in Array [0]["+pointerColumn+"]");
-                        table[0][pointerColumn] = table[0][column];
+                Collections.sort(coinYears);
+                tableYears = new String[coinYears.size()];
+                int pointer = 0;
+                for (int year : coinYears) { // eventuell bereits hier in der Tabelle das Jahr setzen
+                    //    List<InternCoinEntity> tableOfYear = collectionDao.getMissingInternationalCoinsOfYearAndCountry(coinCountry, year);
+                    for (InternCoinEntity coinEntity : coinMap.get(year)) {
+                        TableItem coinValue = coinEntity.getCoinValue();
+                        int valuePlace = -100;
+                        switch (coinValue) {
+                            case ONE: {
+                                valuePlace = 1;
+                                break;
+                            }
+                            case TWO: {
+                                valuePlace = 2;
+                                break;
+                            }
+                            case FIVE: {
+                                valuePlace = 3;
+                                break;
+                            }
+                            case TEN: {
+                                valuePlace = 4;
+                                break;
+                            }
+                            case TWENTY: {
+                                valuePlace = 5;
+                                break;
+                            }
+                            case FIFTY: {
+                                valuePlace = 6;
+                                break;
+                            }
+                            case I: {
+                                valuePlace = 7;
+                                break;
+                            }
+                            case II: {
+                                valuePlace = 8;
+                                break;
+                            }
+                        } // setzt valuePlace
+                        if (pointer + 1 == 26) break; //TODO hier erweitern
+                        table[pointer + 1][valuePlace] = MISSING;
+                        findViewById(buttonIDs[pointer][valuePlace]).setBackground(getDrawable(table_border));
                     }
-                    if (table[row][column] == MISSING) {
-                        findViewById(buttonIDs[pointerRow][pointerColumn]).setBackground(getDrawable(table_border));
-                        table[pointerRow][pointerColumn] = MISSING;
-                        //                    System.out.println("log table at [" + row +"]["+column+"] as" + " Missing and Place in Array ["+pointerRow+"]["+pointerColumn+"]");
-                    } else {
-                        findViewById(buttonIDs[pointerRow][pointerColumn]).setBackground(getDrawable(R.drawable.table_border_active));
-                        table[pointerRow][pointerColumn] = COLLECTED;
-                        //                    System.out.println("log table at [" + row +"]["+column+"] as Collected " + "and Place in Array ["+pointerRow+"]["+pointerColumn+"]");
-                    }
-                    pointerColumn++;
+                    tableYears[pointer++] = year < 10 ? "0"+ year : year + "";
                 }
-                pointerRow++;
-                pointerColumn = 1;
-            }
-
-
-            //    for (TableItem[] tableItems : table) { // for debugging
-            //        System.out.println(Arrays.toString(tableItems));
-            //        }
-
-            // andere Buttons ausblenden
-            int lastRow = table.length - 1;
-            int lastColumn = table[1].length - 1;
-            for (int row = 1; row < table.length; row++) {
-                if (!rowWithMissing.contains(row)) {
-                    for (int k = 0; k < table[1].length; k++) {
-                        findViewById(buttonIDs[lastRow][k]).setVisibility(View.INVISIBLE);
-                        //                    System.out.println("Zeile zu Entfernen: "+ table[lastRow][k]+" at Place in Array ["+lastRow+"]["+k+"]");
+                //        for (TableItem[] tableItems : table) {
+                //            System.out.println(Arrays.toString(tableItems));
+                //        }
+                // Unwichtige Zeilen und Spalten entfernen
+                Set<Integer> rowWithMissing = new HashSet<>();
+                Set<Integer> columnWithMissing = new HashSet<>();
+                for (int m = 1; m < table.length; m++) {
+                    for (int n = 1; n < table[1].length; n++) {
+                        if (table[m][n] == MISSING) {
+                            rowWithMissing.add(m);
+                            columnWithMissing.add(n);
+                        }
                     }
-                    lastRow--;
                 }
-            }
-            for (int column = 1; column < table[1].length; column++) {
-                if (!columnWithMissing.contains(column)) {
-                    for (int k = 0; k < table.length; k++) {
-                        findViewById(buttonIDs[k][lastColumn]).setVisibility(View.INVISIBLE);
-                        //                System.out.println("Spalte zu Entfernen: "+ table[k][lastColumn]+" at Place in Array ["+k+"]["+lastColumn+"]");
+                rowWithMissing = new HashSet<>(rowWithMissing);
+                columnWithMissing = new HashSet<>(columnWithMissing);
+
+                //        System.out.println("Reihe mit Missing: "+ Arrays.toString(rowWithMissing.toArray()));
+                //        System.out.println("Zeile mit Missing: "+ Arrays.toString(columnWithMissing.toArray()));
+                int pointerRow = 1;
+                int pointerColumn = 1;
+                for (int row : rowWithMissing) {
+                    ((TextView)findViewById(buttonIDs[pointerRow][0])).setText(tableYears[row - 1] + "");
+                    //            System.out.println("Buchstabe zu Platzieren: " + table[row][0]+" at Place in Array ["+pointerRow+"][0]");
+                    //        table[pointerRow][0] = table[row][0]; // TODO muss noch angepasst werden, da die Jahreszahl nicht als Item vorhanden ist Nein, da später nicht verewendet, nur mit tableYears[]
+                    for (int column : columnWithMissing) {
+                        if (pointerRow == 1) {
+                            ((TextView)findViewById(buttonIDs[0][pointerColumn])).setText(findValueString(table[0][column]));
+                            //                    System.out.println("Zahl zu Platzieren: "+table[0][column]+" at Place in Array [0]["+pointerColumn+"]");
+                            table[0][pointerColumn] = table[0][column];
+                        }
+                        if (table[row][column] == MISSING) {
+                            findViewById(buttonIDs[pointerRow][pointerColumn]).setBackground(getDrawable(table_border));
+                            table[pointerRow][pointerColumn] = MISSING;
+                            //                    System.out.println("log table at [" + row +"]["+column+"] as" + " Missing and Place in Array ["+pointerRow+"]["+pointerColumn+"]");
+                        } else {
+                            findViewById(buttonIDs[pointerRow][pointerColumn]).setBackground(getDrawable(R.drawable.table_border_active));
+                            table[pointerRow][pointerColumn] = COLLECTED;
+                            //                    System.out.println("log table at [" + row +"]["+column+"] as Collected " + "and Place in Array ["+pointerRow+"]["+pointerColumn+"]");
+                        }
+                        pointerColumn++;
                     }
-                    lastColumn--;
+                    pointerRow++;
+                    pointerColumn = 1;
                 }
-            }
+
+
+                //    for (TableItem[] tableItems : table) { // for debugging
+                //        System.out.println(Arrays.toString(tableItems));
+                //        }
+
+                // andere Buttons ausblenden
+                int lastRow = table.length - 1;
+                int lastColumn = table[1].length - 1;
+                for (int row = 1; row < table.length; row++) {
+                    if (!rowWithMissing.contains(row)) {
+                        for (int k = 0; k < table[1].length; k++) {
+                            findViewById(buttonIDs[lastRow][k]).setVisibility(View.INVISIBLE);
+                            //                    System.out.println("Zeile zu Entfernen: "+ table[lastRow][k]+" at Place in Array ["+lastRow+"]["+k+"]");
+                        }
+                        lastRow--;
+                    }
+                }
+                for (int column = 1; column < table[1].length; column++) {
+                    if (!columnWithMissing.contains(column)) {
+                        for (int k = 0; k < table.length; k++) {
+                            findViewById(buttonIDs[k][lastColumn]).setVisibility(View.INVISIBLE);
+                            //                System.out.println("Spalte zu Entfernen: "+ table[k][lastColumn]+" at Place in Array ["+k+"]["+lastColumn+"]");
+                        }
+                        lastColumn--;
+                    }
+                }
+                for (int i = 1; i < table.length; i++) {
+                    for (int j = 1; j < table[1].length; j++) {
+                        findViewById(buttonIDs[i][j]).setOnClickListener(this::click);
+                    }
+                }
+            }).addOnFailureListener(e -> System.out.println("FAILURE!!"));
+           // List<Integer> coinYears = collectionDao.getDifferentYearsInternational(coinCountry);
+
         });
-        for (int i = 1; i < table.length; i++) {
-            for (int j = 1; j < table[1].length; j++) {
-                findViewById(buttonIDs[i][j]).setOnClickListener(this::click);
-            }
-        }
     }
     private int row = -100;
     private int column = -100;

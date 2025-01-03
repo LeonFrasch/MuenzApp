@@ -6,6 +6,10 @@ import android.content.Intent;
 import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+//import com.google.auth.oauth2.GoogleCredentials;
+//import com.google.firebase.Firestore;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
 
 public class StartingPageActivity extends AppCompatActivity {
     int[] imageButtonIDs = {R.id.YearONE, R.id.YearTWO, R.id.YearTHREE, R.id.YearFOUR, R.id.YearFIVE, R.id.YearSIX, R.id.YearSEVEN, R.id.YearEIGHT, R.id.YearNINE, R.id.YearTEN, R.id.YearELEVEN, R.id.YearTWELVE};
@@ -13,6 +17,8 @@ public class StartingPageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.starting_page_layout);
+
+        FirebaseApp.initializeApp(this);
 
         for (int id : imageButtonIDs) {
             findViewById(id).setOnClickListener(this::doOnClick);

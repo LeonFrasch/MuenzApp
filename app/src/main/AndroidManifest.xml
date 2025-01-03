@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MuenzApp"
         tools:targetApi="31">
+        <meta-data
+            android:name="com.example.muenzapp"
+            android:value="@integer/google_play_services_version" />
         <activity
             android:name=".LoginActivity"
             android:screenOrientation="portrait"
@@ -25,20 +28,20 @@
         <activity
             android:name=".Authentication"
             android:screenOrientation="portrait"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
+
+        <activity
+            android:name=".StartingPageActivity"
             android:exported="true"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".StartingPageActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".GermanCoins.GermanOverviewActivity"
             android:exported="false"

@@ -1,8 +1,11 @@
 package com.example.muenzapp.GermanCoins;
 
+import static android.content.ContentValues.TAG;
+
 import com.example.muenzapp.Database.*;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,6 +13,8 @@ import android.os.Bundle;
 
 import com.example.muenzapp.R;
 import com.example.muenzapp.TableItem;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
 import java.util.*;
 import java.util.concurrent.Executors;
@@ -30,6 +35,7 @@ public class GermanCoinTableActivity extends AppCompatActivity {
     private int coinYear;
     private List<CoinEntity> missing;
     private List<CoinEntity> collect;
+    private FirebaseFirestore db;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -41,10 +47,24 @@ public class GermanCoinTableActivity extends AppCompatActivity {
         findViewById(R.id.closeCoinTable).setOnClickListener((v) -> {
             Executors.newSingleThreadExecutor().execute(() -> {
                 for (CoinEntity coinEntity : missing) {
-                    collectionDao.insertCoin(coinEntity);
+                //    collectionDao.insertCoin(coinEntity);
+                    Map<String, Object> coin = new HashMap<>();
+                    coin.put("coinYear", coinEntity.getCoinYear());
+                    coin.put("coinValue", coinEntity.getCoinValue());
+                    coin.put("coinLetter", coinEntity.getCoinLetter());
+                    String filename = coinEntity.getCoinYear() + ":" + coinEntity.getCoinValue() + ":" + coinEntity.getCoinLetter();
+                    db.collection("D").document(filename)
+                            .set(coin, SetOptions.merge())
+                            .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully written!"))
+                            .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e));
                 }
                 for (CoinEntity coinEntity : collect) {
-                    collectionDao.foundCoin(coinEntity.getCoinYear(),coinEntity.getCoinValue(), coinEntity.getCoinLetter());
+                //    collectionDao.foundCoin(coinEntity.getCoinYear(),coinEntity.getCoinValue(), coinEntity.getCoinLetter());
+                    String filename = coinEntity.getCoinYear() + ":" + coinEntity.getCoinValue() + ":" + coinEntity.getCoinLetter();
+                    db.collection("D").document(filename)
+                            .delete()
+                            .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully written!"))
+                            .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e));
                 }
             });
             Intent intent = new Intent(this, GermanOverviewActivity.class);
@@ -61,6 +81,7 @@ public class GermanCoinTableActivity extends AppCompatActivity {
         // Daten aus Datenbank verwenden:
         coinDatabase = DatabaseClient.getInstance(this);
         collectionDao = coinDatabase.collectionDao();
+        db = FirebaseFirestore.getInstance();
     /*    Executors.newSingleThreadExecutor().execute(new Runnable() {
             @Override
             public void run() {
