@@ -10,13 +10,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.muenzapp.GermanCoins.GermanOverviewActivity;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
 
     private EditText email;
     private EditText password;
     private Button loginButton;
+    private Button returnToAuth;
     private FirebaseAuth auth;
     @SuppressLint("MissingInflatedId")
     @Override
@@ -27,8 +30,16 @@ public class LoginActivity extends AppCompatActivity {
         email = findViewById(R.id.emailText);
         password = findViewById(R.id.passwordText);
         loginButton = findViewById(R.id.loginButton);
+        returnToAuth = findViewById(R.id.returnToAuth);
 
         auth = FirebaseAuth.getInstance();
+
+        returnToAuth.setOnClickListener((v) -> {
+            Intent intent = new Intent(this, Authentication.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        });
 
         loginButton.setOnClickListener((v) -> {
             String txt_email = email.getText().toString();

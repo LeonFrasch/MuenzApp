@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 
 public class GermanOverviewActivity extends AppCompatActivity {
+    //TODO getRole mit admin gespeichert in db; mit auth.getID vergleichen: je nach Rolle anpassen! sichtbarkeit und klickbarkeit
+
     int[] imageButtonIDs = {R.id.YearOne, R.id.YearTwo, R.id.YearThree, R.id.YearFour, R.id.YearFive, R.id.YearSix, R.id.YearEight, R.id.YearSeven};
     int[] years = {0, 0, 0, 0, 0, 0, 0, 0};
     int[] textIDs = {R.id.yearONEText, R.id.yearTWOText, R.id.yearTHREEText, R.id.yearFOURText, R.id.yearFIVEText, R.id.yearSIXText, R.id.yearEIGHTText, R.id.yearSEVENText};

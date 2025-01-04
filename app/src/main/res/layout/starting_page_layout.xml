@@ -7,7 +7,16 @@
     android:layout_height="match_parent"
     tools:context=".StartingPageActivity"
     android:background="@color/white">
-
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/logOut"
+        android:textColor="@color/black"
+        android:background="@android:color/transparent"
+        android:text="Ausloggen."
+        android:layout_marginStart="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
     <Button
         android:id="@+id/YearFOUR"
         android:layout_width="96dp"

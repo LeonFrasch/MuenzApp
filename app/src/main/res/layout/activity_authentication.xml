@@ -4,20 +4,70 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Authentication">
+    tools:context=".Authentication"
+    android:background="@color/white">
 
-    <Button
-        android:id="@+id/registerButton"
-        android:layout_width="match_parent"
+    <ImageView
+        android:id="@+id/imageLogo"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@drawable/block_small_icon"
+        android:layout_marginTop="25dp"
+        android:layout_marginLeft="25dp"/>
+    <TextView
+        android:id="@+id/textLogo"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Register"
-        android:layout_marginTop="100dp" />
+        android:layout_toRightOf="@id/imageLogo"
+        android:text="MuenzApp"
+        android:layout_marginTop="25dp"
+        android:layout_marginLeft="10dp"
+        android:textColor="@color/black"
+        android:textSize="50dp" />
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/button_color"
+        android:layout_marginTop="200dp">
+        <EditText
+            android:layout_width="300dp"
+            android:layout_centerHorizontal="true"
+            android:layout_height="wrap_content"
+            android:hint="email"
+            android:id="@+id/emailText"
+            android:layout_marginTop="10dp"
+            android:textColorHint="@color/black"
+            android:textColor="@color/black"/>
 
-    <Button
-        android:id="@+id/loginButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
-        android:text="Login"
-        android:layout_below="@id/registerButton" />
+        <EditText
+            android:layout_width="300dp"
+            android:layout_centerHorizontal="true"
+            android:layout_height="wrap_content"
+            android:hint="password"
+            android:layout_below="@id/emailText"
+            android:id="@+id/passwordText"
+            android:textColorHint="@color/black"
+            android:layout_marginTop="25dp" />
+        <Button
+            android:id="@+id/registerButton"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="Registrieren"
+            android:layout_below="@id/passwordText"
+            android:textColor="@color/black"
+            android:background="@color/white"
+            android:layout_marginTop="25dp"/>
+
+        <Button
+            android:id="@+id/loginButton"
+            android:textAllCaps="false"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:background="@android:color/transparent"
+            android:textColor="@color/black"
+            android:text="Bereits ein User? Hier anmelden."
+            android:layout_below="@id/registerButton" />
+    </RelativeLayout>
 </RelativeLayout>

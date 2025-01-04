@@ -32,6 +32,8 @@ import static com.example.muenzapp.R.drawable.table_border_red;
 import static com.example.muenzapp.StaticHelper.*;
 import static com.example.muenzapp.TableItem.*;
 public class InternCoinTableActivity extends AppCompatActivity {
+    //TODO getRole mit admin gespeichert in db; mit auth.getID vergleichen: je nach Rolle anpassen! sichtbarkeit und klickbarkeit
+
     private TableItem[][] table; // default Aussehen der Tabelle
     private String[] tableYears;
     private List<InternCoinEntity> collect;

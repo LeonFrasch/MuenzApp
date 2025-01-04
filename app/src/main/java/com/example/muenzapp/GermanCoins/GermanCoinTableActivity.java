@@ -28,6 +28,7 @@ import static com.example.muenzapp.StaticHelper.stringToTableItem;
 import static com.example.muenzapp.TableItem.*;
 
 public class GermanCoinTableActivity extends AppCompatActivity {
+    //TODO getRole mit admin gespeichert in db; mit auth.getID vergleichen: je nach Rolle anpassen! sichtbarkeit und klickbarkeit
 
     private TableItem[][] table; // default Aussehen der Tabelle
     private final int[][] buttonIDs = {{R.id.Item00, R.id.Item01, R.id.Item02, R.id.Item03, R.id.Item04, R.id.Item05, R.id.Item06, R.id.Item07, R.id.Item08}, {R.id.Item10, R.id.Item11, R.id.Item12, R.id.Item13, R.id.Item14, R.id.Item15, R.id.Item16, R.id.Item17, R.id.Item18}, {R.id.Item20, R.id.Item21, R.id.Item22, R.id.Item23, R.id.Item24, R.id.Item25, R.id.Item26, R.id.Item27, R.id.Item28}, {R.id.Item30, R.id.Item31, R.id.Item32, R.id.Item33, R.id.Item34, R.id.Item35, R.id.Item36, R.id.Item37, R.id.Item38}, {R.id.Item40, R.id.Item41, R.id.Item42, R.id.Item43, R.id.Item44, R.id.Item45, R.id.Item46, R.id.Item47, R.id.Item48}, {R.id.Item50, R.id.Item51, R.id.Item52, R.id.Item53, R.id.Item54, R.id.Item55, R.id.Item56, R.id.Item57, R.id.Item58}}; //Alle Items der Tabelle: alle mit 0 sind TextViews, sonst Buttons
