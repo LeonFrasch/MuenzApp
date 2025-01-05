@@ -47,6 +47,7 @@
             android:layout_below="@id/emailText"
             android:id="@+id/passwordText"
             android:textColorHint="@color/black"
+            android:textColor="@color/black"
             android:layout_marginTop="25dp" />
         <Button
             android:id="@+id/registerButton"

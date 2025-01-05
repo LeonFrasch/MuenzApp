@@ -15,6 +15,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.rpc.context.AttributeContext;
 
 public class Authentication extends AppCompatActivity {
+    //TODO passwort nicht sichtbar evtl da sonst weiteres zeichen zum sichtbar machen erfolderlich
     private Button registerButton;
     private Button loginButton;
     private EditText email;
