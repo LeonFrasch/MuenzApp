@@ -83,7 +83,7 @@ public class GermanOverviewActivity extends AppCompatActivity {
                 }
             }));
             findViewById(R.id.addCoinYear).setOnClickListener(this::createNewCoinTable);
-            if (isAdmin) {
+            if (!isAdmin) {
                 findViewById(R.id.addCoinYear).setVisibility(View.GONE);
             }
         });
