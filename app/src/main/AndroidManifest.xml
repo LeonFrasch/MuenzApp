@@ -8,7 +8,7 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@drawable/block_small_icon_withbackground"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/block_small_icon_withbackground"
+        android:roundIcon="@drawable/block_small_icon_withbackground_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MuenzApp"
         tools:targetApi="31">
