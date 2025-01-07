@@ -50,7 +50,9 @@ public class LoginActivity extends AppCompatActivity {
 
     private void loginUser(String email, String password) {
         auth.signInWithEmailAndPassword(email, password).addOnSuccessListener((result) -> {
-            Toast.makeText(LoginActivity.this, "Login successfull!", Toast.LENGTH_SHORT).show();
+            runOnUiThread(() -> {
+                Toast.makeText(LoginActivity.this, "Login successfull!", Toast.LENGTH_SHORT).show();
+            });
             startActivity(new Intent(LoginActivity.this, StartingPageActivity.class));
             finish();
         });

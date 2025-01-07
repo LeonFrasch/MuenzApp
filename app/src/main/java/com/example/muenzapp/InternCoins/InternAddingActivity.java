@@ -101,11 +101,14 @@ public class InternAddingActivity extends AppCompatActivity {
                     });
                     selectedValues = new ArrayList<>();
                     selectedCoinYear = Integer.MIN_VALUE;
-                    Toast.makeText(InternAddingActivity.this, "Erfolgreich hinzugefügt!", Toast.LENGTH_SHORT).show();
-                   // Toast.makeText(this, "Erfolgreich hinzugefügt!", Toast.LENGTH_SHORT).show();
+                    runOnUiThread(() -> {
+                        Toast.makeText(InternAddingActivity.this, "Erfolgreich hinzugefügt!", Toast.LENGTH_SHORT).show();
+                    });
                 } else {
                     // wenn nicht genug ausgewählt
-                    Toast.makeText(InternAddingActivity.this, "(Jahr, Buchstabe, Euro/Cent) notwendig!", Toast.LENGTH_SHORT).show();
+                    runOnUiThread(() -> {
+                        Toast.makeText(InternAddingActivity.this, "(Jahr, Buchstabe, Euro/Cent) notwendig!", Toast.LENGTH_SHORT).show();
+                    });
                 }
             });
             // alles gespeicherte Zurücksetzen → lokale Attribute

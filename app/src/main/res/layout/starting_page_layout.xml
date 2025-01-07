@@ -39,7 +39,8 @@
         android:background="@drawable/block_small_icon"
         android:visibility="visible"
         app:layout_constraintEnd_toStartOf="@id/YearFIVE"
-        app:layout_constraintTop_toBottomOf="@id/YearFIVE" />
+        app:layout_constraintTop_toBottomOf="@id/YearFIVE"
+        app:layout_constraintBottom_toTopOf="@id/YearSEVEN"/>
 
     <Button
         android:id="@+id/YearONE"
@@ -49,8 +50,11 @@
         android:background="@drawable/block_small_icon"
         android:scaleType="centerCrop"
         android:visibility="visible"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/YearFIVE"
-        app:layout_constraintStart_toEndOf="@id/YearFIVE"/>
+        app:layout_constraintStart_toEndOf="@id/YearFIVE"
+        app:layout_constraintBottom_toTopOf="@id/YearEIGHT"/>
     <Button
         android:id="@+id/YearTHREE"
         android:layout_width="96dp"
@@ -59,6 +63,7 @@
         android:layout_marginBottom="10dp"
         android:background="@drawable/block_small_icon"
         android:visibility="visible"
+        app:layout_constraintTop_toBottomOf="@id/YearNINE"
         app:layout_constraintBottom_toTopOf="@id/YearTEN"
         app:layout_constraintStart_toStartOf="@id/YearTEN" />
 
@@ -69,7 +74,9 @@
         android:layout_marginBottom="10dp"
         android:background="@drawable/block_small_icon"
         android:visibility="visible"
-        app:layout_constraintStart_toStartOf="@id/YearSIX"
+        app:layout_constraintTop_toBottomOf="@id/YearTHREE"
+        app:layout_constraintStart_toEndOf="@id/YearTWO"
+        app:layout_constraintEnd_toEndOf="@id/YearSIX"
         app:layout_constraintBottom_toTopOf="@id/YearSIX" />
 
     <Button
@@ -78,7 +85,8 @@
         android:layout_height="96dp"
         android:background="@drawable/block_small_icon"
         android:visibility="visible"
-        android:layout_marginEnd="100dp"
+        android:layout_marginEnd="75dp"
+        app:layout_constraintStart_toEndOf="@id/YearTEN"
         app:layout_constraintTop_toBottomOf="@id/YearELEVEN"
         app:layout_constraintBottom_toTopOf="@id/YearFOUR"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -91,7 +99,8 @@
         android:background="@drawable/block_small_icon"
         android:visibility="visible"
         app:layout_constraintEnd_toStartOf="@id/YearTEN"
-        app:layout_constraintTop_toTopOf="@id/YearTEN" />
+        app:layout_constraintTop_toTopOf="@id/YearTEN"
+        app:layout_constraintStart_toStartOf="parent"/>
 
     <Button
         android:id="@+id/YearSEVEN"

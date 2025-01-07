@@ -92,10 +92,14 @@ public class GermanAddingActivity extends AppCompatActivity {
                     selectedLetters = new ArrayList<>();
                     selectedValues = new ArrayList<>();
                     selectedCoinYear = Integer.MIN_VALUE;
-                    Toast.makeText(GermanAddingActivity.this, "Erfolgreich hinzugefügt!", Toast.LENGTH_SHORT).show();
+                    runOnUiThread(() -> {
+                        Toast.makeText(GermanAddingActivity.this, "Erfolgreich hinzugefügt!", Toast.LENGTH_SHORT).show();
+                    });
                 } else {
                     // wenn nicht genug ausgewählt
-                    Toast.makeText(GermanAddingActivity.this, "(Jahr, Buchstabe, Euro/Cent) notwendig!", Toast.LENGTH_SHORT).show();
+                    runOnUiThread(() -> {
+                        Toast.makeText(GermanAddingActivity.this, "(Jahr, Buchstabe, Euro/Cent) notwendig!", Toast.LENGTH_SHORT).show();
+                    });
                 }
             });
             // alles gespeicherte Zurücksetzen → lokale Attribute

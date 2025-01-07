@@ -32,7 +32,9 @@ public class StartingPageActivity extends AppCompatActivity {
             FirebaseAuth.getInstance().signOut();
 
             // Zeige eine Bestätigung, dass der Benutzer abgemeldet wurde
-            Toast.makeText(StartingPageActivity.this, "Erfolgreich ausgelogt.", Toast.LENGTH_SHORT).show();
+            runOnUiThread(() -> {
+                Toast.makeText(StartingPageActivity.this, "Erfolgreich ausgelogt.", Toast.LENGTH_SHORT).show();
+            });
 
             // Weiterleitung zur Login-Seite
             Intent intent = new Intent(StartingPageActivity.this, LoginActivity.class);

@@ -39,7 +39,9 @@ public class Authentication extends AppCompatActivity {
             String txt_password = password.getText().toString();
 
             if (TextUtils.isEmpty(txt_email) || TextUtils.isEmpty(txt_password)) {
-                Toast.makeText(Authentication.this, "Fehlende Email oder Passwort!", Toast.LENGTH_SHORT).show();
+                runOnUiThread(() -> {
+                    Toast.makeText(Authentication.this, "Fehlende Email oder Passwort!", Toast.LENGTH_SHORT).show();
+                });
             } else {
                 registerUser(txt_email, txt_password);
             }
@@ -54,11 +56,15 @@ public class Authentication extends AppCompatActivity {
     private void registerUser(String email, String password) {
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(Authentication.this, task -> {
             if (task.isSuccessful()) {
-                Toast.makeText(Authentication.this, "Registrierung erfolgreich!", Toast.LENGTH_SHORT).show();
+                runOnUiThread(() -> {
+                    Toast.makeText(Authentication.this, "Registrierung erfolgreich!", Toast.LENGTH_SHORT).show();
+                });
                 startActivity(new Intent(Authentication.this, Authentication.class));
                 finish();
             } else {
-                Toast.makeText(Authentication.this, "Registrierung fehlgeschlagen!", Toast.LENGTH_SHORT).show();
+                runOnUiThread(() -> {
+                    Toast.makeText(Authentication.this, "Registrierung fehlgeschlagen!", Toast.LENGTH_SHORT).show();
+                });
             }
         });
     }

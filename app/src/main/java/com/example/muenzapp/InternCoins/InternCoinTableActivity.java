@@ -99,7 +99,9 @@ public class InternCoinTableActivity extends AppCompatActivity {
                             .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e));
                 }
                 if (!missing.isEmpty() || !collect.isEmpty()) {
-                    Toast.makeText(InternCoinTableActivity.this, "Änderungen erfolgreich übernommen!", Toast.LENGTH_SHORT).show();
+                    runOnUiThread(() -> {
+                        Toast.makeText(InternCoinTableActivity.this, "Änderungen erfolgreich übernommen!", Toast.LENGTH_SHORT).show();
+                    });
                 }
             });
 

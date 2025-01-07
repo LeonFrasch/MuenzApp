@@ -85,7 +85,9 @@ public class GermanCoinTableActivity extends AppCompatActivity {
                                 .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e));
                     }
                     if (!missing.isEmpty() || !collect.isEmpty()) {
-                        Toast.makeText(GermanCoinTableActivity.this, "Änderungen erfolgreich übernommen!", Toast.LENGTH_SHORT).show();
+                        runOnUiThread(() -> {
+                            Toast.makeText(GermanCoinTableActivity.this, "Änderungen erfolgreich übernommen!", Toast.LENGTH_SHORT).show();
+                        });
                     }
                 });
                 Intent intent = new Intent(this, GermanOverviewActivity.class);
