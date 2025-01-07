@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.example.muenzapp.GermanCoins.GermanAddingActivity;
 import com.example.muenzapp.LoginActivity;
 import com.example.muenzapp.R;
 import com.example.muenzapp.Database.*;
@@ -42,8 +43,6 @@ public class InternAddingActivity extends AppCompatActivity {
     EditText coinYear;
     Button addToDatabase;
     List<TableItem> selectedValues;
-//    CoinDatabase coinDatabase;
-//    CollectionDao collectionDao;
     TableItem selectedCoinCountry;
     FirebaseFirestore db;
     @Override
@@ -62,8 +61,6 @@ public class InternAddingActivity extends AppCompatActivity {
             finish();
         });
 
-    //    coinDatabase = DatabaseClient.getInstance(this);
-    //    collectionDao = coinDatabase.collectionDao();
         db = FirebaseFirestore.getInstance();
 
         selectedValues = new ArrayList<>();
@@ -83,7 +80,7 @@ public class InternAddingActivity extends AppCompatActivity {
                 // falsches Format // TODO
             }
             Executors.newSingleThreadExecutor().execute(() -> {
-                if (selectedValues.size() > 0 && selectedCoinYear >= 0) {
+                if (!selectedValues.isEmpty() && selectedCoinYear >= 0) {
                     for (TableItem selectedValue : selectedValues) {
                         Map<String, Object> coin = new HashMap<>();
                         coin.put("coinYear", selectedCoinYear);
@@ -94,15 +91,6 @@ public class InternAddingActivity extends AppCompatActivity {
                                 .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully written!"))
                                 .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e));
                     }
-                /*    for (TableItem selectedValue : selectedValues) {
-                        InternCoinEntity entity = new InternCoinEntity();
-                        entity.setCoinYear(selectedCoinYear);
-                        entity.setCoinValue(selectedValue);
-                        entity.setCoinCountry(selectedCoinCountry);
-                        if (!coinsOfYear.contains(entity)) { // gar nicht notwendig, da beim Löschen immer alle mit Value und Letter gelöscht werden. Aber Vorteil: weniger gespeichert = nicht doppelt gespeichert
-                            collectionDao.insertInternationalCoin(entity);
-                        }
-                    } */
                     runOnUiThread(() -> {
                         for (int id : buttonIDs) {
                             // nach hinzufügen gedrückt müssen alle Knöpfe wieder resettet werden, also nicht nur umrahmung weg, sondern auch, dass sie geklickt wurden:
@@ -113,9 +101,11 @@ public class InternAddingActivity extends AppCompatActivity {
                     });
                     selectedValues = new ArrayList<>();
                     selectedCoinYear = Integer.MIN_VALUE;
+                    Toast.makeText(InternAddingActivity.this, "Erfolgreich hinzugefügt!", Toast.LENGTH_SHORT).show();
                    // Toast.makeText(this, "Erfolgreich hinzugefügt!", Toast.LENGTH_SHORT).show();
                 } else {
                     // wenn nicht genug ausgewählt
+                    Toast.makeText(InternAddingActivity.this, "(Jahr, Buchstabe, Euro/Cent) notwendig!", Toast.LENGTH_SHORT).show();
                 }
             });
             // alles gespeicherte Zurücksetzen → lokale Attribute

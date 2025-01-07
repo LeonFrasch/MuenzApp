@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.example.muenzapp.R;
 import com.example.muenzapp.TableItem;
@@ -64,6 +65,7 @@ public class GermanCoinTableActivity extends AppCompatActivity {
             collect = new ArrayList<>();
             findViewById(R.id.closeCoinTable).setOnClickListener((v) -> {
                 Executors.newSingleThreadExecutor().execute(() -> {
+
                     for (CoinEntity coinEntity : missing) {
                         Map<String, Object> coin = new HashMap<>();
                         coin.put("coinYear", coinEntity.getCoinYear());
@@ -81,6 +83,9 @@ public class GermanCoinTableActivity extends AppCompatActivity {
                                 .delete()
                                 .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully written!"))
                                 .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e));
+                    }
+                    if (!missing.isEmpty() || !collect.isEmpty()) {
+                        Toast.makeText(GermanCoinTableActivity.this, "Änderungen erfolgreich übernommen!", Toast.LENGTH_SHORT).show();
                     }
                 });
                 Intent intent = new Intent(this, GermanOverviewActivity.class);

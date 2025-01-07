@@ -9,6 +9,7 @@ import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.example.muenzapp.R;
 import com.example.muenzapp.TableItem;
@@ -33,8 +34,6 @@ public class GermanAddingActivity extends AppCompatActivity {
     Button addToDatabase;
     List<TableItem> selectedLetters;
     List<TableItem> selectedValues;
-//    CoinDatabase coinDatabase;
-//    CollectionDao collectionDao;
     FirebaseFirestore db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +46,6 @@ public class GermanAddingActivity extends AppCompatActivity {
             finish();
         });
 
-    //    coinDatabase = DatabaseClient.getInstance(this);
-    //    collectionDao = coinDatabase.collectionDao();
         db = FirebaseFirestore.getInstance();
 
         selectedLetters = new ArrayList<>();
@@ -82,13 +79,6 @@ public class GermanAddingActivity extends AppCompatActivity {
                                     .set(coin, SetOptions.merge())
                                     .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully written!"))
                                     .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e));
-                        //    CoinEntity entity = new CoinEntity();
-                        //    entity.setCoinYear(selectedCoinYear);
-                        //    entity.setCoinLetter(selectedLetter);
-                        //    entity.setCoinValue(selectedValue);
-                        //    if (!coinsOfYear.contains(entity)) { // gar nicht notwendig, da beim Löschen immer alle mit Value und Letter gelöscht werden. Aber Vorteil: weniger gespeichert = nicht doppelt gespeichert
-                        //        collectionDao.insertCoin(entity);
-                        //    }
                         }
                     }
                     runOnUiThread(() -> {
@@ -102,8 +92,10 @@ public class GermanAddingActivity extends AppCompatActivity {
                     selectedLetters = new ArrayList<>();
                     selectedValues = new ArrayList<>();
                     selectedCoinYear = Integer.MIN_VALUE;
+                    Toast.makeText(GermanAddingActivity.this, "Erfolgreich hinzugefügt!", Toast.LENGTH_SHORT).show();
                 } else {
                     // wenn nicht genug ausgewählt
+                    Toast.makeText(GermanAddingActivity.this, "(Jahr, Buchstabe, Euro/Cent) notwendig!", Toast.LENGTH_SHORT).show();
                 }
             });
             // alles gespeicherte Zurücksetzen → lokale Attribute

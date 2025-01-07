@@ -10,6 +10,9 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.Toast;
+
+import com.example.muenzapp.GermanCoins.GermanCoinTableActivity;
 import com.example.muenzapp.R;
 import com.example.muenzapp.StartingPageActivity;
 import com.example.muenzapp.Database.*;
@@ -94,6 +97,9 @@ public class InternCoinTableActivity extends AppCompatActivity {
                             .delete()
                             .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully written!"))
                             .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e));
+                }
+                if (!missing.isEmpty() || !collect.isEmpty()) {
+                    Toast.makeText(InternCoinTableActivity.this, "Änderungen erfolgreich übernommen!", Toast.LENGTH_SHORT).show();
                 }
             });
 
