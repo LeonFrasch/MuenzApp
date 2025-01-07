@@ -54,6 +54,9 @@ public class GermanOverviewActivity extends AppCompatActivity {
             if (adminUIDs.contains(auth.getUid())) { // User ist admin
                 isAdmin = true;
             }
+            if (!isAdmin) {
+                findViewById(R.id.addCoinYear).setVisibility(View.GONE);
+            }
             for (int id : imageButtonIDs) {
                 findViewById(id).setOnClickListener(this::openTableOfYear);
             }
@@ -83,9 +86,6 @@ public class GermanOverviewActivity extends AppCompatActivity {
                 }
             }));
             findViewById(R.id.addCoinYear).setOnClickListener(this::createNewCoinTable);
-            if (!isAdmin) {
-                findViewById(R.id.addCoinYear).setVisibility(View.GONE);
-            }
         });
     }
     public void openTableOfYear(View view) {

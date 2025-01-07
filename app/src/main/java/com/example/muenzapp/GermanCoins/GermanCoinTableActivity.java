@@ -5,6 +5,7 @@ import static android.content.ContentValues.TAG;
 import com.example.muenzapp.Database.*;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -22,6 +23,7 @@ import com.google.firebase.firestore.SetOptions;
 import java.util.*;
 import java.util.concurrent.Executors;
 
+import static com.example.muenzapp.R.drawable.red_border;
 import static com.example.muenzapp.R.drawable.table_border;
 import static com.example.muenzapp.R.drawable.table_border_active;
 import static com.example.muenzapp.R.drawable.table_border_active_red;
@@ -264,6 +266,7 @@ public class GermanCoinTableActivity extends AppCompatActivity {
     }
     private int row = -100;
     private int column = -100;
+    @SuppressLint("UseCompatLoadingForDrawables")
     public void click(View view) {
 
           //  for (TableItem[] tableItems : table) {
@@ -312,5 +315,12 @@ public class GermanCoinTableActivity extends AppCompatActivity {
                 view.setBackground(getDrawable(table_border));
             }
         }
+        runOnUiThread(() -> {
+            if (!missing.isEmpty() || !collect.isEmpty()) { //something will be changed
+                findViewById(R.id.closeCoinTable).setBackground(getDrawable(table_border_red));
+            } else {
+                findViewById(R.id.closeCoinTable).setBackground(null);
+            }
+        });
     }
 }

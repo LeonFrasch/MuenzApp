@@ -1,5 +1,6 @@
 package com.example.muenzapp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
@@ -11,6 +12,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.muenzapp.GermanCoins.GermanOverviewActivity;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -51,10 +53,14 @@ public class LoginActivity extends AppCompatActivity {
     private void loginUser(String email, String password) {
         auth.signInWithEmailAndPassword(email, password).addOnSuccessListener((result) -> {
             runOnUiThread(() -> {
-                Toast.makeText(LoginActivity.this, "Login successfull!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, "Login erfolgreich!", Toast.LENGTH_SHORT).show();
             });
             startActivity(new Intent(LoginActivity.this, StartingPageActivity.class));
             finish();
+        }).addOnFailureListener(e -> {
+            runOnUiThread(() -> {
+                Toast.makeText(LoginActivity.this, "Login fehlgeschlagen!", Toast.LENGTH_SHORT).show();
+            });
         });
     }
 }

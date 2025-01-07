@@ -366,6 +366,10 @@ public class InternCoinTableActivity extends AppCompatActivity {
                 view.setBackground(getDrawable(table_border));
             }
         }
-
+        if (!missing.isEmpty() || !collect.isEmpty()) { //something will be changed
+            findViewById(R.id.closeCoinTable).setBackground(getDrawable(table_border_red));
+        } else {
+            findViewById(R.id.closeCoinTable).setBackground(null);
+        }
     }
 }
