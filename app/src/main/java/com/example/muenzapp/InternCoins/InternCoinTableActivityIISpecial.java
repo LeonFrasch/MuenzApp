@@ -19,10 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.muenzapp.Database.IISpecial;
-import com.example.muenzapp.GermanSpecialIIAddingActivity;
-import com.example.muenzapp.InternSpecialIIAddingActivity;
 import com.example.muenzapp.R;
-import com.example.muenzapp.StartingPageActivity;
 import com.example.muenzapp.TableItem;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -86,7 +83,7 @@ public class InternCoinTableActivityIISpecial extends AppCompatActivity {
         coinCountry = findCoinCountryItem(getIntent().getStringExtra("coinCountry"));
 
         findViewById(R.id.openAddingInternYearSpecialII).setOnClickListener((v) -> {
-            Intent intent = new Intent(this, InternSpecialIIAddingActivity.class);
+            Intent intent = new Intent(this, InternAddingActivityIISpecial.class);
             intent.putExtra("coinCountry", getIntent().getStringExtra("coinCountry"));
             startActivity(intent);
         });

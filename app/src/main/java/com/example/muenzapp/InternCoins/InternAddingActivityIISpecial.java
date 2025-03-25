@@ -1,4 +1,4 @@
-package com.example.muenzapp;
+package com.example.muenzapp.InternCoins;
 
 import static android.content.ContentValues.TAG;
 import static android.graphics.Color.TRANSPARENT;
@@ -18,9 +18,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.muenzapp.GermanCoins.GermanOverviewActivity;
-import com.example.muenzapp.InternCoins.InternCoinTableActivity;
-import com.example.muenzapp.InternCoins.InternCoinTableActivityIISpecial;
+import com.example.muenzapp.R;
+import com.example.muenzapp.TableItem;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
@@ -30,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 
-public class InternSpecialIIAddingActivity extends AppCompatActivity {
+public class InternAddingActivityIISpecial extends AppCompatActivity {
 
     final int[] buttonIDs = {R.id.addButtonA, R.id.addButtonD, R.id.addButtonF, R.id.addButtonG, R.id.addButtonJ, R.id.addButtonCC1, R.id.addButtonCC2, R.id.addButtonCC3};
     int selectedCoinYear;
@@ -43,7 +42,7 @@ public class InternSpecialIIAddingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.special_ii_adding_layout);
+        setContentView(R.layout.adding_layout_special_ii);
         selectedCoinCountry = findCoinCountryItem(getIntent().getStringExtra("coinCountry"));
         ((TextView)findViewById(R.id.country)).setText(findCoinCountryStringFull(getIntent().getStringExtra("coinCountry")));
         findViewById(R.id.closeCoinYearAdding).setOnClickListener((v) -> {
@@ -100,12 +99,12 @@ public class InternSpecialIIAddingActivity extends AppCompatActivity {
                     selectedTypes = new ArrayList<>();
                     selectedCoinYear = Integer.MIN_VALUE;
                     runOnUiThread(() -> {
-                        Toast.makeText(InternSpecialIIAddingActivity.this, "Erfolgreich hinzugefügt!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(InternAddingActivityIISpecial.this, "Erfolgreich hinzugefügt!", Toast.LENGTH_SHORT).show();
                     });
                 } else {
                     // wenn nicht genug ausgewählt
                     runOnUiThread(() -> {
-                        Toast.makeText(InternSpecialIIAddingActivity.this, "(Jahr, Typ) notwendig!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(InternAddingActivityIISpecial.this, "(Jahr, Typ) notwendig!", Toast.LENGTH_SHORT).show();
                     });
                 }
             });

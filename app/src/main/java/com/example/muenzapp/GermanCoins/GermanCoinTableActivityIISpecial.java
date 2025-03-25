@@ -18,8 +18,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.muenzapp.Database.IISpecialD;
-import com.example.muenzapp.GermanSpecialIIAddingActivity;
-import com.example.muenzapp.InternCoins.InternAddingActivity;
 import com.example.muenzapp.R;
 import com.example.muenzapp.TableItem;
 import com.google.firebase.auth.FirebaseAuth;
@@ -81,7 +79,7 @@ public class GermanCoinTableActivityIISpecial extends AppCompatActivity {
         collect = new ArrayList<>();
 
         findViewById(R.id.openAddingYearSpecialII).setOnClickListener((v) -> {
-            Intent intent = new Intent(this, GermanSpecialIIAddingActivity.class);
+            Intent intent = new Intent(this, GermanAddingActivityIISpecial.class);
             startActivity(intent);
         });
 

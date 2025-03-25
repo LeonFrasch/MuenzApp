@@ -1,21 +1,12 @@
 package com.example.muenzapp.Database;
 
-import androidx.annotation.Nullable;
-import androidx.room.*;
-
 import com.example.muenzapp.TableItem;
 
 import java.util.Objects;
 
-@Entity(tableName = "CoinEntity")
 public class CoinEntity {
-    @PrimaryKey(autoGenerate = true)
-    private int id;
-    @ColumnInfo(name = "CoinYear")
     private int coinYear;
-    @ColumnInfo(name = "CoinValue")
     private TableItem coinValue;
-    @ColumnInfo(name = "CoinLetter")
     private TableItem coinLetter;
     @Override
     public boolean equals(Object obj) {
@@ -33,15 +24,8 @@ public class CoinEntity {
     public int hashCode() {
         return Objects.hash(coinYear, coinValue, coinLetter);
     }
+
     // GETTER UND SETTER
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public int getCoinYear() {
         return coinYear;

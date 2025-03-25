@@ -1,10 +1,7 @@
-package com.example.muenzapp;
+package com.example.muenzapp.GermanCoins;
 
 import static android.content.ContentValues.TAG;
 import static android.graphics.Color.TRANSPARENT;
-
-import static com.example.muenzapp.StaticHelper.findCoinCountryItem;
-import static com.example.muenzapp.StaticHelper.findCoinCountryStringFull;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -15,14 +12,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.muenzapp.GermanCoins.GermanAddingActivity;
-import com.example.muenzapp.GermanCoins.GermanCoinTableActivityIISpecial;
-import com.example.muenzapp.GermanCoins.GermanOverviewActivity;
-import com.example.muenzapp.InternCoins.InternAddingActivity;
-import com.example.muenzapp.InternCoins.InternCoinTableActivity;
+import com.example.muenzapp.R;
+import com.example.muenzapp.TableItem;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
@@ -32,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 
-public class GermanSpecialIIAddingActivity extends AppCompatActivity {
+public class GermanAddingActivityIISpecial extends AppCompatActivity {
 
     final int[] buttonIDs = {R.id.addButtonA, R.id.addButtonD, R.id.addButtonF, R.id.addButtonG, R.id.addButtonJ, R.id.addButtonCC1, R.id.addButtonCC2, R.id.addButtonCC3};
     int selectedCoinYear;
@@ -45,7 +38,7 @@ public class GermanSpecialIIAddingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.special_ii_adding_layout);
+        setContentView(R.layout.adding_layout_special_ii);
         findViewById(R.id.closeCoinYearAdding).setOnClickListener((v) -> {
             Intent intent = new Intent(this, GermanCoinTableActivityIISpecial.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -100,12 +93,12 @@ public class GermanSpecialIIAddingActivity extends AppCompatActivity {
                     selectedTypes = new ArrayList<>();
                     selectedCoinYear = Integer.MIN_VALUE;
                     runOnUiThread(() -> {
-                        Toast.makeText(GermanSpecialIIAddingActivity.this, "Erfolgreich hinzugefügt!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(GermanAddingActivityIISpecial.this, "Erfolgreich hinzugefügt!", Toast.LENGTH_SHORT).show();
                     });
                 } else {
                     // wenn nicht genug ausgewählt
                     runOnUiThread(() -> {
-                        Toast.makeText(GermanSpecialIIAddingActivity.this, "(Jahr, Typ, Buchstabe) notwendig!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(GermanAddingActivityIISpecial.this, "(Jahr, Typ, Buchstabe) notwendig!", Toast.LENGTH_SHORT).show();
                     });
                 }
             });
