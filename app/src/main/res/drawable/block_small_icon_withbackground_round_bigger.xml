@@ -1,0 +1,31 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="192dp"
+    android:height="192dp"
+    android:viewportWidth="192"
+    android:viewportHeight="192">
+
+    <!-- Kreis mit weißer Füllung -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M96,0a96,96 0 1,0 0,192a96,96 0 1,0 0,-192" />
+
+    <!-- Obere schwarze Linie, zentriert -->
+    <path
+        android:fillColor="@color/black"
+        android:pathData="M0,48h200v4H0z" />
+    <path
+        android:fillColor="@color/black"
+        android:pathData="M0,96h160v4H0z" />
+
+    <!-- Linke schwarze Linie -->
+    <path
+        android:fillColor="@color/black"
+        android:pathData="M48,0v160h4V0z" />
+    <path
+        android:fillColor="@color/black"
+        android:pathData="M96,0v120h4V0z" />
+    <path
+        android:fillColor="@color/black"
+        android:pathData="M144,0v80h4V0z" />
+
+</vector>
