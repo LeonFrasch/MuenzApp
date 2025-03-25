@@ -164,6 +164,16 @@ public class GermanCoinTableActivityIISpecial extends AppCompatActivity {
             if (adminUIDs.contains(auth.getUid())) { // User ist admin
                 isAdmin = true;
             }
+            if (isAdmin) { //isAdmin
+                for (int i = 1; i < table.length; i++) {
+                    for (int j = 1; j < table[1].length; j++) {
+                        findViewById(buttonIDs[i][j]).setOnClickListener(this::click);
+                    }
+                }
+            }
+            if (!isAdmin) {
+                findViewById(R.id.openAddingYearSpecialII).setVisibility(View.GONE);
+            }
             Executors.newSingleThreadExecutor().execute(() -> {
                 List<Integer> coinYears = new ArrayList<>(); // list of all years with missing coins in db
 
@@ -312,16 +322,6 @@ public class GermanCoinTableActivityIISpecial extends AppCompatActivity {
                             }
                             lastColumn--;
                         }
-                    }
-                    if (true) { //isAdmin
-                        for (int i = 1; i < table.length; i++) {
-                            for (int j = 1; j < table[1].length; j++) {
-                                findViewById(buttonIDs[i][j]).setOnClickListener(this::click);
-                            }
-                        }
-                    }
-                    if (!isAdmin) {
-
                     }
                 }).addOnFailureListener(e -> System.out.println("FAILURE!!"));
             });
