@@ -98,15 +98,22 @@ public class InternCoinTableActivityIISpecial extends AppCompatActivity {
                     coin.put("coinType", entity.getCoinType());
                     coin.put("coinCountry", entity.getCoinCountry());
                     String filename = entity.getCoinYear() + ":" + entity.getCoinCountry() + ":" + entity.getCoinType();
-                    db.collection("IISonder").document(filename)
+        //            db.collection("IISonder").document(filename)
+        //                    .set(coin, SetOptions.merge())
+        //                    .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully written!"))
+        //                    .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e));
+                    db.collection("Sonder").document("IISonder").collection(coinCountry + "").document(filename)
                             .set(coin, SetOptions.merge())
                             .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully written!"))
                             .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e));
                 }
                 for (IISpecial entity : collect) {
                     String filename = entity.getCoinYear() + ":" + entity.getCoinCountry() + ":" + entity.getCoinType();
-                    System.out.println(filename);
-                    db.collection("IISonder").document(filename)
+        //            db.collection("IISonder").document(filename)
+        //                    .delete()
+        //                    .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully written!"))
+        //                    .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e));
+                    db.collection("Sonder").document("IISonder").collection(coinCountry + "").document(filename)
                             .delete()
                             .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully written!"))
                             .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e));
@@ -183,15 +190,17 @@ public class InternCoinTableActivityIISpecial extends AppCompatActivity {
                 List<Integer> coinYears = new ArrayList<>(); // list of all years with missing coins in db
 
                 Map<Integer, List<IISpecial>> coinMap = new HashMap<>(); // map with missing year and corresponding missing values
-                db.collection("IISonder").get().addOnSuccessListener(queryDocumentSnapshots -> {
+
+                db.collection("Sonder").document("IISonder").collection(coinCountry + "").get().addOnSuccessListener(queryDocumentSnapshots -> {
+        //        db.collection("IISonder").get().addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!queryDocumentSnapshots.isEmpty()) {
                         for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
                             Map<String, Object> data = document.getData();
                             TableItem coinType = stringToTableItem(data.get("coinType").toString());
                             TableItem coinCountry = stringToTableItem(data.get("coinCountry").toString());
-                            if (coinCountry != this.coinCountry) {
-                                continue;
-                            }
+        //                    if (coinCountry != this.coinCountry) {
+        //                        continue;
+        //                    }
                             Long coinYearLong = (Long) data.get("coinYear");
                             int coinYear = (int) coinYearLong.longValue();
                             if (!coinYears.contains(coinYear)) {

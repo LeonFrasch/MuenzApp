@@ -75,7 +75,8 @@ public class GermanAddingActivityIISpecial extends AppCompatActivity {
                             coin.put("coinType", selectedType);
                             coin.put("coinLetter", selectedLetter);
                             String filename = selectedCoinYear + ":" + selectedType + ":" + selectedLetter;
-                            db.collection("IISonderD").document(filename)
+                            db.collection("Sonder").document("IISonder").collection("D").document(filename)
+                    //        db.collection("IISonderD").document(filename)
                                     .set(coin, SetOptions.merge())
                                     .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully written!"))
                                     .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e));
