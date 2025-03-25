@@ -64,6 +64,10 @@ public class StaticHelper {
             case "F": return F;
             case "G": return G;
             case "J": return J;
+
+            case "CC1": return CC1;
+            case "CC2": return CC2;
+            case "CC3": return CC3;
         }
         return null;
     }

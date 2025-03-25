@@ -12,7 +12,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import com.example.muenzapp.GermanCoins.GermanCoinTableActivity;
 import com.example.muenzapp.R;
 import com.example.muenzapp.StartingPageActivity;
 import com.example.muenzapp.Database.*;
@@ -112,6 +111,11 @@ public class InternCoinTableActivity extends AppCompatActivity {
         });
         findViewById(R.id.openAddingInternYear).setOnClickListener(v -> {
             Intent intent = new Intent(this, InternAddingActivity.class);
+            intent.putExtra("coinCountry", getIntent().getStringExtra("coinCountry"));
+            startActivity(intent);
+        });
+        findViewById(R.id.openSonderIIIntern).setOnClickListener(v -> {
+            Intent intent = new Intent(this, InternCoinTableActivityIISpecial.class);
             intent.putExtra("coinCountry", getIntent().getStringExtra("coinCountry"));
             startActivity(intent);
         });
@@ -231,7 +235,7 @@ public class InternCoinTableActivity extends AppCompatActivity {
                             } // setzt valuePlace
                             if (pointer + 1 == 26) break; //TODO hier erweitern
                             table[pointer + 1][valuePlace] = MISSING;
-                            findViewById(buttonIDs[pointer][valuePlace]).setBackground(getDrawable(table_border));
+                            findViewById(buttonIDs[pointer][valuePlace]).setBackground(getDrawable(table_border)); // TODO warum nicht pointer + 1 here
                         }
                         tableYears[pointer++] = year < 10 ? "0"+ year : year + "";
                     }

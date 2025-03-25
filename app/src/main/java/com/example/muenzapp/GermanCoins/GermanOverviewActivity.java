@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+
 import com.example.muenzapp.R;
 import com.example.muenzapp.StartingPageActivity;
 import com.google.firebase.auth.FirebaseAuth;
@@ -38,6 +39,12 @@ public class GermanOverviewActivity extends AppCompatActivity {
 
         findViewById(R.id.closeCoinYearAdding2).setOnClickListener(v -> { // close Screen -> go back to StartingPage
             Intent intent = new Intent(this, StartingPageActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        });
+        findViewById(R.id.openSonderII).setOnClickListener(v -> { // close Screen -> move to German_Special_II
+            Intent intent = new Intent(this, GermanCoinTableActivityIISpecial.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             finish();

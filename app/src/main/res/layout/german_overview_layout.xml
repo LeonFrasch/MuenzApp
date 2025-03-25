@@ -28,6 +28,18 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="25dp"/>
+    <Button
+        android:id="@+id/openSonderII"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/button_color"
+        android:text="Sonder II."
+        android:textAllCaps="false"
+        android:textColor="@color/black"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="25dp"
+        android:layout_marginStart="10dp"/>
 
     <Button
         android:id="@+id/YearOne"
