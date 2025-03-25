@@ -124,7 +124,7 @@ public class InternCoinTableActivityIISpecial extends AppCompatActivity {
             startActivity(intent);
             finish();
         });
-
+        ((TextView) findViewById(buttonIDs[0][0])).setText(coinCountry + "");
         table = new TableItem[][]{{II, CC1, CC2, CC3},
                 {X, COLLECTED, COLLECTED, COLLECTED},
                 {X, COLLECTED, COLLECTED, COLLECTED},
@@ -188,6 +188,10 @@ public class InternCoinTableActivityIISpecial extends AppCompatActivity {
                         for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
                             Map<String, Object> data = document.getData();
                             TableItem coinType = stringToTableItem(data.get("coinType").toString());
+                            TableItem coinCountry = stringToTableItem(data.get("coinCountry").toString());
+                            if (coinCountry != this.coinCountry) {
+                                continue;
+                            }
                             Long coinYearLong = (Long) data.get("coinYear");
                             int coinYear = (int) coinYearLong.longValue();
                             if (!coinYears.contains(coinYear)) {
