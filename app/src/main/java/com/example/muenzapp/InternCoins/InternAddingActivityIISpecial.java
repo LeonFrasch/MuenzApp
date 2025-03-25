@@ -1,27 +1,25 @@
 package com.example.muenzapp.InternCoins;
 
+import static android.content.ContentValues.TAG;
+import static android.graphics.Color.TRANSPARENT;
+
+import static com.example.muenzapp.StaticHelper.findCoinCountryItem;
+import static com.example.muenzapp.StaticHelper.findCoinCountryStringFull;
+
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import android.os.Bundle;
 import android.widget.Toast;
 
-import com.example.muenzapp.GermanCoins.GermanAddingActivity;
-import com.example.muenzapp.LoginActivity;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.muenzapp.R;
-import com.example.muenzapp.Database.*;
 import com.example.muenzapp.TableItem;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
@@ -29,48 +27,46 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.Executors;
 
-import static android.content.ContentValues.TAG;
-import static android.graphics.Color.TRANSPARENT;
-import static com.example.muenzapp.R.*;
-import static com.example.muenzapp.StaticHelper.*;
+public class InternAddingActivityIISpecial extends AppCompatActivity {
 
-public class InternAddingActivity extends AppCompatActivity {
-    final int[] buttonIDs = {id.addButtonONE, id.addButtonTWO, id.addButtonFIVE, id.addButtonTEN, id.addButtonTWENTY, id.addButtonFIFTY, id.addButtonI, id.addButtonII};
+    final int[] buttonIDs = {R.id.addButtonA, R.id.addButtonD, R.id.addButtonF, R.id.addButtonG, R.id.addButtonJ, R.id.addButtonCC1, R.id.addButtonCC2, R.id.addButtonCC3};
     int selectedCoinYear;
     EditText coinYear;
     Button addToDatabase;
-    List<TableItem> selectedValues;
+    List<TableItem> selectedTypes;
     TableItem selectedCoinCountry;
     FirebaseFirestore db;
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(layout.intern_adding_layout);
+        setContentView(R.layout.adding_layout_special_ii);
         selectedCoinCountry = findCoinCountryItem(getIntent().getStringExtra("coinCountry"));
-
-        ((TextView)findViewById(id.Country)).setText(findCoinCountryStringFull(getIntent().getStringExtra("coinCountry")));
-
-        findViewById(id.closeCoinYearAdding).setOnClickListener((v) -> {
-            Intent intent = new Intent(this, InternCoinTableActivity.class); //TODO change
+        ((TextView)findViewById(R.id.country)).setText(findCoinCountryStringFull(getIntent().getStringExtra("coinCountry")));
+        findViewById(R.id.closeCoinYearAdding).setOnClickListener((v) -> {
+            Intent intent = new Intent(this, InternCoinTableActivityIISpecial.class);
             intent.putExtra("coinCountry", getIntent().getStringExtra("coinCountry"));
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             finish();
         });
 
+        int[] unneededIDs = {R.id.letterText, R.id.addButtonA, R.id.addButtonD, R.id.addButtonF, R.id.addButtonG, R.id.addButtonJ};
+        for (int id : unneededIDs) {
+            findViewById(id).setVisibility(View.GONE);
+        }
+
         db = FirebaseFirestore.getInstance();
 
-        selectedValues = new ArrayList<>();
+        selectedTypes = new ArrayList<>();
         selectedCoinYear = Integer.MIN_VALUE;
         for (int id : buttonIDs) {
             findViewById(id).setOnClickListener(this::doOnClick);
         }
-        coinYear = findViewById(id.addYearEditText);
-        addToDatabase = findViewById(id.addToDatabase);
-
+        coinYear = findViewById(R.id.addYearEditText);
+        addToDatabase = findViewById(R.id.addToDatabase);
 
         addToDatabase.setOnClickListener(v -> {
             String yearString = coinYear.getText().toString();
@@ -80,13 +76,14 @@ public class InternAddingActivity extends AppCompatActivity {
                 // falsches Format // TODO
             }
             Executors.newSingleThreadExecutor().execute(() -> {
-                if (!selectedValues.isEmpty() && selectedCoinYear >= 0) {
-                    for (TableItem selectedValue : selectedValues) {
+                if (selectedTypes.size() > 0 && selectedCoinYear >= 0) {
+                    for (TableItem selectedType : selectedTypes) {
                         Map<String, Object> coin = new HashMap<>();
                         coin.put("coinYear", selectedCoinYear);
-                        coin.put("coinValue", selectedValue);
-                        String filename = selectedCoinYear + ":" + selectedValue;
-                        db.collection(selectedCoinCountry.toString()).document(filename)
+                        coin.put("coinType", selectedType);
+                        coin.put("coinCountry", selectedCoinCountry);
+                        String filename = selectedCoinYear + ":" + selectedCoinCountry + ":" + selectedType;
+                        db.collection("IISonder").document(filename)
                                 .set(coin, SetOptions.merge())
                                 .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully written!"))
                                 .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e));
@@ -99,15 +96,15 @@ public class InternAddingActivity extends AppCompatActivity {
                         }
                         coinYear.setText("");
                     });
-                    selectedValues = new ArrayList<>();
+                    selectedTypes = new ArrayList<>();
                     selectedCoinYear = Integer.MIN_VALUE;
                     runOnUiThread(() -> {
-                        Toast.makeText(InternAddingActivity.this, "Erfolgreich hinzugefügt!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(InternAddingActivityIISpecial.this, "Erfolgreich hinzugefügt!", Toast.LENGTH_SHORT).show();
                     });
                 } else {
                     // wenn nicht genug ausgewählt
                     runOnUiThread(() -> {
-                        Toast.makeText(InternAddingActivity.this, "(Jahr, Buchstabe, Euro/Cent) notwendig!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(InternAddingActivityIISpecial.this, "(Jahr, Typ) notwendig!", Toast.LENGTH_SHORT).show();
                     });
                 }
             });
@@ -117,28 +114,23 @@ public class InternAddingActivity extends AppCompatActivity {
     }
     //TODO Fall: zu viel gespeichert
     public void doOnClick(View view) {
-        TableItem item = getValueFromId(view.getId());
-        if (!selectedValues.contains(item)) {
-            selectedValues.add(item);
+        TableItem item = getTypesFromId(view.getId());
+        if (!selectedTypes.contains(item)) {
+            selectedTypes.add(item);
             view.setActivated(true);
-            view.setBackground(getDrawable(drawable.red_border));
+            view.setBackground(getDrawable(R.drawable.red_border));
             // Hintergrund ändern
         } else {
             //Hintergrund ändern
-            selectedValues.remove(item);
+            selectedTypes.remove(item);
             view.setActivated(false);
             view.setBackgroundColor(TRANSPARENT);
         }
     }
-    private TableItem getValueFromId(int id) {
-        if (id == R.id.addButtonONE) return TableItem.ONE;
-        if (id == R.id.addButtonTWO) return TableItem.TWO;
-        if (id == R.id.addButtonFIVE) return TableItem.FIVE;
-        if (id == R.id.addButtonTEN) return TableItem.TEN;
-        if (id == R.id.addButtonTWENTY) return TableItem.TWENTY;
-        if (id == R.id.addButtonFIFTY) return TableItem.FIFTY;
-        if (id == R.id.addButtonI) return TableItem.I;
-        if (id == R.id.addButtonII) return TableItem.II;
+    private TableItem getTypesFromId(int id) {
+        if (id == R.id.addButtonCC1) return TableItem.CC1;
+        if (id == R.id.addButtonCC2) return TableItem.CC2;
+        if (id == R.id.addButtonCC3) return TableItem.CC3;
         return TableItem.X;
     }
 }

@@ -1,147 +1,206 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".GermanCoins.GermanOverviewActivity"
-    android:background="@drawable/block_background_landscape"
-    >
+    android:background="@color/white">
 
     <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" app:srcCompat="@android:drawable/btn_dialog"
-        android:background="#00000000"
         android:id="@+id/closeCoinYearAdding2"
-        app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="24dp" android:layout_marginEnd="24dp"
-        app:layout_constraintEnd_toEndOf="parent"/>
-    <Button
-        android:text="Münzen Hinzufügen"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" android:id="@+id/addCoinYear"
+        android:layout_height="wrap_content"
+        android:background="#00000000"
+        app:srcCompat="@android:drawable/btn_dialog"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="25dp"/>
+    <Button
+        android:id="@+id/addCoinYear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:backgroundTint="@color/button_color"
+        android:text="Münzen hinzufügen."
+        android:textAllCaps="false"
         android:textColor="@color/black"
-        app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" app:layout_constraintHorizontal_bias="0.498"
-        android:layout_marginBottom="36dp"/>
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="25dp"/>
+    <Button
+        android:id="@+id/openSonderII"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/button_color"
+        android:text="Sonder II."
+        android:textAllCaps="false"
+        android:textColor="@color/black"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="25dp"
+        android:layout_marginStart="10dp"/>
 
     <Button
-        android:layout_width="96dp"
-        android:layout_height="96dp" android:background="@drawable/block_small_icon"
-        android:scaleType="centerCrop"
         android:id="@+id/YearOne"
-        app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="48dp"
-        android:visibility="invisible" android:layout_marginStart="72dp"/>
-    <Button
         android:layout_width="96dp"
-        android:layout_height="96dp" android:background="@drawable/block_small_icon"
+        android:layout_height="96dp"
+        android:background="@drawable/block_small_icon"
+        android:scaleType="centerCrop"
+        android:visibility="invisible"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="30dp"/>
+
+    <Button
         android:id="@+id/YearTwo"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="166dp" android:layout_marginStart="239dp"
-        android:visibility="invisible" app:layout_constraintStart_toStartOf="parent"/>
-    <Button
         android:layout_width="96dp"
-        android:layout_height="96dp" android:background="@drawable/block_small_icon"
+        android:layout_height="96dp"
+        android:background="@drawable/block_small_icon"
+        android:visibility="invisible"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="100dp"
+        android:layout_marginEnd="100dp"
+        />
+
+    <Button
         android:id="@+id/YearThree"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="358dp" android:layout_marginTop="47dp"
-        android:visibility="invisible" app:layout_constraintStart_toStartOf="parent"/>
-    <Button
         android:layout_width="96dp"
-        android:layout_height="96dp" android:background="@drawable/block_small_icon"
+        android:layout_height="96dp"
+        android:background="@drawable/block_small_icon"
+        android:visibility="invisible"
+        android:layout_below="@id/YearTwo"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="70dp"
+
+        />
+
+    <Button
         android:id="@+id/YearFour"
-        android:visibility="invisible"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="860dp" app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="118dp"/>
-    <Button
         android:layout_width="96dp"
-        android:layout_height="96dp" android:background="@drawable/block_small_icon"
+        android:layout_height="96dp"
+        android:background="@drawable/block_small_icon"
+        android:visibility="invisible"
+        android:layout_below="@id/YearOne"
+        android:layout_marginTop="50dp"
+        android:layout_marginStart="10dp"/>
+
+    <Button
         android:id="@+id/YearFive"
-        android:visibility="invisible"
-        app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="24dp"
-        app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="237dp"/>
-    <Button
         android:layout_width="96dp"
-        android:layout_height="96dp" android:background="@drawable/block_small_icon"
+        android:layout_height="96dp"
+        android:background="@drawable/block_small_icon"
+        android:visibility="invisible"
+        android:layout_below="@id/YearFour"
+        android:layout_marginTop="60dp"
+        android:layout_marginStart="100dp"
+         />
+
+    <Button
         android:id="@+id/YearSix"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="309dp"
-        android:visibility="invisible" android:layout_marginStart="215dp"/>
-    <Button
         android:layout_width="96dp"
-        android:layout_height="96dp" android:background="@drawable/block_small_icon"
-        android:id="@+id/YearEight"
+        android:layout_height="96dp"
+        android:background="@drawable/block_small_icon"
         android:visibility="invisible"
-        app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="645dp"
-        app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="262dp"/>
+        android:layout_below="@id/YearThree"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="80dp"
+        android:layout_alignParentEnd="true"
+         />
+
     <Button
+        android:id="@+id/YearEight"
         android:layout_width="96dp"
-        android:layout_height="96dp" android:background="@drawable/block_small_icon"
+        android:layout_height="96dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="164dp"
+        android:background="@drawable/block_small_icon"
+        android:visibility="invisible" />
+
+    <Button
         android:id="@+id/YearSeven"
-        android:visibility="invisible" app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="71dp" app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="549dp"/>
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:background="@drawable/block_small_icon"
+        android:visibility="invisible"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="100dp"
+        android:layout_marginEnd="30dp"/>
+
     <TextView
-        android:text="TextONE"
+        android:text="@+text/TextONE"
         android:layout_width="24dp"
         android:layout_height="24dp" android:id="@+id/yearONEText"
         android:background="@color/yellow"
         android:textColor="@color/black" android:gravity="center"
-        app:layout_constraintStart_toStartOf="@+id/YearOne" app:layout_constraintTop_toTopOf="@+id/YearOne"
         android:visibility="invisible"
+        android:layout_alignTop="@id/YearOne"
+        android:layout_alignStart="@id/YearOne"
         />
     <TextView
-        android:text="TextEIGHT"
+        android:text="@+text/TextEIGHT"
         android:layout_width="24dp"
         android:layout_height="24dp" android:id="@+id/yearEIGHTText"
         android:background="@color/yellow"
         android:textColor="@color/black" android:gravity="center"
-        app:layout_constraintStart_toStartOf="@+id/YearEight" app:layout_constraintTop_toTopOf="@+id/YearEight"
         android:visibility="invisible"
+        android:layout_alignTop="@id/YearEight"
+        android:layout_alignStart="@id/YearEight"
         />
     <TextView
-        android:text="TextTWO"
+        android:text="@+text/TextTWO"
         android:layout_width="24dp"
         android:layout_height="24dp" android:id="@+id/yearTWOText" android:textColor="@color/black" android:gravity="center"
         android:background="@color/yellow"
         android:visibility="invisible"
-        app:layout_constraintTop_toTopOf="@+id/YearTwo" app:layout_constraintStart_toStartOf="@+id/YearTwo"/>
+        android:layout_alignTop="@id/YearTwo"
+        android:layout_alignStart="@id/YearTwo"
+        />
     <TextView
-        android:text="TextTHREE"
+        android:text="@+text/TextTHREE"
         android:layout_width="24dp"
         android:layout_height="24dp" android:id="@+id/yearTHREEText" android:textColor="@color/black" android:gravity="center"
         android:background="@color/yellow"
         android:visibility="invisible"
-        app:layout_constraintTop_toTopOf="@+id/YearThree" app:layout_constraintStart_toStartOf="@+id/YearThree"/>
+        android:layout_alignTop="@id/YearThree"
+        android:layout_alignStart="@id/YearThree"
+        />
     <TextView
-        android:text="TextFOUR"
+        android:text="@+text/TextFOUR"
         android:layout_width="24dp"
         android:layout_height="24dp" android:id="@+id/yearFOURText" android:textColor="@color/black" android:gravity="center"
         android:background="@color/yellow"
         android:visibility="invisible"
-        app:layout_constraintTop_toTopOf="@+id/YearFour" app:layout_constraintStart_toStartOf="@+id/YearFour"/>
+        android:layout_alignTop="@id/YearFour"
+        android:layout_alignStart="@id/YearFour"
+        />
     <TextView
-        android:text="TextFIVE"
+        android:text="@+text/TextFIVE"
         android:layout_width="24dp"
         android:layout_height="24dp" android:id="@+id/yearFIVEText" android:textColor="@color/black" android:gravity="center"
         android:background="@color/yellow"
         android:visibility="invisible"
-        app:layout_constraintStart_toStartOf="@+id/YearFive" app:layout_constraintTop_toTopOf="@+id/YearFive"/>
+        android:layout_alignTop="@id/YearFive"
+        android:layout_alignStart="@id/YearFive"
+        />
     <TextView
-        android:text="TextSIX"
+        android:text="@+text/TextSIX"
         android:layout_width="24dp"
         android:layout_height="24dp" android:id="@+id/yearSIXText" android:textColor="@color/black" android:gravity="center"
         android:background="@color/yellow"
         android:visibility="invisible"
-        app:layout_constraintStart_toStartOf="@+id/YearSix" app:layout_constraintTop_toTopOf="@+id/YearSix"/>
+        android:layout_alignTop="@id/YearSix"
+        android:layout_alignStart="@id/YearSix"
+        />
     <TextView
-        android:text="TextSEVEN"
+        android:text="@+text/TextSEVEN"
         android:layout_width="24dp"
         android:layout_height="24dp" android:id="@+id/yearSEVENText" android:textColor="@color/black" android:gravity="center"
         android:background="@color/yellow"
         android:visibility="invisible"
-        app:layout_constraintStart_toStartOf="@+id/YearSeven" app:layout_constraintTop_toTopOf="@+id/YearSeven"/>
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_alignTop="@id/YearSeven"
+        android:layout_alignStart="@id/YearSeven"
+        />
+</RelativeLayout>

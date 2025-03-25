@@ -6,93 +6,156 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".StartingPageActivity"
-    android:background="@drawable/block_background_landscape">
+    android:background="@color/white">
     <Button
-        android:layout_width="96dp"
-        android:layout_height="96dp" android:background="@drawable/block_small_icon"
-        android:scaleType="centerCrop"
-        android:id="@+id/YearONE"
-        app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="48dp"
-        android:visibility="visible" android:layout_marginStart="72dp"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/logOut"
+        android:textColor="@color/black"
+        android:background="@android:color/transparent"
+        android:text="Ausloggen."
+        android:textAllCaps="false"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
     <Button
-        android:layout_width="96dp"
-        android:layout_height="96dp" android:background="@drawable/block_small_icon"
-        android:id="@+id/YearTWO"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="166dp" android:layout_marginStart="239dp"
-        android:visibility="visible" app:layout_constraintStart_toStartOf="parent"/>
-    <Button
-        android:layout_width="96dp"
-        android:layout_height="96dp" android:background="@drawable/block_small_icon"
-        android:id="@+id/YearTHREE"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="358dp" android:layout_marginTop="47dp"
-        android:visibility="visible" app:layout_constraintStart_toStartOf="parent"/>
-    <Button
-        android:layout_width="96dp"
-        android:layout_height="96dp" android:background="@drawable/block_small_icon"
         android:id="@+id/YearFOUR"
-        android:visibility="visible"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="860dp" app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="118dp"/>
-    <Button
         android:layout_width="96dp"
-        android:layout_height="96dp" android:background="@drawable/block_small_icon"
-        android:id="@+id/YearFIVE"
+        android:layout_height="96dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/block_small_icon"
         android:visibility="visible"
-        app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="24dp"
-        app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="237dp"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
     <Button
-        android:layout_width="96dp"
-        android:layout_height="96dp" android:background="@drawable/block_small_icon"
         android:id="@+id/YearSIX"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="309dp"
-        android:visibility="visible" android:layout_marginStart="215dp"/>
-    <Button
         android:layout_width="96dp"
-        android:layout_height="96dp" android:background="@drawable/block_small_icon"
-        android:id="@+id/YearSEVEN"
-        android:visibility="visible" app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="71dp" app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="549dp"/>
-    <Button
-        android:layout_width="96dp"
-        android:layout_height="96dp" android:background="@drawable/block_small_icon"
-        android:id="@+id/YearEIGHT"
+        android:layout_height="96dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/block_small_icon"
         android:visibility="visible"
-        app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="645dp"
-        app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="262dp"/>
+        app:layout_constraintEnd_toStartOf="@id/YearFIVE"
+        app:layout_constraintTop_toBottomOf="@id/YearFIVE"
+        app:layout_constraintBottom_toTopOf="@id/YearSEVEN"/>
+
     <Button
+        android:id="@+id/YearONE"
         android:layout_width="96dp"
-        android:layout_height="96dp" android:background="@drawable/block_small_icon"
-        android:id="@+id/YearNINE"
-        android:visibility="visible" app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="332dp" app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="844dp"/>
+        android:layout_height="96dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/block_small_icon"
+        android:scaleType="centerCrop"
+        android:visibility="visible"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/YearFIVE"
+        app:layout_constraintStart_toEndOf="@id/YearFIVE"
+        app:layout_constraintBottom_toTopOf="@id/YearEIGHT"/>
     <Button
+        android:id="@+id/YearTHREE"
         android:layout_width="96dp"
-        android:layout_height="96dp" android:background="@drawable/block_small_icon"
+        android:layout_height="96dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/block_small_icon"
+        android:visibility="visible"
+        app:layout_constraintTop_toBottomOf="@id/YearNINE"
+        app:layout_constraintBottom_toTopOf="@id/YearTEN"
+        app:layout_constraintStart_toStartOf="@id/YearTEN" />
+
+    <Button
         android:id="@+id/YearTEN"
-        android:visibility="visible" app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="332dp" app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="468dp"/>
-    <Button
         android:layout_width="96dp"
-        android:layout_height="96dp" android:background="@drawable/block_small_icon"
+        android:layout_height="96dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/block_small_icon"
+        android:visibility="visible"
+        app:layout_constraintTop_toBottomOf="@id/YearTHREE"
+        app:layout_constraintStart_toEndOf="@id/YearTWO"
+        app:layout_constraintEnd_toEndOf="@id/YearSIX"
+        app:layout_constraintBottom_toTopOf="@id/YearSIX" />
+
+    <Button
+        android:id="@+id/YearFIVE"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:background="@drawable/block_small_icon"
+        android:visibility="visible"
+        android:layout_marginEnd="75dp"
+        app:layout_constraintStart_toEndOf="@id/YearTEN"
+        app:layout_constraintTop_toBottomOf="@id/YearELEVEN"
+        app:layout_constraintBottom_toTopOf="@id/YearFOUR"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/YearTWO"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/block_small_icon"
+        android:visibility="visible"
+        app:layout_constraintEnd_toStartOf="@id/YearTEN"
+        app:layout_constraintTop_toTopOf="@id/YearTEN"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <Button
+        android:id="@+id/YearSEVEN"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_marginBottom="50dp"
+        android:background="@drawable/block_small_icon"
+        android:visibility="visible"
+        app:layout_constraintStart_toEndOf="@id/YearTWELVE"
+        app:layout_constraintBottom_toBottomOf="@id/YearTWELVE" />
+
+    <Button
+        android:id="@+id/YearEIGHT"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/block_small_icon"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/YearSEVEN"
+        app:layout_constraintBottom_toTopOf="@id/YearFOUR" />
+
+    <Button
+        android:id="@+id/YearNINE"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/block_small_icon"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/YearELEVEN" />
+
+    <Button
         android:id="@+id/YearELEVEN"
-        android:visibility="visible" app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="44dp" app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="712dp"/>
-    <Button
         android:layout_width="96dp"
-        android:layout_height="96dp" android:background="@drawable/block_small_icon"
+        android:layout_height="96dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/block_small_icon"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
         android:id="@+id/YearTWELVE"
-        android:visibility="visible" app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="192dp" app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="420dp"/>
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="50dp"
+        android:background="@drawable/block_small_icon"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
     <TextView
         android:text="A"
         android:layout_width="24dp"

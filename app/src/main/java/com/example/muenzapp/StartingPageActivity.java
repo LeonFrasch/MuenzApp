@@ -2,17 +2,48 @@ package com.example.muenzapp;
 
 import com.example.muenzapp.GermanCoins.GermanOverviewActivity;
 import com.example.muenzapp.InternCoins.InternCoinTableActivity;
+
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.Button;
+import android.widget.Toast;
+//import com.google.auth.oauth2.GoogleCredentials;
+//import com.google.firebase.Firestore;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class StartingPageActivity extends AppCompatActivity {
     int[] imageButtonIDs = {R.id.YearONE, R.id.YearTWO, R.id.YearTHREE, R.id.YearFOUR, R.id.YearFIVE, R.id.YearSIX, R.id.YearSEVEN, R.id.YearEIGHT, R.id.YearNINE, R.id.YearTEN, R.id.YearELEVEN, R.id.YearTWELVE};
+    private Button logOut;
+
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.starting_page_layout);
+
+        logOut = findViewById(R.id.logOut);
+        logOut.setOnClickListener((v) -> {
+            // Benutzer ausloggen
+            FirebaseAuth.getInstance().signOut();
+
+            // Zeige eine Bestätigung, dass der Benutzer abgemeldet wurde
+            runOnUiThread(() -> {
+                Toast.makeText(StartingPageActivity.this, "Erfolgreich ausgelogt.", Toast.LENGTH_SHORT).show();
+            });
+
+            // Weiterleitung zur Login-Seite
+            Intent intent = new Intent(StartingPageActivity.this, LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish(); // Beende die aktuelle Activity, um sicherzustellen, dass der Benutzer zurück zur Login-Seite geht
+        });
+
+        FirebaseApp.initializeApp(this);
 
         for (int id : imageButtonIDs) {
             findViewById(id).setOnClickListener(this::doOnClick);

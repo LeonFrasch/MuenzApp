@@ -4,27 +4,26 @@ import com.example.muenzapp.TableItem;
 
 import java.util.Objects;
 
-public class CoinEntity {
+public class IISpecialD {
     private int coinYear;
-    private TableItem coinValue;
+    private TableItem coinType;
     private TableItem coinLetter;
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
 
-        CoinEntity otherCoin = (CoinEntity) obj;
+        IISpecialD otherCoin = (IISpecialD) obj;
 
         return coinYear == otherCoin.coinYear &&
-                coinValue == otherCoin.coinValue &&
+                coinType == otherCoin.coinType &&
                 coinLetter == otherCoin.coinLetter;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(coinYear, coinValue, coinLetter);
+        return Objects.hash(coinYear, coinType, coinLetter);
     }
-
     // GETTER UND SETTER
 
     public int getCoinYear() {
@@ -35,12 +34,12 @@ public class CoinEntity {
         this.coinYear = coinYear;
     }
 
-    public TableItem getCoinValue() {
-        return coinValue;
+    public TableItem getCoinType() {
+        return coinType;
     }
 
-    public void setCoinValue(TableItem coinValue) {
-        this.coinValue = coinValue;
+    public void setCoinType(TableItem coinType) {
+        this.coinType = coinType;
     }
 
     public TableItem getCoinLetter() {
@@ -50,5 +49,4 @@ public class CoinEntity {
     public void setCoinLetter(TableItem coinLetter) {
         this.coinLetter = coinLetter;
     }
-
 }
