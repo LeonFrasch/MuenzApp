@@ -98,10 +98,6 @@ public class InternCoinTableActivityIISpecial extends AppCompatActivity {
                     coin.put("coinType", entity.getCoinType());
                     coin.put("coinCountry", entity.getCoinCountry());
                     String filename = entity.getCoinYear() + ":" + entity.getCoinCountry() + ":" + entity.getCoinType();
-        //            db.collection("IISonder").document(filename)
-        //                    .set(coin, SetOptions.merge())
-        //                    .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully written!"))
-        //                    .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e));
                     db.collection("Sonder").document("IISonder").collection(coinCountry + "").document(filename)
                             .set(coin, SetOptions.merge())
                             .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully written!"))
@@ -109,10 +105,6 @@ public class InternCoinTableActivityIISpecial extends AppCompatActivity {
                 }
                 for (IISpecial entity : collect) {
                     String filename = entity.getCoinYear() + ":" + entity.getCoinCountry() + ":" + entity.getCoinType();
-        //            db.collection("IISonder").document(filename)
-        //                    .delete()
-        //                    .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully written!"))
-        //                    .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e));
                     db.collection("Sonder").document("IISonder").collection(coinCountry + "").document(filename)
                             .delete()
                             .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully written!"))
@@ -192,7 +184,6 @@ public class InternCoinTableActivityIISpecial extends AppCompatActivity {
                 Map<Integer, List<IISpecial>> coinMap = new HashMap<>(); // map with missing year and corresponding missing values
 
                 db.collection("Sonder").document("IISonder").collection(coinCountry + "").get().addOnSuccessListener(queryDocumentSnapshots -> {
-        //        db.collection("IISonder").get().addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!queryDocumentSnapshots.isEmpty()) {
                         for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
                             Map<String, Object> data = document.getData();

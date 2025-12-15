@@ -84,7 +84,6 @@ public class InternAddingActivityIISpecial extends AppCompatActivity {
                         coin.put("coinCountry", selectedCoinCountry);
                         String filename = selectedCoinYear + ":" + selectedCoinCountry + ":" + selectedType;
                         db.collection("Sonder").document("IISonder").collection(selectedCoinCountry + "").document(filename)
-        //                db.collection("IISonder").document(filename)
                                 .set(coin, SetOptions.merge())
                                 .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully written!"))
                                 .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e));

@@ -1,6 +1,22 @@
 package com.example.muenzapp;
 
+import static android.content.ContentValues.TAG;
 import static com.example.muenzapp.TableItem.*;
+
+import android.util.Log;
+
+import com.example.muenzapp.Database.CoinEntity;
+import com.example.muenzapp.Database.IISpecial;
+import com.example.muenzapp.Database.IISpecialD;
+import com.example.muenzapp.Database.InternCoinEntity;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class StaticHelper {
     public static TableItem findCoinCountryItem(String item) {
@@ -70,5 +86,103 @@ public class StaticHelper {
             case "CC3": return CC3;
         }
         return null;
+    }
+    public static void changeDatabase(FirebaseFirestore db, TableItem coinCountry, String activity) {
+        // get data of current database
+        switch (activity) {
+            case "SonderIID": { //case SonderII German
+                db.collection("Sonder").document("IISonder").collection("D").get().addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
+                            Map<String, Object> data = document.getData();
+                            TableItem coinLetter = stringToTableItem(data.get("coinLetter").toString());
+                            TableItem coinType = stringToTableItem(data.get("coinType").toString());
+                            Long coinYearLong = (Long) data.get("coinYear");
+                            int coinYear = (int) coinYearLong.longValue();
+
+                            Map<String, Object> coin = new HashMap<>();
+                            coin.put("coinYear", coinYear);
+                            coin.put("coinLetter", coinLetter);
+                            coin.put("coinType", coinType);
+
+                            String filename = coinYear + ":" + coinType + ":" + coinLetter;
+                            db.collection("coins").document("IISonder").collection("D").document(filename)
+                                    .set(coin, SetOptions.merge())
+                                    .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully written!"))
+                                    .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e));
+                        }
+                    }
+                });
+            }
+            case "SonderIIIntern": { //case SonderII Intern
+                db.collection("Sonder").document("IISonder").collection(coinCountry + "").get().addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
+                            Map<String, Object> data = document.getData();
+                            TableItem coinType = stringToTableItem(data.get("coinType").toString());
+                            Long coinYearLong = (Long) data.get("coinYear");
+                            int coinYear = (int) coinYearLong.longValue();
+
+                            Map<String, Object> coin = new HashMap<>();
+                            coin.put("coinYear", coinYear);
+                            coin.put("coinType", coinType);
+                            coin.put("coinCountry", coinCountry);
+
+                            String filename = coinYear + ":" + coinCountry + ":" + coinType;
+                            db.collection("coins").document("IISonder").collection(coinCountry + "").document(filename)
+                                    .set(coin, SetOptions.merge())
+                                    .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully written!"))
+                                    .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e));
+                        }
+                    }
+                });
+            }
+            case "OrdinaryD": {
+                db.collection("D").get().addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
+                            Map<String, Object> data = document.getData();
+                            Long coinYearLong = (Long) data.get("coinYear");
+                            int coinYear = (int) coinYearLong.longValue();
+                            TableItem coinValue = stringToTableItem(data.get("coinValue").toString());
+                            TableItem coinLetter = stringToTableItem(data.get("coinLetter").toString());
+
+                            Map<String, Object> coin = new HashMap<>();
+                            coin.put("coinYear", coinYear);
+                            coin.put("coinValue", coinValue);
+                            coin.put("coinLetter", coinLetter);
+
+                            String filename = coinYear + ":" + coinValue + ":" + coinLetter;
+                            db.collection("coins").document("Ordinary").collection("D").document(filename)
+                                    .set(coin, SetOptions.merge())
+                                    .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully written!"))
+                                    .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e));
+                        }
+                    }
+                });
+            }
+            case "OrdinaryIntern": {
+                db.collection(coinCountry.toString()).get().addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
+                            Map<String, Object> data = document.getData();
+                            TableItem coinValue = stringToTableItem(data.get("coinValue").toString());
+                            Long coinYearLong = (Long) data.get("coinYear");
+                            int coinYear = (int) coinYearLong.longValue();
+
+                            Map<String, Object> coin = new HashMap<>();
+                            coin.put("coinYear", coinYear);
+                            coin.put("coinValue", coinValue);
+                            String filename = coinYear + ":" + coinValue;
+
+                            db.collection("coins").document("Ordinary").collection(coinCountry + "").document(filename)
+                                    .set(coin, SetOptions.merge())
+                                    .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully written!"))
+                                    .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e));
+                        }
+                    }
+                });
+            }
+        }
     }
 }

@@ -94,7 +94,6 @@ public class GermanCoinTableActivityIISpecial extends AppCompatActivity {
                     coin.put("coinType", entity.getCoinType());
                     String filename = entity.getCoinYear() + ":" + entity.getCoinType() + ":" + entity.getCoinLetter();
                     db.collection("Sonder").document("IISonder").collection("D").document(filename)
-            //        db.collection("IISonderD").document(filename)
                             .set(coin, SetOptions.merge())
                             .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully written!"))
                             .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e));
@@ -102,7 +101,6 @@ public class GermanCoinTableActivityIISpecial extends AppCompatActivity {
                 for (IISpecialD entity : collect) {
                     String filename = entity.getCoinYear() + ":" + entity.getCoinType() + ":" + entity.getCoinLetter();
                     db.collection("Sonder").document("IISonder").collection("D").document(filename)
-            //        db.collection("IISonderD").document(filename)
                             .delete()
                             .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully written!"))
                             .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e));
@@ -179,7 +177,6 @@ public class GermanCoinTableActivityIISpecial extends AppCompatActivity {
 
                 Map<Integer, Map<TableItem, List<IISpecialD>>> coinMap = new HashMap<>(); // map with missing year and with map with type and corresponding missing values
                 db.collection("Sonder").document("IISonder").collection("D").get().addOnSuccessListener(queryDocumentSnapshots -> {
-        //        db.collection("IISonderD").get().addOnSuccessListener(queryDocumentSnapshots -> {
                     int numberOfDifferentYears = 0;
                     if (!queryDocumentSnapshots.isEmpty()) {
                         for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
