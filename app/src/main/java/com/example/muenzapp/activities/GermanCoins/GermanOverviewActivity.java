@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.muenzapp.R;
 import com.example.muenzapp.activities.StartingPageActivity;
+import com.example.muenzapp.data.repository.AuthRepository;
 import com.example.muenzapp.data.repository.CoinRepository;
 import com.example.muenzapp.utils.FirestoreDataCallback;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,7 +30,7 @@ public class GermanOverviewActivity extends AppCompatActivity {
     private final int[] loadedYears = new int[8];
 
     private CoinRepository repository;
-    private FirebaseAuth auth;
+    private AuthRepository authRepository;
     private boolean isAdmin = false;
 
     @SuppressLint("MissingInflatedId")
@@ -39,7 +40,7 @@ public class GermanOverviewActivity extends AppCompatActivity {
         setContentView(R.layout.german_overview_layout);
 
         repository = CoinRepository.getInstance();
-        auth = FirebaseAuth.getInstance();
+        authRepository = AuthRepository.getInstance();
 
         setupNavigationButtons();
         checkAdminStatus();
@@ -71,9 +72,11 @@ public class GermanOverviewActivity extends AppCompatActivity {
     }
 
     private void checkAdminStatus() {
-        if (auth.getCurrentUser() == null) return;
+        if (authRepository.getCurrentUser() == null) return;
 
-        repository.checkIsAdmin(auth.getUid(), new FirestoreDataCallback<Boolean>() {
+        String uid = authRepository.getCurrentUser().getUid();
+
+        repository.checkIsAdmin(uid, new FirestoreDataCallback<Boolean>() {
             @Override
             public void onSuccess(Boolean result) {
                 isAdmin = result;

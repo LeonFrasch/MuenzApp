@@ -13,8 +13,7 @@ import android.widget.Toast;
 import com.example.muenzapp.R;
 import com.example.muenzapp.TableItem;
 import com.example.muenzapp.data.model.CoinEntity;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
+import com.example.muenzapp.data.repository.AuthRepository;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -37,7 +36,6 @@ public class GermanCoinTableActivity extends AppCompatActivity {
     private List<CoinEntity> collect;
     private CoinRepository repository;
     private boolean isAdmin;
-    private FirebaseAuth auth;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -45,27 +43,33 @@ public class GermanCoinTableActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.german_coin_table_layout);
 
-        repository = CoinRepository.getInstance(); // load Repository
-        auth = FirebaseAuth.getInstance(); // load Authentication
+        // Initialize
+        repository = CoinRepository.getInstance();
+        AuthRepository authRepository = AuthRepository.getInstance();
 
         missing = new ArrayList<>();
         collect = new ArrayList<>();
 
-        // Admin Check (Kann man später auch ins Repository auslagern)
-        FirebaseFirestore.getInstance().collection("userRole").get().addOnSuccessListener(snapshots -> {
-            List<String> adminUIDs = new ArrayList<>();
-            if (!snapshots.isEmpty()) {
-                snapshots.getDocuments().forEach(doc -> adminUIDs.add(doc.get("UID").toString()));
-            }
-            isAdmin = adminUIDs.contains(auth.getUid());
+        // Admin Check
+        if (authRepository.getCurrentUser() != null) {
+            String uid = authRepository.getCurrentUser().getUid();
+            repository.checkIsAdmin(uid, new FirestoreDataCallback<Boolean>() {
+                @Override
+                public void onSuccess(Boolean result) {
+                    isAdmin = result;
+                    if (isAdmin) {
+                        setupAdminClickListeners();
+                    }
+                }
 
-            // Wenn Admin, dann Click-Listener setzen
-            if (isAdmin) {
-                setupAdminClickListeners();
-            }
-        });
+                @Override
+                public void onFailure(Exception e) {
+                    Log.e("AdminCheck", "Fehler beim Prüfen der Rechte", e);
+                }
+            });
+        }
 
-        // Schließen Button & Speichern Logik
+        // UI Listener
         findViewById(R.id.closeCoinTable).setOnClickListener((v) -> saveChangesAndExit());
 
         coinYear = getIntent().getIntExtra("Year", -100);
@@ -73,7 +77,7 @@ public class GermanCoinTableActivity extends AppCompatActivity {
 
         setupDefaultTable();
 
-        // DATEN LADEN via Repository
+        // Load Data
         loadDataFromRepository();
     }
 
@@ -94,6 +98,7 @@ public class GermanCoinTableActivity extends AppCompatActivity {
         });
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     private void updateTableWithData(List<CoinEntity> coins) {
         for (CoinEntity coin : coins) {
             TableItem letter = coin.getCoinLetter();
@@ -214,6 +219,7 @@ public class GermanCoinTableActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     private void optimizeTableLayout() {
         // TreeSet verwenden, damit die Reihenfolge (1, 2, 3...) erhalten bleibt!
         // Sonst sind Buchstaben und Werte in der Tabelle vertauscht.

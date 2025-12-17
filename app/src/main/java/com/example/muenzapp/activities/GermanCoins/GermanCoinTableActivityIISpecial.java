@@ -18,10 +18,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.muenzapp.R;
 import com.example.muenzapp.TableItem;
 import com.example.muenzapp.data.model.IISpecialD;
+import com.example.muenzapp.data.repository.AuthRepository;
 import com.example.muenzapp.data.repository.CoinRepository;
 import com.example.muenzapp.utils.FirestoreCallback;
 import com.example.muenzapp.utils.FirestoreDataCallback;
-import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,7 +41,6 @@ public class GermanCoinTableActivityIISpecial extends AppCompatActivity {
     private List<IISpecialD> missing;
 
     private CoinRepository repository;
-    private FirebaseAuth auth;
     private boolean isAdmin;
 
     // Gekürzte Darstellung der IDs, Inhalt ist gleich geblieben
@@ -80,13 +79,13 @@ public class GermanCoinTableActivityIISpecial extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.german_coin_table_layout_ii_special);
 
-        // 1. Initialisierung
+        // Initialize
         repository = CoinRepository.getInstance();
-        auth = FirebaseAuth.getInstance();
+        AuthRepository authRepository = AuthRepository.getInstance();
         missing = new ArrayList<>();
         collect = new ArrayList<>();
 
-        // 2. Button Listener setzen
+        // Setup Listener
         findViewById(R.id.openAddingYearSpecialII).setOnClickListener((v) -> {
             Intent intent = new Intent(this, GermanAddingActivityIISpecial.class);
             startActivity(intent);
@@ -94,26 +93,30 @@ public class GermanCoinTableActivityIISpecial extends AppCompatActivity {
 
         findViewById(R.id.closeCoinTable).setOnClickListener((v) -> saveChangesAndExit());
 
-        // 3. Tabelle initialisieren (Default Werte)
+        // Initialize Table
         setupDefaultTable();
 
-        // 4. Admin Check
-        repository.checkIsAdmin(auth.getUid(), new FirestoreDataCallback<Boolean>() {
-            @Override
-            public void onSuccess(Boolean result) {
-                isAdmin = result;
-                if (!isAdmin) {
-                    findViewById(R.id.openAddingYearSpecialII).setVisibility(View.GONE);
-                } else {
-                    setupAdminClickListeners();
+        // Admin Check
+        if (authRepository.getCurrentUser() != null) {
+            repository.checkIsAdmin(authRepository.getCurrentUser().getUid(), new FirestoreDataCallback<Boolean>() {
+                @Override
+                public void onSuccess(Boolean result) {
+                    isAdmin = result;
+                    if (!isAdmin) {
+                        findViewById(R.id.openAddingYearSpecialII).setVisibility(View.GONE);
+                    } else {
+                        setupAdminClickListeners();
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Exception e) {
-                findViewById(R.id.openAddingYearSpecialII).setVisibility(View.GONE);
-            }
-        });
+                @Override
+                public void onFailure(Exception e) {
+                    findViewById(R.id.openAddingYearSpecialII).setVisibility(View.GONE);
+                }
+            });
+        } else {
+            findViewById(R.id.openAddingYearSpecialII).setVisibility(View.GONE);
+        }
 
         // 5. Daten laden
         loadDataFromRepository();
@@ -192,6 +195,7 @@ public class GermanCoinTableActivityIISpecial extends AppCompatActivity {
         runOnUiThread(this::optimizeTableLayout);
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     private void optimizeTableLayout() {
         // TreeSet für garantierte Sortierung!
         Set<Integer> rowWithMissing = new TreeSet<>();
@@ -320,6 +324,7 @@ public class GermanCoinTableActivityIISpecial extends AppCompatActivity {
 
     // --- Helper ---
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     public void click(View view) {
         int id = view.getId();
         int row = -1, column = -1;
@@ -340,11 +345,6 @@ public class GermanCoinTableActivityIISpecial extends AppCompatActivity {
 
         if (!found || row == -1 || column == -1) return;
 
-        // Jahr aus dem tableYears Array holen.
-        // WICHTIG: Das Array ist basierend auf den Original-Daten gefüllt,
-        // row entspricht hier dem visuellen Index der optimierten Tabelle.
-        // Da wir beim Optimieren tableYears[] linear auslesen, stimmt die Zuordnung,
-        // solange row-1 innerhalb der Grenzen liegt.
         String yearString = "";
         try {
             yearString = ((TextView) findViewById(buttonIDs[row][0])).getText().toString();
@@ -388,6 +388,7 @@ public class GermanCoinTableActivityIISpecial extends AppCompatActivity {
         updateCloseButtonColor();
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     private void updateCloseButtonColor() {
         if (!missing.isEmpty() || !collect.isEmpty()) {
             findViewById(R.id.closeCoinTable).setBackground(getDrawable(table_border_red));

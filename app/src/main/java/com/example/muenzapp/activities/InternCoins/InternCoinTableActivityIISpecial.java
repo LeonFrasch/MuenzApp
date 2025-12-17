@@ -19,10 +19,10 @@ import android.widget.Toast;
 import com.example.muenzapp.data.model.IISpecial;
 import com.example.muenzapp.R;
 import com.example.muenzapp.TableItem;
+import com.example.muenzapp.data.repository.AuthRepository;
 import com.example.muenzapp.data.repository.CoinRepository;
 import com.example.muenzapp.utils.FirestoreCallback;
 import com.example.muenzapp.utils.FirestoreDataCallback;
-import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -77,7 +77,7 @@ public class InternCoinTableActivityIISpecial extends AppCompatActivity {
 
         // Initialize
         repository = CoinRepository.getInstance();
-        FirebaseAuth auth = FirebaseAuth.getInstance();
+        AuthRepository authRepository = AuthRepository.getInstance();
         missing = new ArrayList<>();
         collect = new ArrayList<>();
 
@@ -91,22 +91,26 @@ public class InternCoinTableActivityIISpecial extends AppCompatActivity {
         setupNavigationButtons();
 
         // Admin check
-        repository.checkIsAdmin(auth.getUid(), new FirestoreDataCallback<Boolean>() {
-            @Override
-            public void onSuccess(Boolean result) {
-                isAdmin = result;
-                if (!isAdmin) {
-                    findViewById(R.id.openAddingInternYearSpecialII).setVisibility(View.GONE);
-                } else {
-                    setupAdminClickListeners();
+        if (authRepository.getCurrentUser() != null) {
+            repository.checkIsAdmin(authRepository.getCurrentUser().getUid(), new FirestoreDataCallback<Boolean>() {
+                @Override
+                public void onSuccess(Boolean result) {
+                    isAdmin = result;
+                    if (!isAdmin) {
+                        findViewById(R.id.openAddingInternYearSpecialII).setVisibility(View.GONE);
+                    } else {
+                        setupAdminClickListeners();
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Exception e) {
-                findViewById(R.id.openAddingInternYearSpecialII).setVisibility(View.GONE);
-            }
-        });
+                @Override
+                public void onFailure(Exception e) {
+                    findViewById(R.id.openAddingInternYearSpecialII).setVisibility(View.GONE);
+                }
+            });
+        } else {
+            findViewById(R.id.openAddingInternYearSpecialII).setVisibility(View.GONE);
+        }
 
         // Load data
         loadDataFromRepository();
