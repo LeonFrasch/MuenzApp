@@ -1,20 +1,16 @@
-package com.example.muenzapp;
+package com.example.muenzapp.activities;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.muenzapp.GermanCoins.GermanOverviewActivity;
-import com.google.android.gms.tasks.OnFailureListener;
+import com.example.muenzapp.R;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
 

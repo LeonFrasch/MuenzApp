@@ -1,4 +1,4 @@
-package com.example.muenzapp.InternCoins;
+package com.example.muenzapp.activities.InternCoins;
 
 import static android.content.ContentValues.TAG;
 
@@ -13,9 +13,9 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.example.muenzapp.R;
-import com.example.muenzapp.StartingPageActivity;
-import com.example.muenzapp.Database.*;
+import com.example.muenzapp.activities.StartingPageActivity;
 import com.example.muenzapp.TableItem;
+import com.example.muenzapp.data.model.InternCoinEntity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;

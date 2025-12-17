@@ -1,7 +1,8 @@
-package com.example.muenzapp;
+package com.example.muenzapp.activities;
 
-import com.example.muenzapp.GermanCoins.GermanOverviewActivity;
-import com.example.muenzapp.InternCoins.InternCoinTableActivity;
+import com.example.muenzapp.R;
+import com.example.muenzapp.activities.GermanCoins.GermanOverviewActivity;
+import com.example.muenzapp.activities.InternCoins.InternCoinTableActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -13,7 +14,6 @@ import android.widget.Toast;
 //import com.google.auth.oauth2.GoogleCredentials;
 //import com.google.firebase.Firestore;
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class StartingPageActivity extends AppCompatActivity {

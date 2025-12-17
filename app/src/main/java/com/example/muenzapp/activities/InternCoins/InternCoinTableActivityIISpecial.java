@@ -1,4 +1,4 @@
-package com.example.muenzapp.InternCoins;
+package com.example.muenzapp.activities.InternCoins;
 
 import static android.content.ContentValues.TAG;
 import static com.example.muenzapp.R.drawable.table_border;
@@ -18,7 +18,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.muenzapp.Database.IISpecial;
+import com.example.muenzapp.data.model.IISpecial;
 import com.example.muenzapp.R;
 import com.example.muenzapp.TableItem;
 import com.google.firebase.auth.FirebaseAuth;

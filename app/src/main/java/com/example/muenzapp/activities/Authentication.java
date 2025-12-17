@@ -1,8 +1,7 @@
-package com.example.muenzapp;
+package com.example.muenzapp.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -10,9 +9,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.muenzapp.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.rpc.context.AttributeContext;
 
 public class Authentication extends AppCompatActivity {
     //TODO passwort nicht sichtbar evtl da sonst weiteres zeichen zum sichtbar machen erfolderlich
