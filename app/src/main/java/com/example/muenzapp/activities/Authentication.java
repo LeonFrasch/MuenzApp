@@ -10,59 +10,72 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.muenzapp.R;
+import com.example.muenzapp.data.repository.AuthRepository;
+import com.example.muenzapp.utils.FirestoreCallback;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class Authentication extends AppCompatActivity {
-    //TODO passwort nicht sichtbar evtl da sonst weiteres zeichen zum sichtbar machen erfolderlich
+    //TODO passwort nicht sichtbar evtl da sonst weiteres zeichen zum sichtbar machen erforderlich
     private Button registerButton;
     private Button loginButton;
-    private EditText email;
-    private EditText password;
-    private FirebaseAuth auth;
+    private EditText emailText;
+    private EditText passwordText;
+    private AuthRepository authRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_authentication);
 
+        // Initialize
+        authRepository = AuthRepository.getInstance();
+
+        // UI setup
         loginButton = findViewById(R.id.loginButton);
-        email = findViewById(R.id.emailText);
-        password = findViewById(R.id.passwordText);
         registerButton = findViewById(R.id.registerButton);
+        emailText = findViewById(R.id.emailText);
+        passwordText = findViewById(R.id.passwordText);
 
-        auth = FirebaseAuth.getInstance();
+        // Setup Listener
+        registerButton.setOnClickListener(v -> attemptRegistration());
 
-        registerButton.setOnClickListener((v) -> {
-            String txt_email = email.getText().toString();
-            String txt_password = password.getText().toString();
-
-            if (TextUtils.isEmpty(txt_email) || TextUtils.isEmpty(txt_password)) {
-                runOnUiThread(() -> {
-                    Toast.makeText(Authentication.this, "Fehlende Email oder Passwort!", Toast.LENGTH_SHORT).show();
-                });
-            } else {
-                registerUser(txt_email, txt_password);
-            }
-        });
-
-
-        loginButton.setOnClickListener((view) -> {
+        loginButton.setOnClickListener(v -> {
             startActivity(new Intent(Authentication.this, LoginActivity.class));
             finish();
         });
     }
-    private void registerUser(String email, String password) {
-        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(Authentication.this, task -> {
-            if (task.isSuccessful()) {
+    private void attemptRegistration() {
+        String email = emailText.getText().toString().trim();
+        String password = passwordText.getText().toString().trim();
+
+        if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
+            Toast.makeText(this, "Fehlende Email oder Passwort!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Passwortlänge prüfen (Firebase verlangt min. 6 Zeichen)
+        if (password.length() < 6) {
+            passwordText.setError("Passwort muss mind. 6 Zeichen lang sein");
+            return;
+        }
+
+        performRegister(email, password);
+    }
+    private void performRegister(String email, String password) {
+        authRepository.register(email, password, new FirestoreCallback() {
+            @Override
+            public void onSuccess() {
                 runOnUiThread(() -> {
                     Toast.makeText(Authentication.this, "Registrierung erfolgreich!", Toast.LENGTH_SHORT).show();
+                    navigateToStart();
                 });
-                startActivity(new Intent(Authentication.this, Authentication.class));
-                finish();
-            } else {
+            }
+
+            @Override
+            public void onFailure(Exception e) {
                 runOnUiThread(() -> {
-                    Toast.makeText(Authentication.this, "Registrierung fehlgeschlagen!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Authentication.this, "Registrierung fehlgeschlagen: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
             }
         });
@@ -70,11 +83,17 @@ public class Authentication extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        FirebaseUser currentUser = auth.getCurrentUser();
-        if (currentUser != null) {
-            // Der Benutzer ist bereits angemeldet
-            startActivity(new Intent(Authentication.this, StartingPageActivity.class));
-            finish(); // Aktuelle Activity schließen
+        // Check ob User bereits eingeloggt ist (Repository nutzen)
+        if (authRepository.isLoggedIn()) {
+            navigateToStart();
         }
+    }
+
+    private void navigateToStart() {
+        Intent intent = new Intent(Authentication.this, StartingPageActivity.class);
+        // Flags setzen, damit man nicht mit "Zurück" wieder auf die Login-Seite kommt
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 }

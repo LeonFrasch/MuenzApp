@@ -11,14 +11,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.Toast;
-//import com.google.auth.oauth2.GoogleCredentials;
-//import com.google.firebase.Firestore;
+import com.example.muenzapp.data.repository.AuthRepository;
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.auth.FirebaseAuth;
 
 public class StartingPageActivity extends AppCompatActivity {
     int[] imageButtonIDs = {R.id.YearONE, R.id.YearTWO, R.id.YearTHREE, R.id.YearFOUR, R.id.YearFIVE, R.id.YearSIX, R.id.YearSEVEN, R.id.YearEIGHT, R.id.YearNINE, R.id.YearTEN, R.id.YearELEVEN, R.id.YearTWELVE};
-    private Button logOut;
+    private AuthRepository authRepository;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -26,90 +24,62 @@ public class StartingPageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.starting_page_layout);
 
-        logOut = findViewById(R.id.logOut);
-        logOut.setOnClickListener((v) -> {
-            // Benutzer ausloggen
-            FirebaseAuth.getInstance().signOut();
+        FirebaseApp.initializeApp(this);
+        authRepository = AuthRepository.getInstance();
 
-            // Zeige eine Bestätigung, dass der Benutzer abgemeldet wurde
-            runOnUiThread(() -> {
-                Toast.makeText(StartingPageActivity.this, "Erfolgreich ausgelogt.", Toast.LENGTH_SHORT).show();
-            });
+        setupLogoutButton();
+        setupCountryButtons();
+    }
+    private void setupLogoutButton() {
+        Button logOut = findViewById(R.id.logOut);
+        logOut.setOnClickListener(v -> {
+            authRepository.logout();
 
-            // Weiterleitung zur Login-Seite
+            Toast.makeText(StartingPageActivity.this, "Erfolgreich ausgelogt.", Toast.LENGTH_SHORT).show();
+
             Intent intent = new Intent(StartingPageActivity.this, LoginActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
-            finish(); // Beende die aktuelle Activity, um sicherzustellen, dass der Benutzer zurück zur Login-Seite geht
+            finish();
         });
-
-        FirebaseApp.initializeApp(this);
-
+    }
+    private void setupCountryButtons() {
         for (int id : imageButtonIDs) {
-            findViewById(id).setOnClickListener(this::doOnClick);
+            findViewById(id).setOnClickListener(this::handleCountryClick);
         }
     }
-    private void doOnClick(View view) {
-        int i = 0;
-        for (; i < imageButtonIDs.length; i++) {
-            if (view.getId() == imageButtonIDs[i]) {
-                break;
-            }
+    private void handleCountryClick(View view) {
+        int id = view.getId();
+
+        if (id == R.id.YearFIVE) {
+            Intent intent = new Intent(this, GermanOverviewActivity.class);
+            startActivity(intent);
+            return;
         }
-        String country = "";
-        switch (i) {
-            case 0: {
-                country = "A";
-                break;
-            }
-            case 7: {
-                country = "I";
-                break;
-            }
-            case 5: {
-                country = "L";
-                break;
-            }
-            case 4: {
-                Intent intent = new Intent(this, GermanOverviewActivity.class);
-                startActivity(intent);
-                return;
-            }
-            case 3: {
-                country = "GR";
-                break;
-            }
-            case 2: {
-                country = "NL";
-                break;
-            }
-            case 1: {
-                country = "F";
-                break;
-            }
-            case 6: {
-                country = "E";
-                break;
-            }
-            case 8: {
-                country = "IR";
-                break;
-            }
-            case 9: {
-                country = "B";
-                break;
-            }
-            case 10: {
-                country = "FIN";
-                break;
-            }
-            case 11: {
-                country = "P";
-                break;
-            }
+
+        // Alle anderen Länder
+        String countryCode = getCountryCodeFromId(id);
+
+        if (!countryCode.isEmpty()) {
+            Intent intent = new Intent(this, InternCoinTableActivity.class);
+            intent.putExtra("coinCountry", countryCode);
+            startActivity(intent);
         }
-        Intent intent = new Intent(this, InternCoinTableActivity.class); //TODO change
-        intent.putExtra("coinCountry", country);
-        startActivity(intent);
+    }
+    private String getCountryCodeFromId(int id) {
+        if (id == R.id.YearONE) return "A";         // Österreich (Index 0)
+        if (id == R.id.YearTWO) return "F";         // Frankreich (Index 1)
+        if (id == R.id.YearTHREE) return "NL";      // Niederlande (Index 2)
+        if (id == R.id.YearFOUR) return "GR";       // Griechenland (Index 3)
+        // YearFIVE ist DE (Index 4) - oben behandelt
+        if (id == R.id.YearSIX) return "L";         // Luxemburg (Index 5)
+        if (id == R.id.YearSEVEN) return "E";       // Spanien (Index 6)
+        if (id == R.id.YearEIGHT) return "I";       // Italien (Index 7)
+        if (id == R.id.YearNINE) return "IR";       // Irland (Index 8)
+        if (id == R.id.YearTEN) return "B";         // Belgien (Index 9)
+        if (id == R.id.YearELEVEN) return "FIN";    // Finnland (Index 10)
+        if (id == R.id.YearTWELVE) return "P";      // Portugal (Index 11)
+
+        return "";
     }
 }

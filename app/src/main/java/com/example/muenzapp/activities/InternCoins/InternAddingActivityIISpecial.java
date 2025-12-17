@@ -1,15 +1,12 @@
 package com.example.muenzapp.activities.InternCoins;
 
-import static android.content.ContentValues.TAG;
 import static android.graphics.Color.TRANSPARENT;
 
-import static com.example.muenzapp.StaticHelper.findCoinCountryItem;
 import static com.example.muenzapp.StaticHelper.findCoinCountryStringFull;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,99 +17,123 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.muenzapp.R;
 import com.example.muenzapp.TableItem;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
+import com.example.muenzapp.data.repository.CoinRepository;
+import com.example.muenzapp.utils.FirestoreCallback;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class InternAddingActivityIISpecial extends AppCompatActivity {
 
-    final int[] buttonIDs = {R.id.addButtonA, R.id.addButtonD, R.id.addButtonF, R.id.addButtonG, R.id.addButtonJ, R.id.addButtonCC1, R.id.addButtonCC2, R.id.addButtonCC3};
-    int selectedCoinYear;
-    EditText coinYear;
-    Button addToDatabase;
-    List<TableItem> selectedTypes;
-    TableItem selectedCoinCountry;
-    FirebaseFirestore db;
+    private final int[] buttonIDs = {R.id.addButtonCC1, R.id.addButtonCC2, R.id.addButtonCC3};
+    private final int[] unneededIDs = {R.id.letterText, R.id.addButtonA, R.id.addButtonD, R.id.addButtonF, R.id.addButtonG, R.id.addButtonJ};
+    private EditText coinYear;
+    private List<TableItem> selectedTypes;
+    private String countryStringRaw;
+    private CoinRepository repository;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.adding_layout_special_ii);
-        selectedCoinCountry = findCoinCountryItem(getIntent().getStringExtra("coinCountry"));
-        ((TextView)findViewById(R.id.country)).setText(findCoinCountryStringFull(getIntent().getStringExtra("coinCountry")));
+
+        repository = CoinRepository.getInstance();
+        selectedTypes = new ArrayList<>();
+
+        // Handle Intent Data
+        countryStringRaw = getIntent().getStringExtra("coinCountry");
+
+        // UI Setup
+        ((TextView)findViewById(R.id.country)).setText(findCoinCountryStringFull(countryStringRaw));
+
+        coinYear = findViewById(R.id.addYearEditText);
+        Button addToDatabase = findViewById(R.id.addToDatabase);
+
+        setupViews();
+        setupClickListeners();
+
+        addToDatabase.setOnClickListener(v -> saveCoins());
+    }
+    private void setupViews() {
+        // Nicht benötigte Buttons (Buchstaben) ausblenden
+        for (int id : unneededIDs) {
+            findViewById(id).setVisibility(View.GONE);
+        }
+    }
+    private void setupClickListeners() {
         findViewById(R.id.closeCoinYearAdding).setOnClickListener((v) -> {
             Intent intent = new Intent(this, InternCoinTableActivityIISpecial.class);
-            intent.putExtra("coinCountry", getIntent().getStringExtra("coinCountry"));
+            intent.putExtra("coinCountry", countryStringRaw);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             finish();
         });
 
-        int[] unneededIDs = {R.id.letterText, R.id.addButtonA, R.id.addButtonD, R.id.addButtonF, R.id.addButtonG, R.id.addButtonJ};
-        for (int id : unneededIDs) {
-            findViewById(id).setVisibility(View.GONE);
-        }
-
-        db = FirebaseFirestore.getInstance();
-
-        selectedTypes = new ArrayList<>();
-        selectedCoinYear = Integer.MIN_VALUE;
         for (int id : buttonIDs) {
             findViewById(id).setOnClickListener(this::doOnClick);
         }
-        coinYear = findViewById(R.id.addYearEditText);
-        addToDatabase = findViewById(R.id.addToDatabase);
+    }
+    private void saveCoins() {
+        String yearString = coinYear.getText().toString();
+        int selectedCoinYear;
+        try {
+            selectedCoinYear = Integer.parseInt(yearString);
+        } catch (NumberFormatException e) {
+            coinYear.setError("Bitte Jahr eingeben");
+            return;
+        }
 
-        addToDatabase.setOnClickListener(v -> {
-            String yearString = coinYear.getText().toString();
-            try {
-                selectedCoinYear = Integer.parseInt(yearString);
-            } catch (NumberFormatException e) {
-                // falsches Format // TODO
+        if (selectedTypes.isEmpty() || selectedCoinYear < 0) {
+            Toast.makeText(this, "(Jahr, Typ) notwendig!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Zähler für Async Calls
+        int totalOps = selectedTypes.size();
+        AtomicInteger completedCount = new AtomicInteger(0);
+        AtomicInteger errorCount = new AtomicInteger(0);
+
+        FirestoreCallback callback = new FirestoreCallback() {
+            @Override
+            public void onSuccess() {
+                checkIfFinished(totalOps, completedCount.incrementAndGet(), errorCount.get());
             }
-            Executors.newSingleThreadExecutor().execute(() -> {
-                if (selectedTypes.size() > 0 && selectedCoinYear >= 0) {
-                    for (TableItem selectedType : selectedTypes) {
-                        Map<String, Object> coin = new HashMap<>();
-                        coin.put("coinYear", selectedCoinYear);
-                        coin.put("coinType", selectedType);
-                        coin.put("coinCountry", selectedCoinCountry);
-                        String filename = selectedCoinYear + ":" + selectedCoinCountry + ":" + selectedType;
-                        db.collection("Sonder").document("IISonder").collection(selectedCoinCountry + "").document(filename)
-                                .set(coin, SetOptions.merge())
-                                .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully written!"))
-                                .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e));
-                    }
-                    runOnUiThread(() -> {
-                        for (int id : buttonIDs) {
-                            // nach hinzufügen gedrückt müssen alle Knöpfe wieder resettet werden, also nicht nur umrahmung weg, sondern auch, dass sie geklickt wurden:
-                            findViewById(id).setBackgroundColor(TRANSPARENT);
-                            findViewById(id).setActivated(false);
-                        }
-                        coinYear.setText("");
-                    });
-                    selectedTypes = new ArrayList<>();
-                    selectedCoinYear = Integer.MIN_VALUE;
-                    runOnUiThread(() -> {
-                        Toast.makeText(InternAddingActivityIISpecial.this, "Erfolgreich hinzugefügt!", Toast.LENGTH_SHORT).show();
-                    });
+
+            @Override
+            public void onFailure(Exception e) {
+                errorCount.incrementAndGet();
+                checkIfFinished(totalOps, completedCount.incrementAndGet(), errorCount.get());
+            }
+        };
+
+        for (TableItem selectedType : selectedTypes) {
+            repository.addInternSpecialCoin(countryStringRaw, selectedCoinYear, selectedType, callback);
+        }
+    }
+    private void checkIfFinished(int total, int current, int errors) {
+        if (current >= total) {
+            runOnUiThread(() -> {
+                if (errors > 0) {
+                    Toast.makeText(this, "Fertig, aber mit Fehlern.", Toast.LENGTH_SHORT).show();
                 } else {
-                    // wenn nicht genug ausgewählt
-                    runOnUiThread(() -> {
-                        Toast.makeText(InternAddingActivityIISpecial.this, "(Jahr, Typ) notwendig!", Toast.LENGTH_SHORT).show();
-                    });
+                    Toast.makeText(this, "Erfolgreich hinzugefügt!", Toast.LENGTH_SHORT).show();
+                    resetUI();
                 }
             });
-            // alles gespeicherte Zurücksetzen → lokale Attribute
-
-        });
+        }
     }
-    //TODO Fall: zu viel gespeichert
+
+    private void resetUI() {
+        for (int id : buttonIDs) {
+            View btn = findViewById(id);
+            btn.setBackgroundColor(TRANSPARENT);
+            btn.setActivated(false);
+        }
+        coinYear.setText("");
+        selectedTypes.clear();
+    }
+    @SuppressLint("UseCompatLoadingForDrawables")
     public void doOnClick(View view) {
         TableItem item = getTypesFromId(view.getId());
         if (!selectedTypes.contains(item)) {
