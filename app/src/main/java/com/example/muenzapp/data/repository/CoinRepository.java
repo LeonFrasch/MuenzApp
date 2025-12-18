@@ -1,17 +1,12 @@
 package com.example.muenzapp.data.repository;
 
-import static android.content.ContentValues.TAG;
 import static com.example.muenzapp.StaticHelper.stringToTableItem;
 
 import android.util.Log;
 
 import com.example.muenzapp.StaticHelper;
 import com.example.muenzapp.data.model.Coin;
-import com.example.muenzapp.data.model.CoinEntity;
 import com.example.muenzapp.TableItem;
-import com.example.muenzapp.data.model.IISpecial;
-import com.example.muenzapp.data.model.IISpecialD;
-import com.example.muenzapp.data.model.InternCoinEntity;
 import com.example.muenzapp.utils.Constants;
 import com.example.muenzapp.utils.FirestoreCallback;
 import com.example.muenzapp.utils.FirestoreDataCallback;

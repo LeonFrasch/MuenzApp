@@ -14,7 +14,6 @@ import com.example.muenzapp.R;
 import com.example.muenzapp.activities.StartingPageActivity;
 import com.example.muenzapp.TableItem;
 import com.example.muenzapp.data.model.Coin;
-import com.example.muenzapp.data.model.InternCoinEntity;
 import com.example.muenzapp.data.repository.AuthRepository;
 import com.example.muenzapp.data.repository.CoinRepository;
 import com.example.muenzapp.utils.FirestoreCallback;
