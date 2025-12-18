@@ -16,7 +16,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.muenzapp.data.model.IISpecial;
+import com.example.muenzapp.data.model.Coin;
 import com.example.muenzapp.R;
 import com.example.muenzapp.TableItem;
 import com.example.muenzapp.data.repository.AuthRepository;
@@ -36,8 +36,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class InternCoinTableActivityIISpecial extends AppCompatActivity {
     private TableItem[][] table; // default Aussehen der Tabelle
     private String[] tableYears;
-    private List<IISpecial> collect;
-    private List<IISpecial> missing;
+    private List<Coin> collect;
+    private List<Coin> missing;
     private TableItem coinCountry;
     private String countryStringRaw;
     private CoinRepository repository;
@@ -125,9 +125,9 @@ public class InternCoinTableActivityIISpecial extends AppCompatActivity {
         findViewById(R.id.closeCoinTable).setOnClickListener((v) -> saveChangesAndExit());
     }
     private void loadDataFromRepository() {
-        repository.getInternSpecialCoins(countryStringRaw, new FirestoreDataCallback<List<IISpecial>>() {
+        repository.getInternSpecialCoins(countryStringRaw, new FirestoreDataCallback<List<Coin>>() {
             @Override
-            public void onSuccess(List<IISpecial> coins) {
+            public void onSuccess(List<Coin> coins) {
                 processData(coins);
             }
             @Override
@@ -137,13 +137,13 @@ public class InternCoinTableActivityIISpecial extends AppCompatActivity {
         });
     }
 
-    private void processData(List<IISpecial> coins) {
+    private void processData(List<Coin> coins) {
         // Sammeln und Sortieren
         List<Integer> coinYears = new ArrayList<>();
-        Map<Integer, List<IISpecial>> coinMap = new HashMap<>();
+        Map<Integer, List<Coin>> coinMap = new HashMap<>();
 
-        for (IISpecial coin : coins) {
-            int year = coin.getCoinYear();
+        for (Coin coin : coins) {
+            int year = coin.getYear();
             if (!coinYears.contains(year)) {
                 coinYears.add(year);
             }
@@ -161,8 +161,8 @@ public class InternCoinTableActivityIISpecial extends AppCompatActivity {
 
             tableYears[pointer] = year < 10 ? "0" + year : String.valueOf(year);
 
-            for (IISpecial coinEntity : coinMap.get(year)) {
-                int colIndex = getColumnForType(coinEntity.getCoinType());
+            for (Coin coin : coinMap.get(year)) {
+                int colIndex = getColumnForType(coin.getType());
                 if (colIndex != -1) {
                     table[pointer + 1][colIndex] = MISSING;
                 }
@@ -264,11 +264,11 @@ public class InternCoinTableActivityIISpecial extends AppCompatActivity {
             }
         };
 
-        for (IISpecial entity : missing) {
-            repository.addInternSpecialCoin(entity, callback);
+        for (Coin coin : missing) {
+            repository.addInternSpecialCoin(coin, callback);
         }
-        for (IISpecial entity : collect) {
-            repository.deleteInternSpecialCoin(countryStringRaw, entity, callback);
+        for (Coin coin : collect) {
+            repository.deleteInternSpecialCoin(coin, callback);
         }
     }
 
@@ -321,27 +321,24 @@ public class InternCoinTableActivityIISpecial extends AppCompatActivity {
         if (yearString.isEmpty()) return;
         int year = Integer.parseInt(yearString);
 
-        IISpecial entity = new IISpecial();
-        entity.setCoinType(table[0][column]);
-        entity.setCoinCountry(coinCountry);
-        entity.setCoinYear(year);
+        Coin coin = Coin.createInternSpecial(year, coinCountry, table[0][column]);
 
         boolean isCollectedInTable = (COLLECTED == table[row][column]);
 
         if (isCollectedInTable) {
-            if (!missing.contains(entity)) {
-                missing.add(entity);
+            if (!missing.contains(coin)) {
+                missing.add(coin);
                 view.setBackground(getDrawable(table_border_red));
             } else {
-                missing.remove(entity);
+                missing.remove(coin);
                 view.setBackground(getDrawable(table_border_active));
             }
         } else {
-            if (!collect.contains(entity)) {
-                collect.add(entity);
+            if (!collect.contains(coin)) {
+                collect.add(coin);
                 view.setBackground(getDrawable(table_border_active_red));
             } else {
-                collect.remove(entity);
+                collect.remove(coin);
                 view.setBackground(getDrawable(table_border));
             }
         }

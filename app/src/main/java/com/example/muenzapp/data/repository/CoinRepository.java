@@ -6,6 +6,7 @@ import static com.example.muenzapp.StaticHelper.stringToTableItem;
 import android.util.Log;
 
 import com.example.muenzapp.StaticHelper;
+import com.example.muenzapp.data.model.Coin;
 import com.example.muenzapp.data.model.CoinEntity;
 import com.example.muenzapp.TableItem;
 import com.example.muenzapp.data.model.IISpecial;
@@ -14,8 +15,10 @@ import com.example.muenzapp.data.model.InternCoinEntity;
 import com.example.muenzapp.utils.Constants;
 import com.example.muenzapp.utils.FirestoreCallback;
 import com.example.muenzapp.utils.FirestoreDataCallback;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.SetOptions;
 import java.util.Set;
 import java.util.TreeSet;
@@ -40,25 +43,51 @@ public class CoinRepository {
         }
         return instance;
     }
+    // ==========================================
+    //  HELPER INTERFACE & METHODS
+    // ==========================================
+
+    private interface Mapper<T> {
+        T map(DocumentSnapshot doc) throws Exception;
+    }
+
+    private <T> void fetchList(Query query, Mapper<T> mapper, FirestoreDataCallback<List<T>> callback) {
+        query.get()
+                .addOnSuccessListener(snapshots -> {
+                    List<T> list = new ArrayList<>();
+                    for (DocumentSnapshot doc : snapshots) {
+                        try {
+                            T item = mapper.map(doc);
+                            list.add(item);
+                        } catch (Exception e) {
+                            Log.e("REPO", "Error parsing document: " + doc.getId(), e);
+                        }
+                    }
+                    callback.onSuccess(list);
+                })
+                .addOnFailureListener(callback::onFailure);
+    }
+
+    private void saveDocument(CollectionReference collection, String docId, Map<String, Object> data, FirestoreCallback callback) {
+        collection.document(docId)
+                .set(data, SetOptions.merge())
+                .addOnSuccessListener(aVoid -> callback.onSuccess())
+                .addOnFailureListener(callback::onFailure);
+    }
+
+    private void deleteDocument(CollectionReference collection, String docId, FirestoreCallback callback) {
+        collection.document(docId)
+                .delete()
+                .addOnSuccessListener(aVoid -> callback.onSuccess())
+                .addOnFailureListener(callback::onFailure);
+    }
 
     /**
      * Prüft, ob die aktuelle User-ID Admin-Rechte hat.
      */
     public void checkIsAdmin(String uid, FirestoreDataCallback<Boolean> callback) {
-        db.collection("userRole").get()
-                .addOnSuccessListener(snapshots -> {
-                    boolean isAdmin = false;
-                    if (!snapshots.isEmpty()) {
-                        for (DocumentSnapshot doc : snapshots.getDocuments()) {
-                            Object uidObj = doc.get("UID");
-                            if (uidObj != null && uidObj.toString().equals(uid)) {
-                                isAdmin = true;
-                                break;
-                            }
-                        }
-                    }
-                    callback.onSuccess(isAdmin);
-                })
+        db.collection("userRole").whereEqualTo("UID", uid).get()
+                .addOnSuccessListener(snapshots -> callback.onSuccess(!snapshots.isEmpty()))
                 .addOnFailureListener(callback::onFailure);
     }
 
@@ -70,155 +99,82 @@ public class CoinRepository {
     /** Standard Deutsche Münze */
 
     // (PUT): deutsche Standardmünze: Year:Value:Letter
-    public void addGermanCoin(int year, TableItem value, TableItem letter, FirestoreCallback callback) {
-        // Daten vorbereiten
-        Map<String, Object> coinData = new HashMap<>();
-        coinData.put(Constants.FIELD_YEAR, year);
-        coinData.put(Constants.FIELD_VALUE, value.toString()); // Enum als String speichern
-        coinData.put(Constants.FIELD_LETTER, letter.toString());
+    public void addGermanCoin(Coin coin, FirestoreCallback callback) {
+        Map<String, Object> data = new HashMap<>();
+        data.put(Constants.FIELD_YEAR, coin.getYear());
+        data.put(Constants.FIELD_VALUE, coin.getValue().toString());
+        data.put(Constants.FIELD_LETTER, coin.getLetter().toString());
 
-        // ID generieren (Example: "2002:ONE:A")
-        String documentId = year + ":" + value + ":" + letter;
-
-        // Schreiben in die Collection "D"
-        db.collection(Constants.COLL_GERMANY)
-                .document(documentId)
-                .set(coinData, SetOptions.merge()) // Merge verhindert Überschreiben anderer Felder falls vorhanden
-                .addOnSuccessListener(aVoid -> callback.onSuccess())
-                .addOnFailureListener(callback::onFailure);
+        String id = coin.getYear() + ":" + coin.getValue() + ":" + coin.getLetter();
+        saveDocument(db.collection(Constants.COLL_GERMANY), id, data, callback);
     }
 
     // (GET): Lädt alle Münzen eines bestimmten Jahres aus der Collection "D".
-    public void getGermanCoinsByYear(int year, FirestoreDataCallback<List<CoinEntity>> callback) {
-        db.collection(Constants.COLL_GERMANY)
-                .whereEqualTo(Constants.FIELD_YEAR, year)
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    List<CoinEntity> coinList = new ArrayList<>();
-                    for (DocumentSnapshot doc : queryDocumentSnapshots) {
-                        try {
-                            CoinEntity coin = new CoinEntity();
+    public void getGermanCoinsByYear(int year, FirestoreDataCallback<List<Coin>> callback) {
+        Query query = db.collection(Constants.COLL_GERMANY).whereEqualTo(Constants.FIELD_YEAR, year);
 
-                            Long yearLong = doc.getLong(Constants.FIELD_YEAR);
-                            coin.setCoinYear(yearLong != null ? yearLong.intValue() : 0);
-
-                            String value = doc.getString(Constants.FIELD_VALUE);
-                            coin.setCoinValue(stringToTableItem(value));
-
-                            String letter = doc.getString(Constants.FIELD_LETTER);
-                            coin.setCoinLetter(stringToTableItem(letter));
-
-                            coinList.add(coin);
-                        } catch (Exception e) {
-                            Log.e("REPO", "Error parsing coin", e);
-                        }
-                    }
-                    callback.onSuccess(coinList);
-                })
-                .addOnFailureListener(callback::onFailure);
+        fetchList(query, doc -> {
+            int y = doc.getLong(Constants.FIELD_YEAR).intValue();
+            TableItem val = stringToTableItem(doc.getString(Constants.FIELD_VALUE));
+            TableItem letter = stringToTableItem(doc.getString(Constants.FIELD_LETTER));
+            return Coin.createGermanStandard(y, val, letter);
+        }, callback);
     }
 
     // (GET): Lädt alle Jahre, die in der deutschen Sammlung existieren. Nutzt ein TreeSet, damit die Jahre automatisch sortiert sind (2002, 2003...).
     public void getAllGermanYears(FirestoreDataCallback<List<Integer>> callback) {
-        db.collection(Constants.COLL_GERMANY).get()
-                .addOnSuccessListener(snapshots -> {
-                    Set<Integer> uniqueYears = new TreeSet<>(); // TreeSet sortiert automatisch
-                    for (DocumentSnapshot doc : snapshots) {
-                        Long year = doc.getLong(Constants.FIELD_YEAR);
-                        if (year != null) {
-                            uniqueYears.add(year.intValue());
-                        }
-                    }
-                    callback.onSuccess(new ArrayList<>(uniqueYears));
-                })
-                .addOnFailureListener(callback::onFailure);
+        fetchList(db.collection(Constants.COLL_GERMANY), doc -> doc.getLong(Constants.FIELD_YEAR).intValue(), new FirestoreDataCallback<List<Integer>>() {
+            @Override
+            public void onSuccess(List<Integer> data) {
+                Set<Integer> uniqueYears = new TreeSet<>(data);
+                callback.onSuccess(new ArrayList<>(uniqueYears));
+            }
+            @Override
+            public void onFailure(Exception e) { callback.onFailure(e); }
+        });
     }
 
     // (DELETE): Löscht eine Münze.
-    public void deleteGermanCoin(int year, TableItem value, TableItem letter, FirestoreCallback callback) {
-        String documentId = year + ":" + value + ":" + letter;
-
-        db.collection(Constants.COLL_GERMANY)
-                .document(documentId)
-                .delete()
-                .addOnSuccessListener(aVoid -> callback.onSuccess())
-                .addOnFailureListener(callback::onFailure);
+    public void deleteGermanCoin(Coin coin, FirestoreCallback callback) {
+        String id = coin.getYear() + ":" + coin.getValue() + ":" + coin.getLetter();
+        deleteDocument(db.collection(Constants.COLL_GERMANY), id, callback);
     }
 
     /**Sonder Deutsche Münze*/
 
     // (PUT): Speichert eine deutsche Sondermünze (IISpecial): Year:Type:Letter
-    public void addSpecialCoin(int year, TableItem type, TableItem letter, FirestoreCallback callback) {
-        Map<String, Object> coinData = new HashMap<>();
-        coinData.put(Constants.FIELD_YEAR, year);
-        coinData.put("coinType", type.toString());
-        coinData.put(Constants.FIELD_LETTER, letter.toString());
-
-        String documentId = year + ":" + type + ":" + letter;
-
-        db.collection(Constants.COLL_SPECIAL)
-                .document(Constants.DOC_SPECIAL_II)
-                .collection(Constants.COLL_GERMANY)
-                .document(documentId)
-                .set(coinData, SetOptions.merge())
-                .addOnSuccessListener(aVoid -> callback.onSuccess())
-                .addOnFailureListener(callback::onFailure);
-    }
-
-    // (PUT): Speichert eine deutsche Sondermünze.
-    public void addGermanSpecialCoin(IISpecialD coin, FirestoreCallback callback) {
+    public void addGermanSpecialCoin(Coin coin, FirestoreCallback callback) {
         Map<String, Object> data = new HashMap<>();
-        data.put(Constants.FIELD_YEAR, coin.getCoinYear());
-        data.put("coinType", coin.getCoinType().toString());
-        data.put(Constants.FIELD_LETTER, coin.getCoinLetter().toString());
+        data.put(Constants.FIELD_YEAR, coin.getYear());
+        data.put("coinType", coin.getType().toString());
+        data.put(Constants.FIELD_LETTER, coin.getLetter().toString());
 
-        String filename = coin.getCoinYear() + ":" + coin.getCoinType() + ":" + coin.getCoinLetter();
+        String id = coin.getYear() + ":" + coin.getType() + ":" + coin.getLetter();
+        CollectionReference col = db.collection(Constants.COLL_SPECIAL)
+                .document(Constants.DOC_SPECIAL_II).collection(Constants.COLL_GERMANY);
 
-        db.collection(Constants.COLL_SPECIAL)
-                .document(Constants.DOC_SPECIAL_II)
-                .collection(Constants.COLL_GERMANY)
-                .document(filename)
-                .set(data, SetOptions.merge())
-                .addOnSuccessListener(v -> callback.onSuccess())
-                .addOnFailureListener(callback::onFailure);
+        saveDocument(col, id, data, callback);
     }
+    // (GET): Gibt alle deutschen Sondermünzen
+    public void getGermanSpecialCoins(FirestoreDataCallback<List<Coin>> callback) {
+        CollectionReference col = db.collection(Constants.COLL_SPECIAL)
+                .document(Constants.DOC_SPECIAL_II).collection(Constants.COLL_GERMANY);
 
-    // (GET): Lädt ALLE deutschen Sondermünzen (IISonder).
-    public void getGermanSpecialCoins(FirestoreDataCallback<List<IISpecialD>> callback) {
-        db.collection(Constants.COLL_SPECIAL)
-                .document(Constants.DOC_SPECIAL_II)
-                .collection(Constants.COLL_GERMANY)
-                .get()
-                .addOnSuccessListener(snapshots -> {
-                    List<IISpecialD> list = new ArrayList<>();
-                    for (DocumentSnapshot doc : snapshots) {
-                        try {
-                            IISpecialD coin = new IISpecialD();
-                            Long year = doc.getLong(Constants.FIELD_YEAR);
-                            coin.setCoinYear(year != null ? year.intValue() : 0);
-                            coin.setCoinType(stringToTableItem(doc.getString("coinType")));
-                            coin.setCoinLetter(stringToTableItem(doc.getString(Constants.FIELD_LETTER)));
-                            list.add(coin);
-                        } catch (Exception e) {
-                            Log.e("REPO", "Error parsing special coin", e);
-                        }
-                    }
-                    callback.onSuccess(list);
-                })
-                .addOnFailureListener(callback::onFailure);
+        fetchList(col, doc -> {
+            int y = doc.getLong(Constants.FIELD_YEAR).intValue();
+            TableItem type = stringToTableItem(doc.getString("coinType"));
+            TableItem letter = stringToTableItem(doc.getString(Constants.FIELD_LETTER));
+            return Coin.createGermanSpecial(y, type, letter);
+        }, callback);
     }
 
     // (DELETE): Löscht eine deutsche Sondermünze.
-    public void deleteGermanSpecialCoin(IISpecialD coin, FirestoreCallback callback) {
-        String filename = coin.getCoinYear() + ":" + coin.getCoinType() + ":" + coin.getCoinLetter();
+    public void deleteGermanSpecialCoin(Coin coin, FirestoreCallback callback) {
+        String id = coin.getYear() + ":" + coin.getType() + ":" + coin.getLetter();
+        CollectionReference col = db.collection(Constants.COLL_SPECIAL)
+                .document(Constants.DOC_SPECIAL_II).collection(Constants.COLL_GERMANY);
 
-        db.collection(Constants.COLL_SPECIAL)
-                .document(Constants.DOC_SPECIAL_II)
-                .collection(Constants.COLL_GERMANY)
-                .document(filename)
-                .delete()
-                .addOnSuccessListener(v -> callback.onSuccess())
-                .addOnFailureListener(callback::onFailure);
+        deleteDocument(col, id, callback);
     }
 
     /**
@@ -229,125 +185,70 @@ public class CoinRepository {
     /** Standard Intern Münze */
 
     // (PUT): Speichert eine internationale Münze.
-    public void addInternCoin(String countryCode, int year, TableItem value, FirestoreCallback callback) {
-        Map<String, Object> coinData = new HashMap<>();
-        coinData.put(Constants.FIELD_YEAR, year);
-        coinData.put(Constants.FIELD_VALUE, value.toString());
+    public void addInternCoin(Coin coin, FirestoreCallback callback) {
+        String countryCode = coin.getCountry().toString();
+        Map<String, Object> data = new HashMap<>();
+        data.put(Constants.FIELD_YEAR, coin.getYear());
+        data.put(Constants.FIELD_VALUE, coin.getValue().toString());
 
-        String filename = year + ":" + value;
-
-        db.collection(countryCode)
-                .document(filename)
-                .set(coinData, SetOptions.merge())
-                .addOnSuccessListener(aVoid -> callback.onSuccess())
-                .addOnFailureListener(callback::onFailure);
+        String id = coin.getYear() + ":" + coin.getValue();
+        saveDocument(db.collection(countryCode), id, data, callback);
     }
 
     // (GET): Lädt alle internationalen Münzen eines Landes.
-    public void getInternCoins(String countryCode, FirestoreDataCallback<List<InternCoinEntity>> callback) {
-        db.collection(countryCode).get()
-                .addOnSuccessListener(snapshots -> {
-                    List<InternCoinEntity> list = new ArrayList<>();
-                    for (DocumentSnapshot doc : snapshots) {
-                        try {
-                            InternCoinEntity coin = new InternCoinEntity();
-                            coin.setCoinCountry(StaticHelper.findCoinCountryItem(countryCode)); // Helper nutzen
-
-                            Long year = doc.getLong(Constants.FIELD_YEAR);
-                            coin.setCoinYear(year != null ? year.intValue() : 0);
-
-                            String valStr = doc.getString(Constants.FIELD_VALUE);
-                            coin.setCoinValue(StaticHelper.stringToTableItem(valStr));
-
-                            list.add(coin);
-                        } catch (Exception e) {
-                            Log.e("REPO", "Error parsing intern coin", e);
-                        }
-                    }
-                    callback.onSuccess(list);
-                })
-                .addOnFailureListener(callback::onFailure);
+    public void getInternCoins(String countryCode, FirestoreDataCallback<List<Coin>> callback) {
+        fetchList(db.collection(countryCode), doc -> {
+            int y = doc.getLong(Constants.FIELD_YEAR).intValue();
+            TableItem val = stringToTableItem(doc.getString(Constants.FIELD_VALUE));
+            TableItem country = StaticHelper.findCoinCountryItem(countryCode);
+            return Coin.createInternStandard(y, country, val);
+        }, callback);
     }
 
     // (DELETE): Löscht eine internationale Münze.
-    public void deleteInternCoin(String countryCode, int year, TableItem value, FirestoreCallback callback) {
-        String filename = year + ":" + value;
-        db.collection(countryCode)
-                .document(filename)
-                .delete()
-                .addOnSuccessListener(v -> callback.onSuccess())
-                .addOnFailureListener(callback::onFailure);
+    public void deleteInternCoin(Coin coin, FirestoreCallback callback) {
+        String countryCode = coin.getCountry().toString();
+        String id = coin.getYear() + ":" + coin.getValue();
+        deleteDocument(db.collection(countryCode), id, callback);
     }
 
     /** Sonder Intern Münze */
 
     // (PUT): Speichert eine internationale Sondermünze.
-    public void addInternSpecialCoin(String countryCode, int year, TableItem type, FirestoreCallback callback) {
-        Map<String, Object> coinData = new HashMap<>();
-        coinData.put(Constants.FIELD_YEAR, year);
-        coinData.put("coinType", type.toString());
-        coinData.put("coinCountry", countryCode);
+    public void addInternSpecialCoin(Coin coin, FirestoreCallback callback) {
+        String countryCode = coin.getCountry().toString();
+        Map<String, Object> data = new HashMap<>();
+        data.put(Constants.FIELD_YEAR, coin.getYear());
+        data.put("coinType", coin.getType().toString());
+        data.put("coinCountry", countryCode);
 
-        String filename = year + ":" + countryCode + ":" + type;
+        String id = coin.getYear() + ":" + countryCode + ":" + coin.getType();
+        CollectionReference col = db.collection(Constants.COLL_SPECIAL)
+                .document(Constants.DOC_SPECIAL_II).collection(countryCode);
 
-        db.collection(Constants.COLL_SPECIAL)
-                .document(Constants.DOC_SPECIAL_II)
-                .collection(countryCode)
-                .document(filename)
-                .set(coinData, SetOptions.merge())
-                .addOnSuccessListener(aVoid -> callback.onSuccess())
-                .addOnFailureListener(callback::onFailure);
+        saveDocument(col, id, data, callback);
     }
 
     // (GET): Lädt internationale Sondermünzen eines bestimmten Landes.
-    public void getInternSpecialCoins(String countryCode, FirestoreDataCallback<List<IISpecial>> callback) {
-        db.collection(Constants.COLL_SPECIAL)
-                .document(Constants.DOC_SPECIAL_II)
-                .collection(countryCode)
-                .get()
-                .addOnSuccessListener(snapshots -> {
-                    List<IISpecial> list = new ArrayList<>();
-                    for (DocumentSnapshot doc : snapshots) {
-                        try {
-                            IISpecial coin = new IISpecial();
-                            Long year = doc.getLong(Constants.FIELD_YEAR);
-                            coin.setCoinYear(year != null ? year.intValue() : 0);
+    public void getInternSpecialCoins(String countryCode, FirestoreDataCallback<List<Coin>> callback) {
+        CollectionReference col = db.collection(Constants.COLL_SPECIAL)
+                .document(Constants.DOC_SPECIAL_II).collection(countryCode);
 
-                            String typeStr = doc.getString("coinType");
-                            coin.setCoinType(StaticHelper.stringToTableItem(typeStr));
-
-                            coin.setCoinCountry(StaticHelper.findCoinCountryItem(countryCode));
-
-                            list.add(coin);
-                        } catch (Exception e) {
-                            Log.e("REPO", "Error parsing intern special coin", e);
-                        }
-                    }
-                    callback.onSuccess(list);
-                })
-                .addOnFailureListener(callback::onFailure);
+        fetchList(col, doc -> {
+            int y = doc.getLong(Constants.FIELD_YEAR).intValue();
+            TableItem type = stringToTableItem(doc.getString("coinType"));
+            TableItem country = StaticHelper.findCoinCountryItem(countryCode);
+            return Coin.createInternSpecial(y, country, type);
+        }, callback);
     }
 
     // (DELETE): Löscht eine internationale Sondermünze.
-    public void deleteInternSpecialCoin(String countryCode, IISpecial coin, FirestoreCallback callback) {
+    public void deleteInternSpecialCoin(Coin coin, FirestoreCallback callback) {
+        String countryCode = coin.getCountry().toString();
+        String id = coin.getYear() + ":" + countryCode + ":" + coin.getType();
+        CollectionReference col = db.collection(Constants.COLL_SPECIAL)
+                .document(Constants.DOC_SPECIAL_II).collection(countryCode);
 
-        String filename = coin.getCoinYear() + ":" + countryCode + ":" + coin.getCoinType();
-
-        db.collection(Constants.COLL_SPECIAL)
-                .document(Constants.DOC_SPECIAL_II)
-                .collection(countryCode)
-                .document(filename)
-                .delete()
-                .addOnSuccessListener(v -> callback.onSuccess())
-                .addOnFailureListener(callback::onFailure);
-    }
-
-    // Hinweis: Du musst eventuell auch die `addInternSpecialCoin` Methode leicht anpassen,
-    // falls sie `IISpecial` Objekte statt einzelner Parameter erwarten soll,
-    // aber für den Moment nutzen wir die Parameter-Version oder überladen sie.
-    public void addInternSpecialCoin(IISpecial coin, FirestoreCallback callback) {
-        // Wrapper für die existierende Methode oder eigene Implementierung
-        String countryCode = coin.getCoinCountry().toString();
-        addInternSpecialCoin(countryCode, coin.getCoinYear(), coin.getCoinType(), callback);
+        deleteDocument(col, id, callback);
     }
 }
