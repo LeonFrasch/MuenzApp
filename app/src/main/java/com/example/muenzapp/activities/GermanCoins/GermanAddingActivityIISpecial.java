@@ -1,4 +1,4 @@
-package com.example.muenzapp.GermanCoins;
+package com.example.muenzapp.activities.GermanCoins;
 
 import static android.content.ContentValues.TAG;
 import static android.graphics.Color.TRANSPARENT;
@@ -16,13 +16,11 @@ import android.widget.Toast;
 
 import com.example.muenzapp.R;
 import com.example.muenzapp.TableItem;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
+import com.example.muenzapp.data.repository.CoinRepository;
+import com.example.muenzapp.utils.FirestoreCallback;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Executors;
 
 public class GermanAddingActivityIISpecial extends AppCompatActivity {
@@ -33,7 +31,7 @@ public class GermanAddingActivityIISpecial extends AppCompatActivity {
     Button addToDatabase;
     List<TableItem> selectedLetters;
     List<TableItem> selectedTypes;
-    FirebaseFirestore db;
+    private CoinRepository repository;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +46,7 @@ public class GermanAddingActivityIISpecial extends AppCompatActivity {
 
         findViewById(R.id.country).setVisibility(View.GONE);
 
-        db = FirebaseFirestore.getInstance();
+        repository = CoinRepository.getInstance();
 
         selectedLetters = new ArrayList<>();
         selectedTypes = new ArrayList<>();
@@ -68,33 +66,34 @@ public class GermanAddingActivityIISpecial extends AppCompatActivity {
             }
             Executors.newSingleThreadExecutor().execute(() -> {
                 if (selectedLetters.size() > 0 && selectedTypes.size() > 0 && selectedCoinYear >= 0) {
-                    for (TableItem selectedLetter : selectedLetters) {
-                        for (TableItem selectedType : selectedTypes) {
-                            Map<String, Object> coin = new HashMap<>();
-                            coin.put("coinYear", selectedCoinYear);
-                            coin.put("coinType", selectedType);
-                            coin.put("coinLetter", selectedLetter);
-                            String filename = selectedCoinYear + ":" + selectedType + ":" + selectedLetter;
-                            db.collection("Sonder").document("IISonder").collection("D").document(filename)
-                                    .set(coin, SetOptions.merge())
-                                    .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully written!"))
-                                    .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e));
+
+                    final int totalOperations = selectedLetters.size() * selectedTypes.size();
+                    final int[] completedOperations = {0};
+
+                    for (TableItem letter : selectedLetters) {
+                        for (TableItem type : selectedTypes) {
+
+                            repository.addSpecialCoin(selectedCoinYear, type, letter, new FirestoreCallback() {
+                                @Override
+                                public void onSuccess() {
+                                    completedOperations[0]++;
+                                    Log.d(TAG, "Stored Coin: " + type + " " + letter);
+
+                                    // When all coins are stored: UI Feedback
+                                    if (completedOperations[0] == totalOperations) {
+                                        runOnUiThread(() -> {
+                                            Toast.makeText(GermanAddingActivityIISpecial.this, "All coin successfully stored!", Toast.LENGTH_SHORT).show();
+                                            resetUI();
+                                        });
+                                    }
+                                }
+                                @Override
+                                public void onFailure(Exception e) {
+                                    Log.e(TAG, "Error whilst storing", e);
+                                }
+                            });
                         }
                     }
-                    runOnUiThread(() -> {
-                        for (int id : buttonIDs) {
-                            // nach hinzufügen gedrückt müssen alle Knöpfe wieder resettet werden, also nicht nur umrahmung weg, sondern auch, dass sie geklickt wurden:
-                            findViewById(id).setBackgroundColor(TRANSPARENT);
-                            findViewById(id).setActivated(false);
-                        }
-                        coinYear.setText("");
-                    });
-                    selectedLetters = new ArrayList<>();
-                    selectedTypes = new ArrayList<>();
-                    selectedCoinYear = Integer.MIN_VALUE;
-                    runOnUiThread(() -> {
-                        Toast.makeText(GermanAddingActivityIISpecial.this, "Erfolgreich hinzugefügt!", Toast.LENGTH_SHORT).show();
-                    });
                 } else {
                     // wenn nicht genug ausgewählt
                     runOnUiThread(() -> {
@@ -107,6 +106,19 @@ public class GermanAddingActivityIISpecial extends AppCompatActivity {
         });
     }
     //TODO Fall: zu viel gespeichert
+    private void resetUI() {
+        runOnUiThread(() -> {
+            for (int id : buttonIDs) {
+                // nach hinzufügen gedrückt müssen alle Knöpfe wieder resettet werden, also nicht nur umrahmung weg, sondern auch, dass sie geklickt wurden:
+                findViewById(id).setBackgroundColor(TRANSPARENT);
+                findViewById(id).setActivated(false);
+            }
+            coinYear.setText("");
+        });
+        selectedLetters = new ArrayList<>();
+        selectedTypes = new ArrayList<>();
+        selectedCoinYear = Integer.MIN_VALUE;
+    }
     public void doOnClick(View view) {
         TableItem item = getLetterFromId(view.getId());
         if (item == TableItem.X) { // Kein Buchstabe, sondern Typ

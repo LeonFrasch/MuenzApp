@@ -1,36 +1,30 @@
-package com.example.muenzapp.Database;
+package com.example.muenzapp.data.model;
 
 import com.example.muenzapp.TableItem;
 
 import java.util.Objects;
 
-public class IISpecial {
+public class IISpecialD {
     private int coinYear;
     private TableItem coinType;
-    private TableItem coinCountry;
+    private TableItem coinLetter;
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
 
-        IISpecial otherCoin = (IISpecial) obj;
+        IISpecialD otherCoin = (IISpecialD) obj;
 
         return coinYear == otherCoin.coinYear &&
                 coinType == otherCoin.coinType &&
-                coinCountry == otherCoin.coinCountry;
-    }
-    @Override
-    public int hashCode() {
-        return Objects.hash(coinYear, coinType, coinCountry);
-    }
-    // GETTER UND SETTER
-    public TableItem getCoinCountry() {
-        return coinCountry;
+                coinLetter == otherCoin.coinLetter;
     }
 
-    public void setCoinCountry(TableItem coinCountry) {
-        this.coinCountry = coinCountry;
+    @Override
+    public int hashCode() {
+        return Objects.hash(coinYear, coinType, coinLetter);
     }
+    // GETTER UND SETTER
 
     public int getCoinYear() {
         return coinYear;
@@ -46,5 +40,13 @@ public class IISpecial {
 
     public void setCoinType(TableItem coinType) {
         this.coinType = coinType;
+    }
+
+    public TableItem getCoinLetter() {
+        return coinLetter;
+    }
+
+    public void setCoinLetter(TableItem coinLetter) {
+        this.coinLetter = coinLetter;
     }
 }

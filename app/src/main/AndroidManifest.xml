@@ -13,22 +13,22 @@
         android:theme="@style/Theme.MuenzApp"
         tools:targetApi="31" >
         <activity
-            android:name=".GermanCoins.GermanAddingActivityIISpecial"
+            android:name=".activities.GermanCoins.GermanAddingActivityIISpecial"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar"/>
         <activity
-            android:name=".InternCoins.InternAddingActivityIISpecial"
+            android:name=".activities.InternCoins.InternAddingActivityIISpecial"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar"/>
         <activity
-            android:name=".InternCoins.InternCoinTableActivityIISpecial"
+            android:name=".activities.InternCoins.InternCoinTableActivityIISpecial"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
-            android:name=".GermanCoins.GermanCoinTableActivityIISpecial"
+            android:name=".activities.GermanCoins.GermanCoinTableActivityIISpecial"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
@@ -38,12 +38,12 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".LoginActivity"
+            android:name=".activities.LoginActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
-            android:name=".Authentication"
+            android:name=".activities.Authentication"
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar" >
@@ -54,38 +54,38 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".StartingPageActivity"
+            android:name=".activities.StartingPageActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
-            android:name=".GermanCoins.GermanOverviewActivity"
+            android:name=".activities.GermanCoins.GermanOverviewActivity"
             android:exported="false"
-            android:parentActivityName=".StartingPageActivity"
+            android:parentActivityName=".activities.StartingPageActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
-            android:name=".GermanCoins.GermanAddingActivity"
+            android:name=".activities.GermanCoins.GermanAddingActivity"
             android:exported="false"
-            android:parentActivityName=".GermanCoins.GermanOverviewActivity"
+            android:parentActivityName=".activities.GermanCoins.GermanOverviewActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
-            android:name=".GermanCoins.GermanCoinTableActivity"
+            android:name=".activities.GermanCoins.GermanCoinTableActivity"
             android:exported="false"
-            android:parentActivityName=".GermanCoins.GermanOverviewActivity"
+            android:parentActivityName=".activities.GermanCoins.GermanOverviewActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
-            android:name=".InternCoins.InternCoinTableActivity"
+            android:name=".activities.InternCoins.InternCoinTableActivity"
             android:exported="false"
-            android:parentActivityName=".StartingPageActivity"
+            android:parentActivityName=".activities.StartingPageActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
-            android:name=".InternCoins.InternAddingActivity"
+            android:name=".activities.InternCoins.InternAddingActivity"
             android:exported="false"
-            android:parentActivityName=".InternCoins.InternCoinTableActivity"
+            android:parentActivityName=".activities.InternCoins.InternCoinTableActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
     </application>

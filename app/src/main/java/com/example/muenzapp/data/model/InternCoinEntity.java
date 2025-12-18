@@ -1,32 +1,32 @@
-package com.example.muenzapp.Database;
+package com.example.muenzapp.data.model;
 
 import com.example.muenzapp.TableItem;
 
 import java.util.Objects;
 
-public class CoinEntity {
+public class InternCoinEntity {
     private int coinYear;
     private TableItem coinValue;
-    private TableItem coinLetter;
+    private TableItem coinCountry;
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
 
-        CoinEntity otherCoin = (CoinEntity) obj;
+        InternCoinEntity internCoinEntity = (InternCoinEntity) obj;
 
-        return coinYear == otherCoin.coinYear &&
-                coinValue == otherCoin.coinValue &&
-                coinLetter == otherCoin.coinLetter;
+        // Vergleich der Felder, ohne die id zu berücksichtigen
+        return coinYear == internCoinEntity.coinYear &&
+                Objects.equals(coinValue, internCoinEntity.coinValue) &&
+                Objects.equals(coinCountry, internCoinEntity.coinCountry);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(coinYear, coinValue, coinLetter);
+        return Objects.hash(coinYear, coinValue, coinCountry);
     }
 
     // GETTER UND SETTER
-
     public int getCoinYear() {
         return coinYear;
     }
@@ -43,12 +43,11 @@ public class CoinEntity {
         this.coinValue = coinValue;
     }
 
-    public TableItem getCoinLetter() {
-        return coinLetter;
+    public TableItem getCoinCountry() {
+        return coinCountry;
     }
 
-    public void setCoinLetter(TableItem coinLetter) {
-        this.coinLetter = coinLetter;
+    public void setCoinCountry(TableItem coinCountry) {
+        this.coinCountry = coinCountry;
     }
-
 }

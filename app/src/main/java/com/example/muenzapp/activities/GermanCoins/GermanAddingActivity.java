@@ -1,6 +1,5 @@
-package com.example.muenzapp.GermanCoins;
+package com.example.muenzapp.activities.GermanCoins;
 
-import com.example.muenzapp.Database.*;
 import android.content.Intent;
 import android.util.Log;
 import android.view.View;
@@ -13,15 +12,11 @@ import android.widget.Toast;
 
 import com.example.muenzapp.R;
 import com.example.muenzapp.TableItem;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
+import com.example.muenzapp.data.repository.CoinRepository;
+import com.example.muenzapp.utils.FirestoreCallback;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.Executors;
 
 import static android.content.ContentValues.TAG;
@@ -30,11 +25,11 @@ import static android.graphics.Color.TRANSPARENT;
 public class GermanAddingActivity extends AppCompatActivity {
     final int[] buttonIDs = {R.id.addButtonA, R.id.addButtonD, R.id.addButtonF, R.id.addButtonG, R.id.addButtonJ, R.id.addButtonONE, R.id.addButtonTWO, R.id.addButtonFIVE, R.id.addButtonTEN, R.id.addButtonTWENTY, R.id.addButtonFIFTY, R.id.addButtonI, R.id.addButtonII};
     int selectedCoinYear;
-    EditText coinYear;
+    EditText year;
     Button addToDatabase;
     List<TableItem> selectedLetters;
     List<TableItem> selectedValues;
-    FirebaseFirestore db;
+    private CoinRepository repository;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +41,7 @@ public class GermanAddingActivity extends AppCompatActivity {
             finish();
         });
 
-        db = FirebaseFirestore.getInstance();
+        repository = CoinRepository.getInstance();
 
         selectedLetters = new ArrayList<>();
         selectedValues = new ArrayList<>();
@@ -54,57 +49,68 @@ public class GermanAddingActivity extends AppCompatActivity {
         for (int id : buttonIDs) {
             findViewById(id).setOnClickListener(this::doOnClick);
         }
-        coinYear = findViewById(R.id.addYearEditText);
+        year = findViewById(R.id.addYearEditText);
         addToDatabase = findViewById(R.id.addToDatabase);
 
 
         addToDatabase.setOnClickListener(v -> {
-            String yearString = coinYear.getText().toString();
+            String yearString = year.getText().toString();
             try {
                 selectedCoinYear = Integer.parseInt(yearString);
             } catch (NumberFormatException e) {
-                // falsches Format // TODO
+                // wrong format // TODO
             }
             Executors.newSingleThreadExecutor().execute(() -> {
                 if (selectedLetters.size() > 0 && selectedValues.size() > 0 && selectedCoinYear >= 0) {
-                 //   List<CoinEntity> coinsOfYear = collectionDao.getMissingCoinsOfYear(selectedCoinYear);
-                    for (TableItem selectedLetter : selectedLetters) {
-                        for (TableItem selectedValue : selectedValues) {
-                            Map<String, Object> coin = new HashMap<>();
-                            coin.put("coinYear", selectedCoinYear);
-                            coin.put("coinValue", selectedValue);
-                            coin.put("coinLetter", selectedLetter);
-                            String filename = selectedCoinYear + ":" + selectedValue + ":" + selectedLetter;
-                            db.collection("D").document(filename)
-                                    .set(coin, SetOptions.merge())
-                                    .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully written!"))
-                                    .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e));
+
+                    final int totalOperations = selectedLetters.size() * selectedValues.size();
+                    final int[] completedOperations = {0};
+
+                    for (TableItem letter : selectedLetters) {
+                        for (TableItem value : selectedValues) {
+
+                            repository.addGermanCoin(selectedCoinYear, value, letter, new FirestoreCallback() {
+                                @Override
+                                public void onSuccess() {
+                                    completedOperations[0]++;
+                                    Log.d(TAG, "Stored Coin: " + year + " " + letter);
+
+                                    // When all coins are stored: UI Feedback
+                                    if (completedOperations[0] == totalOperations) {
+                                        runOnUiThread(() -> {
+                                            Toast.makeText(GermanAddingActivity.this, "Alle Münzen erfolgreich hinzugefügt!", Toast.LENGTH_SHORT).show();
+                                            resetUI();
+                                        });
+                                    }
+                                }
+                                @Override
+                                public void onFailure(Exception e) {
+                                    Log.e(TAG, "Error whilst storing coin", e);
+                                }
+                            });
                         }
                     }
-                    runOnUiThread(() -> {
-                        for (int id : buttonIDs) {
-                            // nach hinzufügen gedrückt müssen alle Knöpfe wieder resettet werden, also nicht nur umrahmung weg, sondern auch, dass sie geklickt wurden:
-                            findViewById(id).setBackgroundColor(TRANSPARENT);
-                            findViewById(id).setActivated(false);
-                        }
-                        coinYear.setText("");
-                    });
-                    selectedLetters = new ArrayList<>();
-                    selectedValues = new ArrayList<>();
-                    selectedCoinYear = Integer.MIN_VALUE;
-                    runOnUiThread(() -> {
-                        Toast.makeText(GermanAddingActivity.this, "Erfolgreich hinzugefügt!", Toast.LENGTH_SHORT).show();
-                    });
                 } else {
-                    // wenn nicht genug ausgewählt
+                    // if not enough coins / letters / year are selected
                     runOnUiThread(() -> {
-                        Toast.makeText(GermanAddingActivity.this, "(Jahr, Buchstabe, Euro/Cent) notwendig!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(GermanAddingActivity.this, "Kombination aus Jahr, Buchstabe und Euro/Cent notwendig!", Toast.LENGTH_SHORT).show();
                     });
                 }
             });
-            // alles gespeicherte Zurücksetzen → lokale Attribute
-
         });
+    }
+    private void resetUI(){
+        runOnUiThread(() -> {
+            for (int id : buttonIDs) {
+                // nach hinzufügen gedrückt müssen alle Knöpfe wieder resettet werden, also nicht nur umrahmung weg, sondern auch, dass sie geklickt wurden:
+                findViewById(id).setBackgroundColor(TRANSPARENT);
+                findViewById(id).setActivated(false);
+            }
+            year.setText("");
+        });
+        selectedLetters = new ArrayList<>();
+        selectedValues = new ArrayList<>();
+        selectedCoinYear = Integer.MIN_VALUE;
     }
     //TODO Fall: zu viel gespeichert
     public void doOnClick(View view) {

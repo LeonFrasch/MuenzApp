@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".GermanCoins.GermanCoinTableActivityIISpecial"
+    tools:context=".activities.GermanCoins.GermanCoinTableActivityIISpecial"
     android:background="@color/white">
     <ImageButton
         android:layout_width="wrap_content"

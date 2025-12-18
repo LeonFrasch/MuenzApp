@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Authentication"
+    tools:context=".activities.Authentication"
     android:background="@color/white">
 
     <ImageView
@@ -52,12 +52,14 @@
             android:layout_width="300dp"
             android:layout_centerHorizontal="true"
             android:layout_height="wrap_content"
-            android:hint="password"
+            android:hint="Passwort"
             android:layout_below="@id/emailText"
             android:id="@+id/passwordText"
             android:textColorHint="@color/black"
             android:textColor="@color/black"
-            android:layout_marginTop="25dp" />
+            android:layout_marginTop="25dp"
+            android:inputType="textPassword"
+            app:passwordToggleEnabled="true"/>
         <Button
             android:id="@+id/registerButton"
             android:layout_width="200dp"
