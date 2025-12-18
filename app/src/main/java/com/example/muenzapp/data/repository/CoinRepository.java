@@ -141,8 +141,8 @@ public class CoinRepository {
     public void addGermanSpecialCoin(Coin coin, FirestoreCallback callback) {
         Map<String, Object> data = new HashMap<>();
         data.put(Constants.FIELD_YEAR, coin.getYear());
-        data.put("coinType", coin.getType().toString());
-        data.put(Constants.FIELD_LETTER, coin.getLetter().toString());
+        data.put("coinType", String.valueOf(coin.getType()));
+        data.put(Constants.FIELD_LETTER, String.valueOf(coin.getLetter()));
 
         String id = coin.getYear() + ":" + coin.getType() + ":" + coin.getLetter();
         CollectionReference col = db.collection(Constants.COLL_SPECIAL)
