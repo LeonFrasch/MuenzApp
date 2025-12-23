@@ -60,7 +60,7 @@ public class InternCoinTableActivityIISpecial extends BaseCoinTableActivity {
     @Override
     protected void onAdminCheckFinished(boolean isAdmin) {
         if (!isAdmin) {
-            findViewById(R.id.openAddingInternYearSpecialII).setVisibility(View.GONE);
+            findViewById(R.id.openAddingYear).setVisibility(View.GONE);
         }
     }
 

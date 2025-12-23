@@ -88,7 +88,7 @@ public class InternCoinTableActivity extends BaseCoinTableActivity {
 
     @Override
     protected void onAdminCheckFinished(boolean isAdmin) {
-        if (!isAdmin) findViewById(R.id.openAddingInternYear).setVisibility(View.GONE);
+        if (!isAdmin) findViewById(R.id.openAddingYear).setVisibility(View.GONE);
     }
 
     @Override

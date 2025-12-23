@@ -1,6 +1,5 @@
 package com.example.muenzapp.activities.GermanCoins;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.widget.Button;
 import android.widget.Toast;
@@ -79,7 +78,7 @@ public class GermanCoinTableActivity extends BaseCoinTableActivity {
     private void updateTableWithData(List<Coin> coins) {
         // 1. Mark the missing items in the table array
         for (Coin coin : coins) {
-            int letterIdx = getLetterindex(coin.getLetter());
+            int letterIdx = getLetterIndex(coin.getLetter());
             int valueIdx = getValueIndex(coin.getValue());
 
             if (letterIdx != -1 && valueIdx != -1) {
@@ -116,7 +115,7 @@ public class GermanCoinTableActivity extends BaseCoinTableActivity {
         }
     }
 
-    private int getLetterindex(TableItem letter) {
+    private int getLetterIndex(TableItem letter) {
         switch (letter) {
             case A: return 1;
             case D: return 2;

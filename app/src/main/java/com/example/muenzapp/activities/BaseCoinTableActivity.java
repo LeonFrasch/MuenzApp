@@ -231,7 +231,11 @@ public abstract class BaseCoinTableActivity extends AppCompatActivity {
         }
     }
 
-    protected void onAdminCheckFinished(boolean isAdmin) {}
+    protected void onAdminCheckFinished(boolean isAdmin) {
+        if (!isAdmin) {
+            findViewById(R.id.openAddingYear).setVisibility(View.GONE);
+        }
+    }
 
     @SuppressLint("UseCompatLoadingForDrawables")
     public void click(View view) {

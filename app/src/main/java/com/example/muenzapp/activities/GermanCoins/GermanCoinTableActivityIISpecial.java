@@ -1,6 +1,5 @@
 package com.example.muenzapp.activities.GermanCoins;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.view.View;
 import android.widget.TextView;
@@ -19,7 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.example.muenzapp.R.drawable.table_border;
 import static com.example.muenzapp.TableItem.*;
 
 public class GermanCoinTableActivityIISpecial extends BaseCoinTableActivity {
@@ -56,7 +54,9 @@ public class GermanCoinTableActivityIISpecial extends BaseCoinTableActivity {
 
     @Override
     protected void onAdminCheckFinished(boolean isAdmin) {
-        // Optional hook
+        if (!isAdmin) {
+            findViewById(R.id.openAddingYear).setVisibility(View.GONE);
+        }
     }
 
     @Override
