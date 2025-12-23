@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <ImageButton
+        android:id="@+id/closeCoinTable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@android:drawable/btn_dialog"
+        android:background="@android:color/transparent"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="25dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:contentDescription="Close"
+        android:elevation="10dp" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/containerButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:padding="10dp"
+        android:background="@color/white"
+        android:elevation="10dp">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineCenter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
+
+        <Button
+            android:id="@+id/openAddingYear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Jahr hinzufügen"
+            android:backgroundTint="@color/button_color"
+            android:textColor="@color/black"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <Button
+            android:id="@+id/openAddingYearSpecialII"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Special II."
+            android:backgroundTint="@color/button_color"
+            android:textColor="@color/black"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/openAddingYear" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/closeCoinTable"
+        android:layout_above="@id/containerButtons"
+        android:padding="5dp">
+
+        <LinearLayout
+            android:id="@+id/tableAssembly"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constrainedHeight="true"
+            app:layout_constrainedWidth="true">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <FrameLayout
+                    android:id="@+id/containerCorner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <HorizontalScrollView
+                    android:id="@+id/scrollHeader"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="none">
+                    <LinearLayout
+                        android:id="@+id/containerHeaderRow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" />
+                </HorizontalScrollView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <ScrollView
+                    android:id="@+id/scrollSide"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="none">
+                    <LinearLayout
+                        android:id="@+id/containerSideCol"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+                </ScrollView>
+                <ScrollView
+                    android:id="@+id/scrollBodyVertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <HorizontalScrollView
+                        android:id="@+id/scrollBodyHorizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <TableLayout
+                            android:id="@+id/containerBodyGrid"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </HorizontalScrollView>
+                </ScrollView>
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</RelativeLayout>
