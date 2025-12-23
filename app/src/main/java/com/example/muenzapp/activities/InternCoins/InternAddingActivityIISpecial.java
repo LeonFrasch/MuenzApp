@@ -2,6 +2,7 @@ package com.example.muenzapp.activities.InternCoins;
 
 import static android.graphics.Color.TRANSPARENT;
 
+import static com.example.muenzapp.StaticHelper.findCoinCountryItem;
 import static com.example.muenzapp.StaticHelper.findCoinCountryStringFull;
 
 import android.annotation.SuppressLint;
@@ -17,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.muenzapp.R;
 import com.example.muenzapp.TableItem;
+import com.example.muenzapp.data.model.Coin;
 import com.example.muenzapp.data.repository.CoinRepository;
 import com.example.muenzapp.utils.FirestoreCallback;
 
@@ -108,7 +110,7 @@ public class InternAddingActivityIISpecial extends AppCompatActivity {
         };
 
         for (TableItem selectedType : selectedTypes) {
-            repository.addInternSpecialCoin(countryStringRaw, selectedCoinYear, selectedType, callback);
+            repository.addInternSpecialCoin(Coin.createInternSpecial(selectedCoinYear, findCoinCountryItem(countryStringRaw), selectedType), callback);
         }
     }
     private void checkIfFinished(int total, int current, int errors) {

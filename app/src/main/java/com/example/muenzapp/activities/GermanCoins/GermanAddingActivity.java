@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.example.muenzapp.R;
 import com.example.muenzapp.TableItem;
+import com.example.muenzapp.data.model.Coin;
 import com.example.muenzapp.data.repository.CoinRepository;
 import com.example.muenzapp.utils.FirestoreCallback;
 
@@ -69,7 +70,7 @@ public class GermanAddingActivity extends AppCompatActivity {
                     for (TableItem letter : selectedLetters) {
                         for (TableItem value : selectedValues) {
 
-                            repository.addGermanCoin(selectedCoinYear, value, letter, new FirestoreCallback() {
+                            repository.addGermanCoin(Coin.createGermanStandard(selectedCoinYear, value, letter), new FirestoreCallback() {
                                 @Override
                                 public void onSuccess() {
                                     completedOperations[0]++;

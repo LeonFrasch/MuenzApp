@@ -17,7 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.muenzapp.R;
 import com.example.muenzapp.TableItem;
-import com.example.muenzapp.data.model.IISpecialD;
+import com.example.muenzapp.data.model.Coin;
 import com.example.muenzapp.data.repository.AuthRepository;
 import com.example.muenzapp.data.repository.CoinRepository;
 import com.example.muenzapp.utils.FirestoreCallback;
@@ -37,8 +37,8 @@ public class GermanCoinTableActivityIISpecial extends AppCompatActivity {
     private TableItem[][] table;
     private String[] tableYears; // Mapping: Zeilenindex -> Jahr (String)
 
-    private List<IISpecialD> collect;
-    private List<IISpecialD> missing;
+    private List<Coin> collect;
+    private List<Coin> missing;
 
     private CoinRepository repository;
     private boolean isAdmin;
@@ -123,9 +123,9 @@ public class GermanCoinTableActivityIISpecial extends AppCompatActivity {
     }
 
     private void loadDataFromRepository() {
-        repository.getGermanSpecialCoins(new FirestoreDataCallback<List<IISpecialD>>() {
+        repository.getGermanSpecialCoins(new FirestoreDataCallback<List<Coin>>() {
             @Override
-            public void onSuccess(List<IISpecialD> data) {
+            public void onSuccess(List<Coin> data) {
                 // Datenverarbeitung (Logik bleibt komplex, aber ausgelagert)
                 processData(data);
             }
@@ -140,14 +140,14 @@ public class GermanCoinTableActivityIISpecial extends AppCompatActivity {
     /**
      * Verarbeitet die rohen DB-Daten und füllt die Tabelle.
      */
-    private void processData(List<IISpecialD> allCoins) {
+    private void processData(List<Coin> allCoins) {
         // Schritt A: Jahre sammeln und sortieren
         List<Integer> coinYears = new ArrayList<>();
-        Map<Integer, Map<TableItem, List<IISpecialD>>> coinMap = new HashMap<>();
+        Map<Integer, Map<TableItem, List<Coin>>> coinMap = new HashMap<>();
 
-        for (IISpecialD coin : allCoins) {
-            int year = coin.getCoinYear();
-            TableItem type = coin.getCoinType();
+        for (Coin coin : allCoins) {
+            int year = coin.getYear();
+            TableItem type = coin.getType();
 
             if (!coinYears.contains(year)) {
                 coinYears.add(year);
@@ -155,7 +155,7 @@ public class GermanCoinTableActivityIISpecial extends AppCompatActivity {
 
             // Verschachtelte Map aufbauen: Jahr -> Typ -> Liste von Münzen
             coinMap.putIfAbsent(year, new HashMap<>());
-            Map<TableItem, List<IISpecialD>> typeMap = coinMap.get(year);
+            Map<TableItem, List<Coin>> typeMap = coinMap.get(year);
 
             typeMap.putIfAbsent(type, new ArrayList<>());
             typeMap.get(type).add(coin);
@@ -167,7 +167,7 @@ public class GermanCoinTableActivityIISpecial extends AppCompatActivity {
         int pointer = 0; // Zeiger auf die aktuelle Tabellenzeile
 
         for (int year : coinYears) {
-            Map<TableItem, List<IISpecialD>> coinsOfYear = coinMap.get(year);
+            Map<TableItem, List<Coin>> coinsOfYear = coinMap.get(year);
             TableItem[] types = {CC1, CC2, CC3}; // Reihenfolge der Typen
 
             for (TableItem type : types) {
@@ -180,8 +180,8 @@ public class GermanCoinTableActivityIISpecial extends AppCompatActivity {
                     tableYears[pointer] = year < 10 ? "0" + year : String.valueOf(year);
 
                     // Einzelne Münzen (Buchstaben) markieren
-                    for (IISpecialD coinEntity : coinsOfYear.get(type)) {
-                        int colIndex = getColumnForLetter(coinEntity.getCoinLetter());
+                    for (Coin coinEntity : coinsOfYear.get(type)) {
+                        int colIndex = getColumnForLetter(coinEntity.getLetter());
                         if (colIndex != -1) {
                             table[currentRowIndex][colIndex] = MISSING;
                         }
@@ -294,10 +294,10 @@ public class GermanCoinTableActivityIISpecial extends AppCompatActivity {
             }
         };
 
-        for (IISpecialD coin : missing) {
+        for (Coin coin : missing) {
             repository.addGermanSpecialCoin(coin, callback);
         }
-        for (IISpecialD coin : collect) {
+        for (Coin coin : collect) {
             repository.deleteGermanSpecialCoin(coin, callback);
         }
     }
@@ -358,10 +358,7 @@ public class GermanCoinTableActivityIISpecial extends AppCompatActivity {
         TableItem type = table[row][1];
         TableItem letter = table[0][column];
 
-        IISpecialD coin = new IISpecialD();
-        coin.setCoinYear(year);
-        coin.setCoinType(type);
-        coin.setCoinLetter(letter);
+        Coin coin = Coin.createGermanSpecial(year, type, letter);
 
         boolean isCollectedInTable = (COLLECTED == table[row][column]);
 

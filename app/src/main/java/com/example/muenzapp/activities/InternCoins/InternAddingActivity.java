@@ -13,12 +13,12 @@ import android.widget.Toast;
 
 import com.example.muenzapp.R;
 import com.example.muenzapp.TableItem;
+import com.example.muenzapp.data.model.Coin;
 import com.example.muenzapp.data.repository.CoinRepository;
 import com.example.muenzapp.utils.FirestoreCallback;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static android.graphics.Color.TRANSPARENT;
@@ -66,10 +66,6 @@ public class InternAddingActivity extends AppCompatActivity {
         }
     }
     private void saveCoins() {
-        Executors.newSingleThreadExecutor().execute(() -> {
-
-        });
-        // alles gespeicherte Zurücksetzen → lokale Attribute
         String yearString = coinYear.getText().toString();
         int selectedCoinYear;
         try {
@@ -104,7 +100,7 @@ public class InternAddingActivity extends AppCompatActivity {
 
         // Schleife über alle ausgewählten Werte
         for (TableItem value : selectedValues) {
-            repository.addInternCoin(countryString, selectedCoinYear, value, callback);
+            repository.addInternCoin(Coin.createInternStandard(selectedCoinYear, findCoinCountryItem(countryString), value), callback);
         }
     }
     private void checkIfFinished(int total, int current, int errors) {

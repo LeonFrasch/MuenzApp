@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import com.example.muenzapp.R;
 import com.example.muenzapp.TableItem;
-import com.example.muenzapp.data.model.CoinEntity;
+import com.example.muenzapp.data.model.Coin;
 import com.example.muenzapp.data.repository.AuthRepository;
 
 import java.util.*;
@@ -32,8 +32,8 @@ public class GermanCoinTableActivity extends AppCompatActivity {
     private TableItem[][] table; // default Aussehen der Tabelle
     private final int[][] buttonIDs = {{R.id.Item00, R.id.Item01, R.id.Item02, R.id.Item03, R.id.Item04, R.id.Item05, R.id.Item06, R.id.Item07, R.id.Item08}, {R.id.Item10, R.id.Item11, R.id.Item12, R.id.Item13, R.id.Item14, R.id.Item15, R.id.Item16, R.id.Item17, R.id.Item18}, {R.id.Item20, R.id.Item21, R.id.Item22, R.id.Item23, R.id.Item24, R.id.Item25, R.id.Item26, R.id.Item27, R.id.Item28}, {R.id.Item30, R.id.Item31, R.id.Item32, R.id.Item33, R.id.Item34, R.id.Item35, R.id.Item36, R.id.Item37, R.id.Item38}, {R.id.Item40, R.id.Item41, R.id.Item42, R.id.Item43, R.id.Item44, R.id.Item45, R.id.Item46, R.id.Item47, R.id.Item48}, {R.id.Item50, R.id.Item51, R.id.Item52, R.id.Item53, R.id.Item54, R.id.Item55, R.id.Item56, R.id.Item57, R.id.Item58}}; //Alle Items der Tabelle: alle mit 0 sind TextViews, sonst Buttons
     private int coinYear;
-    private List<CoinEntity> missing;
-    private List<CoinEntity> collect;
+    private List<Coin> missing;
+    private List<Coin> collect;
     private CoinRepository repository;
     private boolean isAdmin;
 
@@ -82,9 +82,9 @@ public class GermanCoinTableActivity extends AppCompatActivity {
     }
 
     private void loadDataFromRepository() {
-        repository.getGermanCoinsByYear(coinYear, new FirestoreDataCallback<List<CoinEntity>>() {
+        repository.getGermanCoinsByYear(coinYear, new FirestoreDataCallback<List<Coin>>() {
             @Override
-            public void onSuccess(List<CoinEntity> coins) {
+            public void onSuccess(List<Coin> coins) {
                 // UI Thread wird durch das Callback im Repo meist schon beachtet,
                 // aber zur Sicherheit bei UI Änderungen:
                 runOnUiThread(() -> updateTableWithData(coins));
@@ -99,10 +99,10 @@ public class GermanCoinTableActivity extends AppCompatActivity {
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
-    private void updateTableWithData(List<CoinEntity> coins) {
-        for (CoinEntity coin : coins) {
-            TableItem letter = coin.getCoinLetter();
-            TableItem value = coin.getCoinValue();
+    private void updateTableWithData(List<Coin> coins) {
+        for (Coin coin : coins) {
+            TableItem letter = coin.getLetter();
+            TableItem value = coin.getValue();
 
             int letterIdx = getLetterindex(letter);
             int valueIdx = getValueIndex(value);
@@ -143,12 +143,12 @@ public class GermanCoinTableActivity extends AppCompatActivity {
             }
         };
 
-        for (CoinEntity entity : missing) {
-            repository.addGermanCoin(entity.getCoinYear(), entity.getCoinValue(), entity.getCoinLetter(), progressCallback);
+        for (Coin coin : missing) {
+            repository.addGermanCoin(coin, progressCallback);
         }
 
-        for (CoinEntity entity : collect) {
-            repository.deleteGermanCoin(entity.getCoinYear(), entity.getCoinValue(), entity.getCoinLetter(), progressCallback);
+        for (Coin coin : collect) {
+            repository.deleteGermanCoin(coin, progressCallback);
         }
     }
 
@@ -310,29 +310,26 @@ public class GermanCoinTableActivity extends AppCompatActivity {
         boolean isCollectedInTable = (COLLECTED == table[row][column]);
 
         // Entity erstellen für Vergleich
-        CoinEntity coinEntity = new CoinEntity();
-        coinEntity.setCoinYear(coinYear);
-        coinEntity.setCoinValue(table[0][column]);
-        coinEntity.setCoinLetter(table[row][0]);
+        Coin coin = Coin.createGermanStandard(coinYear, table[0][column], table[row][0]);
 
         if (isCollectedInTable) {
             // WAR: Collected (Grün) -> WIRD: Missing (Rot)
             // Logik: Zu "missing" Liste hinzufügen (damit es in DB gespeichert wird)
-            if (!missing.contains(coinEntity)) {
-                missing.add(coinEntity);
+            if (!missing.contains(coin)) {
+                missing.add(coin);
                 view.setBackground(getDrawable(table_border_red));
             } else {
-                missing.remove(coinEntity);
+                missing.remove(coin);
                 view.setBackground(getDrawable(table_border_active));
             }
         } else {
             // WAR: Missing (Rot) -> WIRD: Collected (Grün)
             // Logik: Zu "collect" Liste hinzufügen (damit es aus DB gelöscht wird)
-            if (!collect.contains(coinEntity)) {
-                collect.add(coinEntity);
+            if (!collect.contains(coin)) {
+                collect.add(coin);
                 view.setBackground(getDrawable(table_border_active_red));
             } else {
-                collect.remove(coinEntity);
+                collect.remove(coin);
                 view.setBackground(getDrawable(table_border));
             }
         }

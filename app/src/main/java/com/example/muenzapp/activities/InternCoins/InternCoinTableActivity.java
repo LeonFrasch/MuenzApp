@@ -13,7 +13,7 @@ import android.widget.Toast;
 import com.example.muenzapp.R;
 import com.example.muenzapp.activities.StartingPageActivity;
 import com.example.muenzapp.TableItem;
-import com.example.muenzapp.data.model.InternCoinEntity;
+import com.example.muenzapp.data.model.Coin;
 import com.example.muenzapp.data.repository.AuthRepository;
 import com.example.muenzapp.data.repository.CoinRepository;
 import com.example.muenzapp.utils.FirestoreCallback;
@@ -31,8 +31,8 @@ import static com.example.muenzapp.TableItem.*;
 public class InternCoinTableActivity extends AppCompatActivity {
     private TableItem[][] table; // default Aussehen der Tabelle
     private String[] tableYears;
-    private List<InternCoinEntity> collect;
-    private List<InternCoinEntity> missing;
+    private List<Coin> collect;
+    private List<Coin> missing;
     private CoinRepository repository;
     private boolean isAdmin;
     private TableItem coinCountry;
@@ -127,9 +127,9 @@ public class InternCoinTableActivity extends AppCompatActivity {
         });
     }
     private void loadDataFromRepository() {
-        repository.getInternCoins(countryStringRaw, new FirestoreDataCallback<List<InternCoinEntity>>() {
+        repository.getInternCoins(countryStringRaw, new FirestoreDataCallback<List<Coin>>() {
             @Override
-            public void onSuccess(List<InternCoinEntity> coins) {
+            public void onSuccess(List<Coin> coins) {
                 processData(coins);
             }
             @Override
@@ -138,13 +138,13 @@ public class InternCoinTableActivity extends AppCompatActivity {
             }
         });
     }
-    private void processData(List<InternCoinEntity> coins) {
+    private void processData(List<Coin> coins) {
         // Daten sortieren und Jahre extrahieren
         List<Integer> coinYears = new ArrayList<>();
-        Map<Integer, List<InternCoinEntity>> coinMap = new HashMap<>();
+        Map<Integer, List<Coin>> coinMap = new HashMap<>();
 
-        for (InternCoinEntity coin : coins) {
-            int year = coin.getCoinYear();
+        for (Coin coin : coins) {
+            int year = coin.getYear();
             if (!coinYears.contains(year)) {
                 coinYears.add(year);
             }
@@ -164,8 +164,8 @@ public class InternCoinTableActivity extends AppCompatActivity {
             tableYears[pointer] = year < 10 ? "0" + year : String.valueOf(year);
 
             // Münzen markieren
-            for (InternCoinEntity coinEntity : coinMap.get(year)) {
-                int colIndex = getColumnForValue(coinEntity.getCoinValue());
+            for (Coin coin : coinMap.get(year)) {
+                int colIndex = getColumnForValue(coin.getValue());
                 if (colIndex != -1) {
                     // Zeile ist pointer + 1, da Zeile 0 Header ist
                     table[pointer + 1][colIndex] = MISSING;
@@ -267,11 +267,11 @@ public class InternCoinTableActivity extends AppCompatActivity {
             }
         };
 
-        for (InternCoinEntity entity : missing) {
-            repository.addInternCoin(countryStringRaw, entity.getCoinYear(), entity.getCoinValue(), callback);
+        for (Coin coin : missing) {
+            repository.addInternCoin(coin, callback);
         }
-        for (InternCoinEntity entity : collect) {
-            repository.deleteInternCoin(countryStringRaw, entity.getCoinYear(), entity.getCoinValue(), callback);
+        for (Coin coin : collect) {
+            repository.deleteInternCoin(coin, callback);
         }
     }
 
@@ -325,10 +325,7 @@ public class InternCoinTableActivity extends AppCompatActivity {
 
         int year = Integer.parseInt(yearString);
 
-        InternCoinEntity coin = new InternCoinEntity();
-        coin.setCoinCountry(coinCountry);
-        coin.setCoinYear(year);
-        coin.setCoinValue(table[0][column]);
+        Coin coin = Coin.createInternStandard(year, coinCountry, table[0][column]);
 
         boolean isCollectedInTable = (COLLECTED == table[row][column]);
 
