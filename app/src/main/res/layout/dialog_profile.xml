@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@android:color/white">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mein Profil"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Eingeloggt als:"
+        android:textSize="14sp"
+        android:textColor="#757575"/>
+
+    <TextView
+        android:id="@+id/textProfileEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="user@example.com"
+        android:textSize="18sp"
+        android:textColor="@android:color/black"
+        android:layout_marginBottom="24dp"/>
+
+    <Button
+        android:id="@+id/btnDialogLogout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Abmelden"
+        android:backgroundTint="#D32F2F"
+        android:textColor="@android:color/white"/>
+
+</LinearLayout>
