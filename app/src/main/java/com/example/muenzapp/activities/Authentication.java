@@ -1,26 +1,26 @@
 package com.example.muenzapp.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.muenzapp.R;
 import com.example.muenzapp.data.repository.AuthRepository;
 import com.example.muenzapp.utils.FirestoreCallback;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 public class Authentication extends AppCompatActivity {
-    //TODO passwort nicht sichtbar evtl da sonst weiteres zeichen zum sichtbar machen erforderlich
+
+    private TextView loginButton;
     private Button registerButton;
-    private Button loginButton;
-    private EditText emailText;
-    private EditText passwordText;
+    private TextInputEditText emailText;
+    private TextInputEditText passwordText;
+    private TextInputLayout passwordInputLayout; // To show errors cleanly
     private AuthRepository authRepository;
 
     @Override
@@ -28,7 +28,6 @@ public class Authentication extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_authentication);
 
-        // Initialize
         authRepository = AuthRepository.getInstance();
 
         // UI setup
@@ -36,6 +35,7 @@ public class Authentication extends AppCompatActivity {
         registerButton = findViewById(R.id.registerButton);
         emailText = findViewById(R.id.emailText);
         passwordText = findViewById(R.id.passwordText);
+        passwordInputLayout = findViewById(R.id.passwordInputLayout);
 
         // Setup Listener
         registerButton.setOnClickListener(v -> attemptRegistration());
@@ -45,24 +45,32 @@ public class Authentication extends AppCompatActivity {
             finish();
         });
     }
+
     private void attemptRegistration() {
         String email = emailText.getText().toString().trim();
         String password = passwordText.getText().toString().trim();
+
+        // Reset errors
+        passwordInputLayout.setError(null);
 
         if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
             Toast.makeText(this, "Fehlende Email oder Passwort!", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Passwortlänge prüfen (Firebase verlangt min. 6 Zeichen)
         if (password.length() < 6) {
-            passwordText.setError("Passwort muss mind. 6 Zeichen lang sein");
+            // Set error on the Layout, not the EditText, for better styling
+            passwordInputLayout.setError("Passwort muss mind. 6 Zeichen lang sein");
             return;
         }
 
         performRegister(email, password);
     }
+
     private void performRegister(String email, String password) {
+        // Disable button to prevent double clicks
+        registerButton.setEnabled(false);
+
         authRepository.register(email, password, new FirestoreCallback() {
             @Override
             public void onSuccess() {
@@ -75,15 +83,16 @@ public class Authentication extends AppCompatActivity {
             @Override
             public void onFailure(Exception e) {
                 runOnUiThread(() -> {
-                    Toast.makeText(Authentication.this, "Registrierung fehlgeschlagen: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    registerButton.setEnabled(true);
+                    Toast.makeText(Authentication.this, "Fehler: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
             }
         });
     }
+
     @Override
     protected void onStart() {
         super.onStart();
-        // Check ob User bereits eingeloggt ist (Repository nutzen)
         if (authRepository.isLoggedIn()) {
             navigateToStart();
         }
@@ -91,7 +100,6 @@ public class Authentication extends AppCompatActivity {
 
     private void navigateToStart() {
         Intent intent = new Intent(Authentication.this, StartingPageActivity.class);
-        // Flags setzen, damit man nicht mit "Zurück" wieder auf die Login-Seite kommt
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
