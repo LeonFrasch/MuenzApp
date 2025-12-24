@@ -67,9 +67,12 @@ public abstract class BaseCoinTableActivity extends AppCompatActivity {
 
         performAdminCheck();
         initTableLogic();
-        buildDynamicTable();
         setupScrollSynchronization();
-        loadDataFromRepository();
+
+        findViewById(android.R.id.content).post(() -> {
+            buildDynamicTable();
+            loadDataFromRepository();
+        });
     }
 
     // --- Abstract Methods ---
